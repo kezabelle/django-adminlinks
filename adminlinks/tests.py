@@ -64,7 +64,7 @@ class AdminEditTestCase(unittest.TestCase):
             'module': object._meta.module_name,
         }
         args = (object.pk,)
-        return render_to_string('adminlinks/edit/link.html', {
+        return render_to_string('adminlinks/edit_link.html', {
             'type': object_name,
             'link': reverse(viewname='%(ns)s:%(app)s_%(module)s_change' % lookups, args=args)
         })

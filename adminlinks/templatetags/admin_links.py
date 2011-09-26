@@ -25,7 +25,7 @@ class RequiresContextAuthMixin(object):
          
 class ObjectEditAdmin(RequiresContextAuthMixin, InclusionTag):
     name = 'admin_edit'
-    template = 'adminlinks/edit/link.html',
+    template = 'adminlinks/edit_link.html',
     options = Options(
         Argument('object', required=True),
         Argument('template', default=None, required=False),
