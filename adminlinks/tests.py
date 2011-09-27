@@ -15,10 +15,16 @@ except ImportError:
 class AdminLinksTestCase(unittest.TestCase):
     
     def test_the_test_dependencies(self):
-        '''In lieu of mock objects, we need certain things in INSTALLED_APPS'''
+        '''Make sure the environment can support the tests. '''
+        # Check that both the built-in auth and admin apps are available.
         self.assertEqual('django.contrib.auth' in settings.INSTALLED_APPS, True)
         self.assertEqual('django.contrib.admin' in settings.INSTALLED_APPS, True)
 
+        # For the tests (and the app!) to work, we need to know that the admin
+        # is mounted in the urlconf, and what name the default one is under
+        # (typically, 'admin') - I'm using a boolean to test for if anything
+        # goes wrong, because unittest prior to python 2.7 / Django 1.3 doesn't
+        # have methods for asserting exceptions are raised.
         found_admin = True 
         admin_namespace = admin.site.app_name
         try:
@@ -31,18 +37,24 @@ class AdminLinksTestCase(unittest.TestCase):
         
     def test_loads_without_error(self):
         '''Ensure that the templatetags lib loads without issue'''
+        # This test is the first port of call to ensure there's no silly errors
+        # in the templatetags lib that might prevent it loading (syntax errors,
+        # I'm looking at you!)
         template = Template('''{% load admin_links %}''')
         context = Context({})
         result = template.render(context)
+        # Should be blank, because we're not doing anything.
         self.assertEqual(result, u'')
 
 class AdminEditTestCase(unittest.TestCase):
 
     def setUp(self):
+        self.request = HttpRequest()
+        # a normal, boring user
         self.user = User.objects.get_or_create(username='standard', is_staff=False)[0]
+        # someone who /can/ access the admin, and has permissions
         self.superuser = User.objects.get_or_create(username='admin', is_active=True,
             is_staff=True, is_superuser=True)[0]
-        self.request = HttpRequest()
 
     def default_edit_template(self):
         return Template('''{% load admin_links %}{% admin_edit object %}''')
@@ -54,9 +66,11 @@ class AdminEditTestCase(unittest.TestCase):
         return Template('''{% load admin_links %}{% admin_edit object "adminlinks/this_doesnt_exist.html" %}''')
 
     def invalid_context(self):
+        ''' Utility method for comparing a templatetag's test output to what we expect '''
         return render_to_string('adminlinks/bad_context.html', {})
 
     def valid_context(self, object):
+        ''' Simulated call to the templatetag for comparison to it's actual output '''
         object_name = object._meta.object_name
         lookups = { 
             'ns': admin.site.app_name,
@@ -99,6 +113,8 @@ class AdminEditTestCase(unittest.TestCase):
         self.request.user = self.superuser
         context = RequestContext(self.request, {'object': self.user})
         result = template.render(context).strip()
+        # Note: it's supposed to be blank because it uses a dummy template,
+        # where everything else does not.
         self.assertEqual(result, u'')
 
     def test_with_specified_bad_template(self):
@@ -106,6 +122,9 @@ class AdminEditTestCase(unittest.TestCase):
         template = self.nonexistant_edit_template()
         self.request.user = self.superuser
         context = RequestContext(self.request, {'object': self.user})
+        # The template system will provide a TemplateSyntaxError, whose underlying
+        # type was TemplateDoesNotExist. Catching both should ensure that we
+        # got an error where we expected one.
         try:
             result = template.render(context).strip()
         except (TemplateDoesNotExist, TemplateSyntaxError), e:
