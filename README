@@ -1,0 +1,11 @@
+django-adminlinks
+=================
+
+A suite of Django templatetags for rendering links to the administration.
+
+Dependencies
+============
+
+* [Django](https://www.djangoproject.com/) >= [1.2](http://pypi.python.org/pypi/Django)
+* [django-classytags](https://github.com/ojii/django-classy-tags/) >= [0.3.4.1](http://pypi.python.org/pypi/django-classy-tags)
+
