@@ -13,7 +13,7 @@ setup(
     long_description=open(os.path.join(os.path.dirname(__file__), 'README')).read(),
     url='https://github.com/kezabelle/django-adminlinks',
     packages=['adminlinks', 'adminlinks/templatetags'],
-    install_requires=['django-classytags>=0.3.4.1'],
+    install_requires=['django-classy-tags>=0.3.4.1'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
