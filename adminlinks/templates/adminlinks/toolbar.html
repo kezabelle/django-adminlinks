@@ -1,0 +1,30 @@
+{% if should_display_toolbar and app_list|length > 0 %}
+    {% load i18n %}
+    {% load url from future %}
+    <div class="admin-toolbar-btn-group">
+        <a class="admin-toolbar-btn admin-toolbar-dropdown-toggle" href="#">
+            {% trans "Add" %}
+            <span class="admin-toolbar-caret"></span>
+        </a>
+
+        <ul class="admin-toolbar-dropdown-menu">
+        {% for app_label, models in app_list %}
+            {% if should_display_apps and not forloop.first %}
+            <li class="divider"></li>
+            {% endif %}
+            <li class="admin-toolbar-{{ app_label|slugify }} admin-toolbar-{% if should_display_apps %}display{% else %}hide{% endif %}-title">
+                <b>{% blocktrans with app_label as name %}{{ name }}{% endblocktrans %}</b>
+            </li>
+
+            {% for model in models %}
+                {% if model.add %}
+                <li class="admin-toolbar-{{ app_label|slugify }}-{{ model.name|slugify }}">
+                    <a href="{% url model.add %}" class="admin-add">{{ model.name }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
