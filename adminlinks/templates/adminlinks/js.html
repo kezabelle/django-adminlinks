@@ -1,0 +1,55 @@
+{% if should_load_assets %}
+    {% load adminmedia %}
+    <script type="text/javascript" src="{% admin_media_prefix %}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{% admin_media_prefix %}js/jquery.init.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}adminlinks/js/jquery.fancybox.custom.js"></script>
+    <script type="text/javascript">
+    (function ($) {
+
+        var fancybox_links = $('.admin-add, .admin-edit, .admin-delete, .admin-history');
+        var fancybox_opts = {
+            href: 'URL_ERROR'
+            , modal: false
+            , type: 'iframe'
+            , width: '80%'
+            , height: '60%'
+            , autoDimensions: true
+            , centerOnScroll: true
+            , hideOnOverlayClick: true
+            , hideOnContentClick: false
+            , enableEscapeButton: true
+            , showCloseButton: true
+            , transitionIn: 'none'
+            , transitionOut: 'none'
+            , showNavArrows: false
+            , title: ''
+            , onClosed: function(currentArray, currentIndex, currentOpts) {
+                $.ajax({
+                    async : false,
+                    type: 'GET',
+                    url: window.location.href,
+                    cache: true,
+                    success : function (resp) {
+                        $('body').html(resp);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                    }
+                });
+            }
+            , onComplete: function(currentArray, currentIndex, currentOpts) {
+                   alert('test');
+            }
+        }
+
+        fancybox_links.bind('click', function(evt) {
+            evt.preventDefault();
+            var parts = this.href.split('?', 1);
+            var link = parts[0];
+            var qs = (parts[1] || '?') + '&amp;_popup=1&amp;_frontend_editing=1';
+            fancybox_opts.href = link + qs;
+            $.fancybox(fancybox_opts);
+        });
+
+    })(django.jQuery);
+    </script>
+{% endif %}
