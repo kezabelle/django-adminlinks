@@ -1,1 +1,4 @@
-<a href="{{ link }}" class="admin_delete admin_delete_{{ type|slugify }}">Delete this {{ type }}</a>
+{% if link %}
+    {% load i18n %}
+    <a href="{{ link }}" class="admin-toolbar-btn admin-delete">{% blocktrans with verbose_name as name %}Delete this {{ name }}{% endblocktrans %}</a>
+{% endif %}

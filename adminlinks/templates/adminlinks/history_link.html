@@ -1,1 +1,4 @@
-<a href="{{ link }}" class="admin_history admin_history_{{ type|slugify }}">View edit history for this {{ type }}</a>
+{% if link %}
+    {% load i18n %}
+    <a href="{{ link }}" class="admin-toolbar-btn admin-history">{% blocktrans with verbose_name as name %}View edit history for this {{ name }}{% endblocktrans %}</a>
+{% endif %}

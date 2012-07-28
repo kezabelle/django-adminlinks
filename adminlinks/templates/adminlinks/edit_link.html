@@ -1,1 +1,4 @@
-<a href="{{ link }}" class="admin_change admin_change_{{ type|slugify }}">Edit this {{ type }}</a>
+{% if link %}
+{% load i18n %}
+<a href="{{ link }}" class="admin-toolbar-btn admin-edit">{% blocktrans with verbose_name as name %}Edit this {{ name }}{% endblocktrans %}</a>
+{% endif %}
