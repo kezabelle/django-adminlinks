@@ -1,0 +1,35 @@
+{% if links %}
+    {% load i18n %}
+    <div class="admin-toolbar-btn-group">
+
+        <a class="admin-toolbar-btn admin-toolbar-dropdown-toggle" href="#">
+            {% blocktrans with verbose_name as name %}Manage this {{ name }}{% endblocktrans %}
+            <span class="admin-toolbar-caret"></span>
+        </a>
+
+        <ul class="admin-toolbar-dropdown-menu">
+
+        {% if links.change %}
+            <li><a href="{{ links.change }}" class="admin-edit">{% blocktrans with verbose_name as name %}Edit this {{ name }}{% endblocktrans %}</a></li>
+        {% endif %}
+
+        {% if links.delete %}
+            <li><a href="{{ links.delete }}" class="admin-delete">{% blocktrans with verbose_name as name %}Delete this {{ name }}{% endblocktrans %}</a></li>
+        {% endif %}
+
+        {% if links.history %}
+            <li><a href="{{ links.history }}" class="admin-history">{% blocktrans with verbose_name as name %}View edit history for this {{ name }}{% endblocktrans %}</a></li>
+        {% endif %}
+
+        {%  if links.change or links.delete or links.history %}
+            {% if links.add %}
+                <li class="divider"></li>
+            {% endif %}
+        {% endif %}
+
+        {% if links.add %}
+            <li><a href="{{ links.add }}" class="admin-add">{% blocktrans with verbose_name as name %}Add {{ name }}{% endblocktrans %}</a></li>
+        {% endif %}
+        </ul>
+    </div>
+{% endif %}
