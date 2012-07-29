@@ -49,6 +49,10 @@
             $.fancybox(fancybox_opts);
         });
 
+        $(document).bind('frontend_editor_loaded', function(evt, resize_to) {
+            var wrap = $('#fancybox-wrap, #fancybox-content, #fancybox-wrap iframe');
+            wrap.css('height', resize_to);
+        });
     })(django.jQuery);
     </script>
 {% endif %}

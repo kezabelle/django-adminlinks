@@ -170,3 +170,8 @@ class AdminlinksMixin(object):
             extra_context.update(kwargs['extra_context'])
         kwargs['extra_context'] = extra_context
         return super(AdminlinksMixin, self).history_view(request, *args, **kwargs)
+
+    class Media:
+        js = [
+            'adminlinks/js/frontend_resize.js'
+        ]
