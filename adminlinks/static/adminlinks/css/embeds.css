@@ -38,6 +38,19 @@
     color: #333;
 }
 
+.admin-toolbar-btn:hover {
+    color: #333;
+    text-decoration: none;
+    background-color: #E6E6E6;
+    background-position: 0 -15px;
+    -webkit-transition: background-position 0.1s linear;
+    -moz-transition: background-position 0.1s linear;
+    -ms-transition: background-position 0.1s linear;
+    -o-transition: background-position 0.1s linear;
+    transition: background-position 0.1s linear;
+}
+
+
 .admin-toolbar-caret {
     margin-top: 7px;
     margin-left: 0;
