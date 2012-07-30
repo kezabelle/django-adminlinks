@@ -854,16 +854,6 @@
 		_start();
 	};
 
-	$.fancybox.showActivity = function() {
-		clearInterval(loadingTimer);
-
-		loading.show();
-		loadingTimer = setInterval(_animate_loading, 66);
-	};
-
-	$.fancybox.hideActivity = function() {
-		loading.hide();
-	};
 
 
 	$.fancybox.pos = function(pos) {
