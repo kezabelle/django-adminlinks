@@ -301,18 +301,6 @@
 			_show();
 		},
 
-		_process_image = function() {
-			selectedOpts.width = imgPreloader.width;
-			selectedOpts.height = imgPreloader.height;
-
-			$("<img />").attr({
-				'id' : 'fancybox-img',
-				'src' : imgPreloader.src,
-				'alt' : selectedOpts.title
-			}).appendTo( tmp );
-
-			_show();
-		},
 
 		_show = function() {
 			var pos, equal;
