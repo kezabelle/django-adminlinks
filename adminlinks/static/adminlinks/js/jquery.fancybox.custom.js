@@ -343,8 +343,6 @@
 
 			if (currentOpts.overlayShow) {
 				overlay.css({
-					'background-color' : currentOpts.overlayColor,
-					'opacity' : currentOpts.overlayOpacity,
 					'cursor' : currentOpts.hideOnOverlayClick ? 'pointer' : 'auto',
 					'height' : $(document).height()
 				});
@@ -1101,8 +1099,6 @@
 		hideOnContentClick : false,
 
 		overlayShow : true,
-		overlayOpacity : 0.7,
-		overlayColor : '#777',
 
 		titleShow : true,
 		titlePosition : 'float', // 'float', 'outside', 'inside' or 'over'
