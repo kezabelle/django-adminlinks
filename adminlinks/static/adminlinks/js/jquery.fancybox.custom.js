@@ -26,8 +26,6 @@
 
 		titleHeight = 0, titleStr = '', start_pos, final_pos, busy = false, fx = $.extend($('<div/>')[0], { prop: 0 }),
 
-		isIE6 = $.browser.msie && $.browser.version < 7 && !window.XMLHttpRequest,
-
 		/*
 		 * Private methods
 		 */
@@ -352,13 +350,6 @@
 				});
 
 				if (!overlay.is(':visible')) {
-					if (isIE6) {
-						$('select:not(#fancybox-tmp select)').filter(function() {
-							return this.style.visibility !== 'hidden';
-						}).css({'visibility' : 'hidden'}).one('fancybox-cleanup', function() {
-							this.style.visibility = 'inherit';
-						});
-					}
 
 					overlay.show();
 				}
@@ -943,7 +934,7 @@
 		$(window).unbind("resize.fb scroll.fb");
 		$(document).unbind('keydown.fb');
 
-		content.find('iframe').attr('src', isIE6 && /^https/i.test(window.location.href || '') ? 'javascript:void(false)' : 'about:blank');
+		content.find('iframe').remove();
 
 		if (currentOpts.titlePosition !== 'inside') {
 			title.empty();
@@ -1086,12 +1077,6 @@
 			wrap.addClass('fancybox-ie');
 		}
 
-		if (isIE6) {
-			loading.addClass('fancybox-ie6');
-			wrap.addClass('fancybox-ie6');
-
-			$('<iframe id="fancybox-hide-sel-frame" src="' + (/^https/i.test(window.location.href || '') ? 'javascript:void(false)' : 'about:blank' ) + '" scrolling="no" border="0" frameborder="0" tabindex="-1"></iframe>').prependTo(outer);
-		}
 	};
 
 	$.fn.fancybox.defaults = {
