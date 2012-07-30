@@ -865,13 +865,6 @@
 		loading.hide();
 	};
 
-	$.fancybox.next = function() {
-		return $.fancybox.pos( currentIndex + 1);
-	};
-
-	$.fancybox.prev = function() {
-		return $.fancybox.pos( currentIndex - 1);
-	};
 
 	$.fancybox.pos = function(pos) {
 		if (busy) {
@@ -1048,16 +1041,6 @@
 
 		close.click($.fancybox.close);
 		loading.click($.fancybox.cancel);
-
-		nav_left.click(function(e) {
-			e.preventDefault();
-			$.fancybox.prev();
-		});
-
-		nav_right.click(function(e) {
-			e.preventDefault();
-			$.fancybox.next();
-		});
 
 		if ($.fn.mousewheel) {
 			wrap.bind('mousewheel.fb', function(e, delta) {
