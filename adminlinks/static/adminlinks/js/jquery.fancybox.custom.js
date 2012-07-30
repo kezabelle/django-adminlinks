@@ -399,28 +399,6 @@
 
 			content.css('border-width', currentOpts.padding);
 
-			if (currentOpts.transitionIn == 'elastic') {
-				start_pos = _get_zoom_from();
-
-				content.html( tmp.contents() );
-
-				wrap.show();
-
-				if (currentOpts.opacity) {
-					final_pos.opacity = 0;
-				}
-
-				fx.prop = 0;
-
-				$(fx).animate({prop: 1}, {
-					 duration : currentOpts.speedIn,
-					 easing : currentOpts.easingIn,
-					 step : _draw,
-					 complete : _finish
-				});
-
-				return;
-			}
 
 			if (currentOpts.titlePosition == 'inside' && titleHeight > 0) {
 				title.show();
@@ -930,36 +908,7 @@
 			busy = false;
 		}
 
-		if (currentOpts.transitionOut == 'elastic') {
-			start_pos = _get_zoom_from();
-
-			var pos = wrap.position();
-
-			final_pos = {
-				top	 : pos.top ,
-				left : pos.left,
-				width :	wrap.width(),
-				height : wrap.height()
-			};
-
-			if (currentOpts.opacity) {
-				final_pos.opacity = 1;
-			}
-
-			title.empty().hide();
-
-			fx.prop = 1;
-
-			$(fx).animate({ prop: 0 }, {
-				 duration : currentOpts.speedOut,
-				 easing : currentOpts.easingOut,
-				 step : _draw,
-				 complete : _cleanup
-			});
-
-		} else {
 			wrap.fadeOut( currentOpts.transitionOut == 'none' ? 0 : currentOpts.speedOut, _cleanup);
-		}
 	};
 
 	$.fancybox.resize = function() {
