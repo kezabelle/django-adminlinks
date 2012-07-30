@@ -11,9 +11,8 @@
             href: 'URL_ERROR'
             , modal: false
             , type: 'iframe'
-            , width: '80%'
-            , height: '60%'
-            , autoDimensions: true
+            , width: 760
+            , height: 1
             , centerOnScroll: true
             , hideOnOverlayClick: true
             , hideOnContentClick: false
@@ -23,6 +22,7 @@
             , transitionOut: 'none'
             , showNavArrows: false
             , title: ''
+            , scrolling: 'no'
             , onClosed: function(currentArray, currentIndex, currentOpts) {
                 $.ajax({
                     async : false,
@@ -52,6 +52,7 @@
         $(document).bind('frontend_editor_loaded', function(evt, resize_to) {
             var wrap = $('#fancybox-wrap, #fancybox-content, #fancybox-wrap iframe');
             wrap.css('height', resize_to);
+            $.fancybox.center();
         });
     })(django.jQuery);
     </script>
