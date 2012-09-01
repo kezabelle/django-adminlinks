@@ -1,0 +1,11 @@
+*cache
+*.coffee
+*.rb
+*.ru
+*.lock
+Gemfile
+stylesheets
+javascripts
+images
+fire_app_log.txt
+*.DS_STORE
