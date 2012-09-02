@@ -1,59 +1,26 @@
 {% if should_load_assets %}
     {% load adminmedia %}
     <script type="text/javascript" src="{% admin_media_prefix %}js/jquery.min.js"></script>
-    <script type="text/javascript" src="{% admin_media_prefix %}js/jquery.init.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}adminlinks/js/jquery.fancybox.custom.js"></script>
+    <!--<script type="text/javascript" src="{% admin_media_prefix %}js/jquery.init.js"></script>-->
+    <script type="text/javascript" src="{{ STATIC_URL }}adminlinks/js/jquery.fancyiframe.js"></script>
     <script type="text/javascript">
     (function ($) {
-
-        var fancybox_links = $('.admin-add, .admin-edit, .admin-delete, .admin-history');
-        var fancybox_opts = {
-            href: 'URL_ERROR'
-            , modal: false
-            , type: 'iframe'
-            , width: 760
-            , height: 1
-            , centerOnScroll: true
-            , hideOnOverlayClick: true
-            , hideOnContentClick: false
-            , enableEscapeButton: true
-            , showCloseButton: true
-            , transitionIn: 'none'
-            , transitionOut: 'none'
-            , showNavArrows: false
-            , title: ''
-            , scrolling: 'no'
-            , onClosed: function(currentArray, currentIndex, currentOpts) {
-                $.ajax({
-                    async : false,
-                    type: 'GET',
-                    url: window.location.href,
-                    cache: true,
-                    success : function (resp) {
-                        $('body').html(resp);
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                    }
-                });
+        var to_iframe = $('.admin-add, .admin-edit, .admin-delete, .admin-history');
+        to_iframe.fancyiframe({
+            callbacks: {
+                href: function($el) {
+                    var href = $el.attr('href');
+                    var parts = href.split('?', 1);
+                    var link = parts[0];
+                    var qs = (parts[1] || '?') + '&amp;_popup=1&amp;_frontend_editing=1';
+                    return link + qs;
+                }
+            },
+            elements: {
+                prefix: 'django-adminlinks',
+                classes: 'adminlinks'
             }
-            , onComplete: function(currentArray, currentIndex, currentOpts) {
-            }
-        }
-
-        fancybox_links.bind('click', function(evt) {
-            evt.preventDefault();
-            var parts = this.href.split('?', 1);
-            var link = parts[0];
-            var qs = (parts[1] || '?') + '&amp;_popup=1&amp;_frontend_editing=1';
-            fancybox_opts.href = link + qs;
-            $.fancybox(fancybox_opts);
         });
-
-        $(document).bind('frontend_editor_loaded', function(evt, resize_to) {
-            var wrap = $('#fancybox-wrap, #fancybox-content, #fancybox-wrap iframe');
-            wrap.css('height', resize_to);
-            $.fancybox.center();
-        });
-    })(django.jQuery);
+    })(window.jQuery);
     </script>
 {% endif %}
