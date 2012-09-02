@@ -143,7 +143,7 @@ class AdminlinksMixin(object):
         """Ridiculously, there's no response_delete method to patch, so instead
         we're just going to do a similar thing and hope for the best.
         """
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         # silly Django, not providing the same variables to everything!
         extra_context = kwargs['extra_context'] or {}
         extra_context.update({'is_popup': "_popup" in request.REQUEST})
@@ -163,7 +163,7 @@ class AdminlinksMixin(object):
 
 
     def history_view(self, request, *args, **kwargs):
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         # silly Django, not providing the same variables to everything!
         extra_context = {'is_popup': "_popup" in request.REQUEST}
         if 'extra_context' in kwargs:
@@ -171,7 +171,3 @@ class AdminlinksMixin(object):
         kwargs['extra_context'] = extra_context
         return super(AdminlinksMixin, self).history_view(request, *args, **kwargs)
 
-    class Media:
-        js = [
-            'adminlinks/js/frontend_resize.js'
-        ]
