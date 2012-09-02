@@ -3,101 +3,50 @@
 }
 
 .admin-toolbar-btn {
-    display: inline-block;
-    padding: 4px 10px 4px;
-    margin-bottom: 0;
-    color: #333;
-    text-align: center;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+    padding: 3px 5px;
+    color: black;
+    border: 1px solid #BBB;
+    border-color: #DDD #AAA #AAA #DDD;
     vertical-align: middle;
-    cursor: pointer;
-    background-color: whiteSmoke;
-    background-image: -ms-linear-gradient(top, white, #E6E6E6);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(white), to(#E6E6E6));
-    background-image: -webkit-linear-gradient(top, white, #E6E6E6);
-    background-image: -o-linear-gradient(top, white, #E6E6E6);
-    background-image: linear-gradient(top, white, #E6E6E6);
-    background-image: -moz-linear-gradient(top, white, #E6E6E6);
-    background-repeat: repeat-x;
-    border: 1px solid #CCC;
-    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-    border-bottom-color: #B3B3B3;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff', endColorstr='#e6e6e6', GradientType=0);
-    filter: progid:dximagetransform.microsoft.gradient(enabled=false);
-    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-    -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+    font-weight: normal;
+    font-size: 11px;
+    background: white;
+    background: -moz-linear-gradient(top, #ffffff 0%, #dadada 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#dadada)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #ffffff 0%,#dadada 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ffffff 0%,#dadada 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #ffffff 0%,#dadada 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #ffffff 0%,#dadada 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dadada',GradientType=0 ); /* IE6-9 */
     text-decoration: none;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    text-rendering: optimizelegibility;
-    font-size: 13px;
-    line-height: 18px;
-    color: #333;
+    cursor: pointer;
+    line-height: 20px;
 }
 
 .admin-toolbar-btn:hover {
-    color: #333;
-    text-decoration: none;
-    background-color: #E6E6E6;
-    background-position: 0 -15px;
-    -webkit-transition: background-position 0.1s linear;
-    -moz-transition: background-position 0.1s linear;
-    -ms-transition: background-position 0.1s linear;
-    -o-transition: background-position 0.1s linear;
-    transition: background-position 0.1s linear;
 }
 
-
-.admin-toolbar-caret {
-    margin-top: 7px;
-    margin-left: 0;
-    display: inline-block;
-    width: 0;
-    height: 0;
-    vertical-align: top;
-    border-top: 4px solid black;
-    border-right: 4px solid transparent;
-    border-left: 4px solid transparent;
-    content: "";
-    opacity: 0.3;
-    filter: alpha(opacity=30);
-}
 
 .admin-toolbar-dropdown-menu {
     position: absolute;
     left: -999em;
     min-width: 160px;
-    padding: 4px 0;
-    margin: -1px 0 0 0;
+    padding: 0;
+    margin: 0;
     list-style: none;
     background-color: white;
     border: 1px solid #CCC;
-    -webkit-border-radius: 5px;
-    -webkit-border-top-left-radius: 0;
-    -moz-border-radius: 5px;
-    -moz-border-radius-topleft: 0;
-    border-radius: 5px;
-    border-top-left-radius: 0;
-    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    -webkit-background-clip: padding-box;
-    -moz-background-clip: padding;
-    background-clip: padding-box;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+    font-weight: normal;
+    font-size: 11px;
     text-rendering: optimizelegibility;
-    font-size: 13px;
-    line-height: 18px;
-    color: #333;
+    color: black;
 }
-
 .admin-toolbar-dropdown-menu a,
 .admin-toolbar-dropdown-menu b {
     display: block;
-    padding: 3px 15px;
+    padding: 3px 5px;
     clear: both;
     color: #333;
     white-space: nowrap;
@@ -106,7 +55,14 @@
 
 .admin-toolbar-dropdown-menu li > a:hover {
     color: white;
-    background-color: #08C;
+    background: #5B80B2;
+    background: -moz-linear-gradient(top, #b3c5e5 0%, #708abd 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#b3c5e5), color-stop(100%,#708abd)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #b3c5e5 0%,#708abd 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #b3c5e5 0%,#708abd 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #b3c5e5 0%,#708abd 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #b3c5e5 0%,#708abd 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3c5e5', endColorstr='#708abd',GradientType=0 ); /* IE6-9 */
 }
 
 .admin-toolbar-hide-title {
@@ -117,18 +73,12 @@
 }
 
 .admin-toolbar-btn-group:hover .admin-toolbar-btn {
-    -webkit-border-radius: 5px;
-    -webkit-border-bottom-left-radius: 0;
-    -moz-border-radius: 5px;
-    -moz-border-radius-bottomleft: 0;
-    border-radius: 5px;
-    border-bottom-left-radius: 0;
 }
 
 .admin-toolbar-dropdown-menu .divider {
     height: 1px;
-    margin: 8px 1px;
+    margin: 5px 0;
     overflow: hidden;
-    background-color: #E5E5E5;
+    background-color: #EEE;
     border-bottom: 1px solid white;
 }
