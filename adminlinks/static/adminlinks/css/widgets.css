@@ -1,4 +1,8 @@
 .admin-toolbar-btn-group {
+.admin-toolbar-btn-group, .admin-toolbar-btn-group ul {
+    padding: 0;
+	margin: 0;
+	list-style: none;
     display: inline-block;
 }
 
@@ -21,7 +25,7 @@
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dadada',GradientType=0 ); /* IE6-9 */
     text-decoration: none;
     cursor: pointer;
-    line-height: 20px;
+    display: inline-block;
 }
 
 .admin-toolbar-btn:hover {
@@ -42,9 +46,9 @@
     font-size: 11px;
     text-rendering: optimizelegibility;
     color: black;
+    z-index: 9999;
 }
-.admin-toolbar-dropdown-menu a,
-.admin-toolbar-dropdown-menu b {
+.admin-toolbar-dropdown-menu a {
     display: block;
     padding: 3px 5px;
     clear: both;
@@ -52,7 +56,15 @@
     white-space: nowrap;
     text-decoration: none;
 }
-
+.admin-toolbar-dropdown-menu b {
+    display: block;
+    padding: 3px 5px;
+    clear: both;
+    color: #333;
+    white-space: nowrap;
+    background: #EDF3FE;
+    border-bottom: 1px solid #EEE;
+}
 .admin-toolbar-dropdown-menu li > a:hover {
     color: white;
     background: #5B80B2;
@@ -69,6 +81,7 @@
     display: none;
 }
 .admin-toolbar-btn-group:hover .admin-toolbar-dropdown-menu {
+.admin-toolbar-btn-group li:hover .admin-toolbar-dropdown-menu {
     left: auto;
 }
 

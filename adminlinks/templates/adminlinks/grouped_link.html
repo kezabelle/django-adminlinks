@@ -1,9 +1,9 @@
 {% if links %}
-    {% load i18n %}
-    <div class="admin-toolbar-btn-group">
-
+{% load i18n %}
+<ul class="admin-toolbar-btn-group">
+    <li>
         <a class="admin-toolbar-btn admin-toolbar-dropdown-toggle" href="#">
-            {% blocktrans with verbose_name as name %}Manage this {{ name }}{% endblocktrans %}
+        {% blocktrans with verbose_name as name %}Manage this {{ name }}{% endblocktrans %}
         </a>
 
         <ul class="admin-toolbar-dropdown-menu">
@@ -30,5 +30,6 @@
             <li><a href="{{ links.add }}" class="admin-add">{% blocktrans with verbose_name as name %}Add {{ name }}{% endblocktrans %}</a></li>
         {% endif %}
         </ul>
-    </div>
+    </li>
+</ul>
 {% endif %}
