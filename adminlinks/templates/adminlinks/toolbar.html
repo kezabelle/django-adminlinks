@@ -1,6 +1,7 @@
 {% if should_display_toolbar and app_list|length > 0 %}
 {% load i18n %}
 {% load url from future %}
+<div class="admin-toolbar">
     <ul class="admin-toolbar-btn-group">
         <li>
             <a class="admin-toolbar-btn admin-toolbar-dropdown-toggle" href="#">
@@ -27,5 +28,6 @@
             </ul>
         </li>
     </ul>
+</div>
 {% endif %}
 
