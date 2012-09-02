@@ -33,6 +33,13 @@ class AdminlinksToolbar(InclusionTag):
     )
 
     def get_context(self, context, with_labels, admin_site):
+        """
+        Updates the *existing* context by putting a list of applicable
+        modeladmins into `app_list` assuming the argument `admin_site`
+        resolved into an AdminSite instance.
+        
+        Always returns the existing context.
+        """
         site = get_admin_site(admin_site)
 
         if context_passes_test(context) and site is not None:

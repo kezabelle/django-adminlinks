@@ -19,9 +19,12 @@ def _admin_link_shortcut(urlname, params=None):
         return u''
 
 def _add_link_to_context(admin_site, request, opts, permname, url_params):
-    """Find out if a model is in our known list (those with frontend editing enabled
+    """
+    Find out if a model is in our known list (those with frontend editing enabled
     and at least 1 permission. If it's in there, try and reverse the URL to
     return a dictionary for the final Inclusion Tag's context.
+    
+    Always returns a dictionary with two keys, whose values may be empty strings.
     """
     site = get_admin_site(admin_site)
     if site is not None:
@@ -35,6 +38,12 @@ def _add_link_to_context(admin_site, request, opts, permname, url_params):
     return {u'link': u'', u'verbose_name': u''}
 
 def _add_custom_link_to_context(admin_site, request, opts, permname, viewname, url_params):
+    """
+    Like `_add_link_to_context`, but allows for using a specific permission, and
+    any named url on the modeladmin, with optional url parameters.
+
+    Always returns a dictionary with two keys, whose values may be empty strings.
+    """
     site = get_admin_site(admin_site)
     if site is not None:
         admins = get_registered_modeladmins(request, site)
@@ -55,6 +64,7 @@ def _add_custom_link_to_context(admin_site, request, opts, permname, viewname, u
 def _redefine_querystring(uri_query):
        return uri_query
 
+
 class AdminlinksEdit(InclusionTag):
     name = 'render_edit_button'
     template = 'adminlinks/edit_link.html'
@@ -71,6 +81,7 @@ class AdminlinksEdit(InclusionTag):
                 'change', [object.pk]))
         return context
 register.tag(AdminlinksEdit)
+
 
 class AdminlinksEditField(InclusionTag):
     name = 'render_edit_field_button'
@@ -110,7 +121,6 @@ class AdminlinksDelete(InclusionTag):
 register.tag(AdminlinksDelete)
 
 
-
 class AdminlinksAdd(InclusionTag):
     name = 'render_add_button'
     template = 'adminlinks/add_link.html'
@@ -143,6 +153,7 @@ class AdminlinksHistory(InclusionTag):
                 'history', [object.pk]))
         return context
 register.tag(AdminlinksHistory)
+
 
 class AdminlinksAll(InclusionTag):
     name = 'render_admin_buttons'
@@ -182,3 +193,4 @@ class AdminlinksAll(InclusionTag):
                 context.update({u'links': links, u'verbose_name': opts.verbose_name})
         return context
 register.tag(AdminlinksAll)
+

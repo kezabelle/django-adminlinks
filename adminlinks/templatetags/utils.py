@@ -3,7 +3,10 @@ from collections import defaultdict
 from django.core.urlresolvers import reverse, resolve, NoReverseMatch
 
 def context_passes_test(context):
-    """Given a context, determine whether a `user` exists, and if they see anything """
+    """
+    Given a context, determine whether a `user` exists, and if they see anything
+    Returns a boolean.
+    """
     if 'request' not in context:
         return False
     request = context['request']
@@ -20,6 +23,14 @@ def context_passes_test(context):
     return all(valid_admin_conditions)
 
 def get_admin_site(admin_site):
+    """
+    Given the name of an AdminSite instance, try to resolve that into an
+    actual object, and store the result onto this function. Future calls
+    to that same name will avoid finding the object all over again, opting
+    for the cached copy.
+
+    May return None, or an AdminSite.
+    """
     # if it's been passed a string, we'll try to handle that, because we're
     # quite crazy.
     known_sites_key = '_found_previously'
@@ -43,7 +54,14 @@ def get_admin_site(admin_site):
 modeladmin_reverse = '%(namespace)s:%(app)s_%(module)s_%(view)s'
 
 def get_registered_modeladmins(request, admin_site):
-    """ Taken almost verbatim from django.contrib.admin.sites.AdminSite.index """
+    """
+    Taken from django.contrib.admin.sites.AdminSite.index, find all ModelAdmin
+    classes attached to the given admin_site (an already resolved AdminSite
+    instance) and compile a dictionary of Models visible to the current user,
+    limiting the methods available (add/edit/history/delete) as appropriate.
+    
+    Always returns a dictionary, though it may be empty, and thus evaluate as Falsy.
+    """
     apps = defaultdict(dict)
 
     for model, model_admin in admin_site._registry.items():
