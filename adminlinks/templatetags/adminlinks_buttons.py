@@ -48,6 +48,7 @@ def _add_custom_link_to_context(admin_site, request, opts, permname, viewname, u
                     u'module': lookup[1],
                     u'view': viewname,
                 }, params=url_params),
+                u'verbose_name': opts.verbose_name
             }
     return {u'link': u'', u'verbose_name': u''}
 
