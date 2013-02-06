@@ -1,5 +1,15 @@
 <script type="text/javascript">
-    (function($) {
-        $.fancybox.close();
-    })(parent.django.jQuery);
+    (function($, doc, iframe, undefined) {
+        params = [
+            // action parameter (add/change/delete)
+            '{{ action.as_string }}',
+            // data dictionary.
+            {
+                primary_key: '{{ object.pk }}',
+                html: '{{ html }}',
+            }
+        ];
+        $(doc).trigger('fancyiframe-close', params);
+        //$.event.trigger('click.fancyiframe.close')
+    })(parent.window.jQuery, parent.document, document);
 </script>
