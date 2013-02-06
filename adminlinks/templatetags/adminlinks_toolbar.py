@@ -21,7 +21,6 @@ def _resort_modeladmins_for_toolbar(modeladmins):
 
 
 class AdminlinksToolbar(InclusionTag):
-    name = 'render_adminlinks_toolbar'
     template = 'adminlinks/toolbar.html'
 
     options = Options(
@@ -37,7 +36,7 @@ class AdminlinksToolbar(InclusionTag):
         Updates the *existing* context by putting a list of applicable
         modeladmins into `app_list` assuming the argument `admin_site`
         resolved into an AdminSite instance.
-        
+
         Always returns the existing context.
         """
         site = get_admin_site(admin_site)
@@ -50,4 +49,4 @@ class AdminlinksToolbar(InclusionTag):
                 'app_list': _resort_modeladmins_for_toolbar(modeladmins),
             })
         return context
-register.tag(AdminlinksToolbar)
+register.tag(name='render_adminlinks_toolbar', compile_function=AdminlinksToolbar)
