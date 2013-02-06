@@ -1,26 +1,6 @@
 {% if should_load_assets %}
-    {% load adminmedia %}
-    <script type="text/javascript" src="{% admin_media_prefix %}js/jquery.min.js"></script>
-    <!--<script type="text/javascript" src="{% admin_media_prefix %}js/jquery.init.js"></script>-->
-    <script type="text/javascript" src="{{ STATIC_URL }}adminlinks/js/jquery.fancyiframe.js"></script>
-    <script type="text/javascript">
-    (function ($) {
-        var to_iframe = $('.admin-add, .admin-edit, .admin-delete, .admin-history');
-        to_iframe.fancyiframe({
-            callbacks: {
-                href: function($el) {
-                    var href = $el.attr('href');
-                    var parts = href.split('?', 1);
-                    var link = parts[0];
-                    var qs = (parts[1] || '?') + '&amp;_popup=1&amp;_frontend_editing=1';
-                    return link + qs;
-                }
-            },
-            elements: {
-                prefix: 'django-adminlinks',
-                classes: 'adminlinks'
-            }
-        });
-    })(window.jQuery);
-    </script>
+    {% load static %}
+    <script type="text/javascript" src="{% static 'admin/js/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'adminlinks/js/jquery.fancyiframe.js' %}"></script>
+    <script type="text/javascript" src="{% static 'adminlinks/js/adminlinks.js' %}"></script>
 {% endif %}
