@@ -1,7 +1,7 @@
 .admin-toolbar {
-    padding: 5px 7px;
+    padding: 5px;
     border: 1px solid #CCC;
-    margin: 5px;
+    margin: 0;
     overflow: hidden;
     background: white;
     background: -moz-linear-gradient(top, #ffffff 0%, #dadada 100%); /* FF3.6+ */
@@ -61,7 +61,7 @@
     font-size: 11px;
     text-rendering: optimizelegibility;
     color: black;
-    z-index: 9999;
+    z-index: 5000;
 }
 .admin-toolbar-dropdown-menu a {
     display: block;
@@ -108,4 +108,27 @@
     overflow: hidden;
     background-color: #EEE;
     border-bottom: 1px solid white;
+}
+
+.admin-editable-box {
+    z-index: 65000;
+    opacity: 0.3;
+    position: absolute;
+    display: none;
+    background-color: #FF0;
+    border: 1px solid #F80;
+    cursor: pointer;
+}
+
+.admin-editable-box .internal {
+    background: #000;
+    color: white;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: auto;
+}
+
+.admin-editable {
+    background-color: #FFC;
 }

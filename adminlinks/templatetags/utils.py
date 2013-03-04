@@ -59,7 +59,7 @@ def get_registered_modeladmins(request, admin_site):
     classes attached to the given admin_site (an already resolved AdminSite
     instance) and compile a dictionary of Models visible to the current user,
     limiting the methods available (add/edit/history/delete) as appropriate.
-    
+
     Always returns a dictionary, though it may be empty, and thus evaluate as Falsy.
     """
     apps = defaultdict(dict)

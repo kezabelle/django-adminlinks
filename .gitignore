@@ -3,3 +3,4 @@
 *.swp
 build
 docs/_build
+tricks.yaml
