@@ -1,0 +1,136 @@
+{
+  "name": "",
+  "glyphs": [
+    {
+      "search": [
+        "search",
+        "find"
+      ],
+      "code": 57405,
+      "uid": "81385e5f1fe091f3d9a20d215d444622",
+      "css": "search-circled",
+      "orig_css": "search-circled",
+      "orig_code": 57405,
+      "src": "elusive",
+      "from": 57405
+    },
+    {
+      "search": [
+        "close",
+        "cancel",
+        "reject",
+        "remove"
+      ],
+      "code": 57420,
+      "uid": "fd32deda7b2f5b8cad46d13897c19ae8",
+      "css": "cancel-circled",
+      "orig_css": "cancel-circled",
+      "orig_code": 57420,
+      "src": "elusive",
+      "from": 57420
+    },
+    {
+      "search": [
+        "pencil",
+        "write",
+        "reply",
+        "edit"
+      ],
+      "code": 57447,
+      "uid": "19dae18c34431934a781773e241faec2",
+      "css": "pencil-circled",
+      "orig_css": "pencil-circled",
+      "orig_code": 57447,
+      "src": "elusive",
+      "from": 57447
+    },
+    {
+      "search": [
+        "lock",
+        "close"
+      ],
+      "code": 57469,
+      "uid": "ad194658d0e68d781eb334d9c1099d6e",
+      "css": "lock-circled",
+      "orig_css": "lock-circled",
+      "orig_code": 57469,
+      "src": "elusive",
+      "from": 57469
+    },
+    {
+      "search": [
+        "info"
+      ],
+      "code": 57481,
+      "uid": "2355991b4045d64b08fb82988109c0ee",
+      "css": "info-circled",
+      "orig_css": "info-circled",
+      "orig_code": 57481,
+      "src": "elusive",
+      "from": 57481
+    },
+    {
+      "search": [
+        "doc",
+        "article"
+      ],
+      "code": 57536,
+      "uid": "d932eda1eba18a387cf20f3aeea427b1",
+      "css": "doc-circled",
+      "orig_css": "doc-circled",
+      "orig_code": 57536,
+      "src": "elusive",
+      "from": 57536
+    },
+    {
+      "search": [
+        "settings",
+        "cog",
+        "gear"
+      ],
+      "code": 57608,
+      "uid": "7560ca08e3d83e43c58fcbf8f16d8f03",
+      "css": "cog-circled",
+      "orig_css": "cog-circled",
+      "orig_code": 57608,
+      "src": "elusive",
+      "from": 57608
+    },
+    {
+      "search": [
+        "emoticon",
+        "smiley",
+        "happy"
+      ],
+      "code": 59392,
+      "meta": {
+        "email": "berbentseva_angela@yahoo.com",
+        "author": "Angela Berbentseva, specially for fontello"
+      },
+      "uid": "c64623255a4a7c72436b199b05296c4f",
+      "css": "emo-happy",
+      "orig_css": "emo-happy",
+      "orig_code": 59392,
+      "src": "fontelico",
+      "from": 59392
+    },
+    {
+      "search": [
+        "emoticon",
+        "smiley",
+        "unhappy"
+      ],
+      "code": 59394,
+      "meta": {
+        "email": "berbentseva_angela@yahoo.com",
+        "author": "Angela Berbentseva, specially for fontello"
+      },
+      "uid": "53ed8570225581269cd7eff5795e8bea",
+      "css": "emo-unhappy",
+      "orig_css": "emo-unhappy",
+      "orig_code": 59394,
+      "src": "fontelico",
+      "from": 59394
+    }
+  ]
+}

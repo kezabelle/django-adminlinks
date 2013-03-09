@@ -1,4 +1,2 @@
-{% if link %}
-    {% load i18n %}
-    <a href="{{ link }}" class="admin-toolbar-btn admin-edit admin-edit-field">{% blocktrans with verbose_name as name %}Edit {{ name }}{% endblocktrans %}</a>
-{% endif %}
+{% load i18n %}
+<a href="{{ link }}" class="admin-toolbar-btn admin-edit admin-edit-field icon-edit-circled admin-toolbar-link">{% blocktrans with verbose_name as name %}Edit {{ name }}{% endblocktrans %}</a>

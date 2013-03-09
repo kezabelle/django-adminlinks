@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 from classytags.arguments import Argument, StringArgument
 from classytags.core import Options
 from django.core.urlresolvers import reverse, NoReverseMatch
@@ -12,8 +13,9 @@ try:
     from editregions.utils.regions import fake_context_payload
 except ImportError:
     fake_context_payload = 'nothing_should_ever_match_this'
-register = Library()
 
+register = Library()
+logger = logging.getLevelName(__name__)
 
 def _admin_link_shortcut(urlname, params=None):
     try:
@@ -101,15 +103,23 @@ class AdminlinksEditField(InclusionTag):
     )
 
     def get_context(self, context, obj, fieldname, admin_site):
-        if not hasattr(obj, '_meta') or fake_context_payload in context:
+        if not hasattr(obj, '_meta'):
+            logger.debug('Object has no _meta attribute')
             return context
 
-        if context_passes_test(context):
-            context.update(_add_custom_link_to_context(admin_site, context['request'], obj._meta,
-                'change', 'change_field', [obj.pk, fieldname]))
-            # successfully loaded link, add the fieldname.
-            if u'link' in context:
-                context.update({u'verbose_name': obj._meta.get_field_by_name(fieldname)[0].verbose_name})
+        if fake_context_payload in context:
+            logger.debug('Fake payload discovered in context')
+            return context
+
+        if not context_passes_test(context):
+            logger.debug('Invalid context')
+            return context
+
+        context.update(_add_custom_link_to_context(admin_site, context['request'], obj._meta,
+            'change', 'change_field', [obj.pk, fieldname]))
+        # successfully loaded link, add the fieldname.
+        if u'link' in context:
+            context.update({u'verbose_name': obj._meta.get_field_by_name(fieldname)[0].verbose_name})
         return context
 register.tag(AdminlinksEditField)
 

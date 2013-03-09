@@ -1,12 +1,22 @@
 ;(function($, document, undefined) {
-    var $to_iframe = $('.admin-add, .admin-edit, .admin-delete, .admin-history');
+    var $to_iframe = $('.admin-add, .admin-edit, .admin-delete, .admin-history, .admin-toolbar-link');
     var $doc = $(document);
+    var $body = $('body', $doc).eq(0);
     var on_popup_close = function(event, action, data) {
         if (typeof action !== 'undefined') {
             window.location.reload(true);
         }
     }
     $doc.bind('fancyiframe-close', on_popup_close);
+
+    var toggle_editing = function(event) {
+        event.preventDefault();
+        var $me = $(this);
+        $me.toggleClass('icon-cog-circled')
+            .toggleClass('icon-lock-circled');
+        $body.toggleClass('admin-editing');
+    }
+    $('.admin-toolbar-toggle .icon-cog-circled').bind('click', toggle_editing);
 
     $to_iframe.fancyiframe({
         callbacks: {
