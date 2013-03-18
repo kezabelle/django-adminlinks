@@ -69,19 +69,27 @@
 
 .admin-toolbar {
     position: fixed;
-    top: 1em;
-    right: 1em;
+    top: 0;
+    right: 0;
     background-color: white; /*#EDF3FE;*/
     color: white;
-    -webkit-border-radius: 0.4em;
-    -moz-border-radius: 0.4em;
-    border-radius: 0.4em;
+    -webkit-border-bottom-left-radius: 0.5em;
+    -moz-border-radius-bottomleft: 0.5em;
+    border-bottom-left-radius: 0.5em;
     margin: 0;
     padding: 0.3em 0.7em;
     overflow: hidden;
     text-rendering: geometricPrecision;
+    opacity: 0.8;
 }
 
+body.admin-editing .admin-toolbar {
+    opacity: 1;
+    -moz-transition: opacity 1s;
+    -webkit-transition: opacity 1s;
+    -o-transition: opacity 1s;
+    transition: opacity 1s;
+}
 /*body.admin-editing .admin-toolbar:hover {*/
     /*background-color: #FFC;*/
 /*}*/
@@ -109,7 +117,7 @@ body.admin-editing .admin-toolbar .admin-toolbar-btn {
     font-size: 11px;
     color: #5b80b2;
     text-decoration: none;
-    text-transform: capitalize;
+    text-transform: lowercase;
 }
 
 .admin-toolbar .admin-toolbar-link {
@@ -138,8 +146,13 @@ body.admin-editing .admin-toolbar .admin-toolbar-btn {
 .admin-toolbar-toggle .icon-lock-circled:hover,
 .admin-toolbar-toggle .icon-cog-circled:hover {
     color: #036;
+    -moz-transition: color 0.5s;
+    -webkit-transition: color 0.5s;
+    -o-transition: color 0.5s;
+    transition: color 0.5s;
+
 }
 .admin-toolbar-toggle .icon-lock-circled {
-    border-bottom: 1px solid #eee;
+    border-bottom: 0.2em solid #eee;
     padding-bottom: 0.3em;
 }
