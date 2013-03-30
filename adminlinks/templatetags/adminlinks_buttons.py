@@ -15,7 +15,7 @@ except ImportError:
     fake_context_payload = 'nothing_should_ever_match_this'
 
 register = Library()
-logger = logging.getLevelName(__name__)
+logger = logging.getLogger(__name__)
 
 def _admin_link_shortcut(urlname, params=None):
     try:
