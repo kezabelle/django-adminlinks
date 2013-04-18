@@ -56,7 +56,7 @@ def _add_custom_link_to_context(admin_site, request, opts, permname, viewname, u
         lookup = (opts.app_label.lower(), opts.module_name.lower())
 
         if lookup in admins.keys() and permname in admins[lookup]:
-             return {
+            return {
                 u'link': _admin_link_shortcut(modeladmin_reverse % {
                     u'namespace': site.name,
                     u'app': lookup[0],
