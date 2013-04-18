@@ -57,6 +57,7 @@
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3c5e5', endColorstr='#708abd',GradientType=0 ); /* IE6-9 */
 }
 
+#django-adminlinks-content,
 #django-adminlinks-content iframe {
     width: 100%;
     height: 100%;
