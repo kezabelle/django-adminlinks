@@ -2,13 +2,15 @@
 import logging
 from classytags.arguments import Argument, StringArgument
 from classytags.core import Options
-from django.core.urlresolvers import reverse, NoReverseMatch
 from django.template.base import Library
 from classytags.helpers import InclusionTag
 from adminlinks.templatetags.utils import (context_passes_test,
                                            get_admin_site,
                                            get_registered_modeladmins,
-                                           modeladmin_reverse)
+                                           _admin_link_shortcut,
+                                           _add_link_to_context,
+                                           _add_custom_link_to_context)
+
 try:
     from editregions.utils.regions import fake_context_payload
 except ImportError:
@@ -17,58 +19,10 @@ except ImportError:
 register = Library()
 logger = logging.getLogger(__name__)
 
-def _admin_link_shortcut(urlname, params=None):
-    try:
-        params = params or ()
-        return reverse(urlname, args=params)
-    except NoReverseMatch:
-        return u''
 
-def _add_link_to_context(admin_site, request, opts, permname, url_params):
-    """
-    Find out if a model is in our known list (those with frontend editing enabled
-    and at least 1 permission. If it's in there, try and reverse the URL to
-    return a dictionary for the final Inclusion Tag's context.
 
-    Always returns a dictionary with two keys, whose values may be empty strings.
-    """
-    site = get_admin_site(admin_site)
-    if site is not None:
-        admins = get_registered_modeladmins(request, site)
-        lookup = (opts.app_label.lower(), opts.module_name.lower())
 
-        if lookup in admins.keys() and permname in admins[lookup]:
-            link = _admin_link_shortcut(admins[lookup][permname], url_params)
-            return {u'link': link, u'verbose_name': opts.verbose_name}
 
-    return {u'link': u'', u'verbose_name': u''}
-
-def _add_custom_link_to_context(admin_site, request, opts, permname, viewname, url_params):
-    """
-    Like `_add_link_to_context`, but allows for using a specific permission, and
-    any named url on the modeladmin, with optional url parameters.
-
-    Always returns a dictionary with two keys, whose values may be empty strings.
-    """
-    site = get_admin_site(admin_site)
-    if site is not None:
-        admins = get_registered_modeladmins(request, site)
-        lookup = (opts.app_label.lower(), opts.module_name.lower())
-
-        if lookup in admins.keys() and permname in admins[lookup]:
-            return {
-                u'link': _admin_link_shortcut(modeladmin_reverse % {
-                    u'namespace': site.name,
-                    u'app': lookup[0],
-                    u'module': lookup[1],
-                    u'view': viewname,
-                }, params=url_params),
-                u'verbose_name': opts.verbose_name
-            }
-    return {u'link': u'', u'verbose_name': u''}
-
-def _redefine_querystring(uri_query):
-       return uri_query
 
 
 class AdminlinksEdit(InclusionTag):

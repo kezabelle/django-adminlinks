@@ -96,3 +96,114 @@ def get_registered_modeladmins(request, admin_site):
                     })
     app_dict = dict(apps)
     return app_dict
+
+
+def _admin_link_shortcut(urlname, params=None, query=None):
+    """
+    Minor wrapper around :func:`~django.core.urlresolvers.reverse`, catching the
+    :exc:`~django.core.urlresolvers.NoReverseMatch` that may be thrown, and
+    instead returning an empty unicode string.
+
+    :param urlname: the view, or named URL to be reversed
+    :param params: any parameters (as `args`, not `kwargs`) required to create
+                   the correct URL.
+    :return: the URL discovered, or an empty string
+    :rtype: unicode string
+    """
+    try:
+        params = params or ()
+        url = reverse(urlname, args=params)
+    except NoReverseMatch:
+        url = ''
+
+    scheme, netloc, path, query2, frag = urlsplit(url, allow_fragments=False)
+    existing_qs = QueryDict(query_string=query2, mutable=True)
+    new_qs = QueryDict(query_string=query or '')
+    existing_qs.update(new_qs)
+    final_url = urlunsplit((scheme, netloc, path, existing_qs.urlencode(), frag))
+    return final_url
+
+
+def _add_link_to_context(admin_site, request, opts, permname, url_params,
+                         query=None):
+    """
+    Find out if a model is in our known list (those with frontend editing enabled
+    and at least 1 permission. If it's in there, try and reverse the URL to
+    return a dictionary for the final Inclusion Tag's context.
+
+    Always returns a dictionary with two keys, whose values may be empty strings.
+
+    :param admin_site: the string name of an admin site; eg: `admin`
+    :param request: the current `~django.core.handlers.wsgi.WSGIRequest`
+    :param opts: the `_meta` Options object to get the `app_label` and
+                `module_name` for the desired URL.
+    :param permname: The permission name to find; eg: `add`, `change`, `delete`
+    :param url_params: a list of items to be passed as `args` to the underlying
+                       use of reverse.
+    :param query: querystring to append.
+    :return: a dictionary containing `link` and `verbose_name` keys, whose values
+             are the reversed URL and the display name of the object. Both may
+             be blank.
+    :rtype: :type:`dictionary`
+    """
+    site = get_admin_site(admin_site)
+    if site is not None:
+        admins = get_registered_modeladmins(request, site)
+        lookup = (opts.app_label.lower(), opts.module_name.lower())
+
+        if lookup in admins.keys() and permname in admins[lookup]:
+            link = _admin_link_shortcut(admins[lookup][permname], url_params, query)
+            return {'link': link, 'verbose_name': opts.verbose_name}
+
+    return {'link': '', 'verbose_name': ''}
+
+
+def _add_custom_link_to_context(admin_site, request, opts, permname, viewname,
+                                url_params, query=None):
+    """
+    Like `_add_link_to_context`, but allows for using a specific permission, and
+    any named url on the modeladmin, with optional url parameters.
+
+    Always returns a dictionary with two keys, whose values may be empty strings.
+
+    :param admin_site: the string name of an admin site; eg: `admin`
+    :param request: the current `~django.core.handlers.wsgi.WSGIRequest`
+    :param opts: the `_meta` Options object to get the `app_label` and
+                `module_name` for the desired URL.
+    :param permname: The permission name to find; eg: `add`, `change`, `delete`
+    :param viewname: The name of the view to find; eg: `changelist`, `donkey`
+    :param url_params: a list of items to be passed as `args` to the underlying
+                       use of reverse.
+    :param query: querystring to append.
+    :return: a dictionary containing `link` and `verbose_name` keys, whose values
+             are the reversed URL and the display name of the object. Both may
+             be blank.
+    :rtype: :type:`dictionary`
+    """
+    site = get_admin_site(admin_site)
+    if site is not None:
+        admins = get_registered_modeladmins(request, site)
+        lookup = (opts.app_label.lower(), opts.module_name.lower())
+
+        if lookup in admins and permname in admins[lookup]:
+            return {
+                'link': _admin_link_shortcut(MODELADMIN_REVERSE % {
+                    'namespace': site.name,
+                    'app': lookup[0],
+                    'module': lookup[1],
+                    'view': viewname,
+                }, params=url_params, query=query),
+                'verbose_name': opts.verbose_name
+            }
+    return {'link': '', 'verbose_name': ''}
+
+
+def _resort_modeladmins(modeladmins):
+    unsorted_resultset = defaultdict(list)
+    for keypair, datavalues in modeladmins.items():
+        app, model = keypair
+        unsorted_resultset[app].append(datavalues)
+
+    resultset = list(unsorted_resultset.items())
+    resultset.sort(key=lambda x: x[0])
+    return resultset
