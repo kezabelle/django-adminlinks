@@ -1,15 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from collections import defaultdict
+from urlparse import urlsplit, urlunsplit
 from django.core.urlresolvers import reverse, resolve, NoReverseMatch
 from adminlinks.constants import (GET_ADMIN_SITES_KEY,
                                   FRONTEND_EDITING_ADMIN_VAR, MODELADMIN_REVERSE,
                                   PERMISSION_ATTRIBUTE)
+from django.http import QueryDict
+
 
 def context_passes_test(context):
     """
-    Given a context, determine whether a `user` exists, and if they see anything
-    Returns a boolean.
+    Given a context, determine whether a `user` exists, and if they see anything.
+
+    :param context: a :class:`~django.template.context.RequestContext`. Accepts
+                    any :class:`~django.template.context.Context` like object,
+                    but it explicitly tests for a `request` key and `request.user`
+    :return: whether or not the given context should allow further processing.
+    :rtype: :type:`boolean`
     """
     if 'request' not in context:
         return False
@@ -26,14 +34,20 @@ def context_passes_test(context):
     ]
     return all(valid_admin_conditions)
 
+
 def get_admin_site(admin_site):
     """
-    Given the name of an AdminSite instance, try to resolve that into an
-    actual object, and store the result onto this function. Future calls
-    to that same name will avoid finding the object all over again, opting
-    for the cached copy.
+    Given the name of an :class:`~django.contrib.admin.sites.AdminSite` instance,
+    try to resolve that into an actual object, and store the result onto this
+    function. Future calls to that same name will avoid finding the object all
+    over again, opting for the cached copy.
 
-    May return None, or an AdminSite.
+    :param admin_site: the string name of an
+                       :class:`~django.contrib.admin.sites.AdminSite` named
+                       and mounted on the project.
+    :return: an :class:`~django.contrib.admin.sites.AdminSite` instance matching
+             that given in the `admin_site` parameter.
+    :rtype: :class:`~django.contrib.admin.sites.AdminSite` or :data:`None`
     """
 
     # pop a dictionary onto this function and use it for keeping track
@@ -45,6 +59,9 @@ def get_admin_site(admin_site):
         try:
             for_resolving = reverse('%s:index' % admin_site)
             wrapped_view = resolve(for_resolving)
+            # unwrap the view, because all AdminSite urls get wrapped with a
+            # decorator which goes through
+            # :meth:`~django.contrib.admin.sites.AdminSite.admin_view`
             admin_site_obj = wrapped_view.func.func_closure[0].cell_contents
             known_sites.update({
                 unicode(admin_site_obj.name): admin_site_obj,
@@ -59,11 +76,21 @@ def get_admin_site(admin_site):
 def get_registered_modeladmins(request, admin_site):
     """
     Taken from django.contrib.admin.sites.AdminSite.index, find all ModelAdmin
-    classes attached to the given admin_site (an already resolved AdminSite
-    instance) and compile a dictionary of Models visible to the current user,
-    limiting the methods available (add/edit/history/delete) as appropriate.
+    classes attached to the given admin and compile a dictionary of Models
+    visible to the current user, limiting the methods available
+    (add/edit/history/delete) as appropriate.
 
     Always returns a dictionary, though it may be empty, and thus evaluate as Falsy.
+
+    :param request: the current request, for permissions checking etc.
+    :param admin_site: a concrete :class:`~django.contrib.admin.sites.AdminSite`
+                       named and mounted on the project.
+    :return: visible modeladmins.
+    :rtype: :type:`dictionary`
+
+    .. note:: for a :class:`~django.contrib.admin.options.ModelAdmin` to be
+              considered and returned, it must have a `frontend_editing`
+              attribute set to :data:`True`.
     """
     apps = defaultdict(dict)
 

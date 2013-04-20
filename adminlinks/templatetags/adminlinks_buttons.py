@@ -21,165 +21,172 @@ register = Library()
 logger = logging.getLogger(__name__)
 
 
+class BaseAdminLink(object):
+    base_options = (Argument('obj', required=True),
+                    StringArgument('admin_site', required=False, default='admin'),
+                    Argument('querystring', required=False, default='_popup=1'))
 
-
-
-
-
-class AdminlinksEdit(InclusionTag):
-    name = 'render_edit_button'
-    template = 'adminlinks/edit_link.html'
-
-    options = Options(
-        Argument(u'obj', required=True),
-        StringArgument(u'admin_site', required=False, default='admin'),
-        Argument(u'querystring', required=False, default='')
-    )
-
-    def get_context(self, context, obj, admin_site, querystring):
-        if not hasattr(obj, '_meta') or fake_context_payload in context:
-            return context
-
-        if context_passes_test(context):
-            context.update(_add_link_to_context(admin_site, context['request'], obj._meta,
-                'change', [obj.pk]))
-        return context
-register.tag(AdminlinksEdit)
-
-
-class AdminlinksEditField(InclusionTag):
-    name = 'render_edit_field_button'
-    template = 'adminlinks/edit_field_link.html'
-
-    options = Options(
-        Argument(u'obj', required=True),
-        Argument(u'fieldname', required=True),
-        StringArgument(u'admin_site', required=False, default='admin'),
-    )
-
-    def get_context(self, context, obj, fieldname, admin_site):
+    def is_valid(self, context, obj, *args, **kwargs):
+        # no Options class? a fake context? fallover.
         if not hasattr(obj, '_meta'):
             logger.debug('Object has no _meta attribute')
-            return context
+            return False
 
         if fake_context_payload in context:
             logger.debug('Fake payload discovered in context')
-            return context
+            return False
 
         if not context_passes_test(context):
             logger.debug('Invalid context')
+            return False
+
+        return True
+
+class Edit(BaseAdminLink, InclusionTag):
+    template = 'adminlinks/edit_link.html'
+
+    options = Options(*BaseAdminLink.base_options)
+
+    def get_context(self, context, obj, admin_site, querystring):
+        if not self.is_valid(context, obj):
             return context
 
-        context.update(_add_custom_link_to_context(admin_site, context['request'], obj._meta,
-            'change', 'change_field', [obj.pk, fieldname]))
-        # successfully loaded link, add the fieldname.
-        if u'link' in context:
-            context.update({u'verbose_name': obj._meta.get_field_by_name(fieldname)[0].verbose_name})
+        context.update(_add_link_to_context(admin_site, context['request'],
+                                            obj._meta, 'change', [obj.pk],
+                                            query=querystring))
         return context
-register.tag(AdminlinksEditField)
+register.tag(name='render_edit_button', compile_function=Edit)
 
 
-class AdminlinksDelete(InclusionTag):
-    name = 'render_delete_button'
+class EditField(BaseAdminLink, InclusionTag):
+    template = 'adminlinks/edit_field_link.html'
+
+    options = Options(BaseAdminLink.base_options[0],  # obj
+                      StringArgument('fieldname', required=True),
+                      *BaseAdminLink.base_options[1:])  # admin_site, querystring
+
+    def get_context(self, context, obj, fieldname, admin_site, querystring):
+        if not self.is_valid(context, obj):
+            return context
+
+        context.update(_add_custom_link_to_context(admin_site, context['request'],
+                                                   obj._meta, 'change',
+                                                   'change_field',
+                                                   [obj.pk, fieldname],
+                                                   query=querystring))
+        # successfully loaded link, add the fieldname.
+        if 'link' in context:
+            context.update({'verbose_name': obj._meta.get_field_by_name(fieldname)[0].verbose_name})
+        return context
+register.tag(name='render_edit_field_button', compile_function=EditField)
+
+
+class Delete(BaseAdminLink, InclusionTag):
     template = 'adminlinks/delete_link.html'
 
-    options = Options(
-        Argument(u'obj', required=True),
-        StringArgument(u'admin_site', required=False, default='admin'),
-    )
+    options = Options(*BaseAdminLink.base_options)
 
-    def get_context(self, context, obj, admin_site):
-        if not hasattr(obj, '_meta') or fake_context_payload in context:
+    def get_context(self, context, obj, admin_site, querystring):
+        if not self.is_valid(context, obj):
             return context
 
-        if context_passes_test(context):
-            context.update(_add_link_to_context(admin_site, context['request'], obj._meta,
-                'delete', [obj.pk]))
+        context.update(_add_link_to_context(admin_site, context['request'],
+                                            obj._meta, 'delete', [obj.pk],
+                                            query=querystring))
         return context
-register.tag(AdminlinksDelete)
+register.tag(name='render_delete_button', compile_function=Delete)
 
 
-class AdminlinksAdd(InclusionTag):
-    name = 'render_add_button'
+class Add(BaseAdminLink, InclusionTag):
     template = 'adminlinks/add_link.html'
 
-    options = Options(
-        Argument(u'obj', required=True),
-        StringArgument(u'admin_site', required=False, default='admin'),
-    )
+    options = Options(*BaseAdminLink.base_options)
 
-    def get_context(self, context, obj, admin_site):
-        if not hasattr(obj, '_meta') or fake_context_payload in context:
+    def get_context(self, context, obj, admin_site, querystring):
+        if not self.is_valid(context, obj):
             return context
 
-        if context_passes_test(context):
-            context.update(_add_link_to_context(admin_site, context['request'], obj._meta,
-                'add', None))
+        context.update(_add_link_to_context(admin_site, context['request'],
+                                            obj._meta, 'add', None,
+                                            query=querystring))
         return context
-register.tag(AdminlinksAdd)
+register.tag(name='render_add_button', compile_function=Add)
 
 
-class AdminlinksHistory(InclusionTag):
-    name = 'render_history_button'
+class History(BaseAdminLink, InclusionTag):
     template = 'adminlinks/history_link.html'
 
-    options = Options(
-        Argument(u'obj', required=True),
-        StringArgument(u'admin_site', required=False, default='admin'),
-    )
+    options = Options(*BaseAdminLink.base_options)
 
-    def get_context(self, context, obj, admin_site):
-        if not hasattr(obj, '_meta') or fake_context_payload in context:
+    def get_context(self, context, obj, admin_site, querystring):
+        context.update(_add_link_to_context(admin_site, context['request'],
+                                            obj._meta , 'history', [obj.pk],
+                                            query=querystring))
+        return context
+register.tag(name='render_history_button', compile_function=History)
+
+
+class ChangeList(BaseAdminLink, InclusionTag):
+    template = 'adminlinks/changelist_link.html'
+
+    #: This needs to have a different default querystring, because of
+    #: https://code.djangoproject.com/ticket/20288#ticket
+    options = Options(BaseAdminLink.base_options[0],  # obj
+                      BaseAdminLink.base_options[1],  # admin_site
+                      Argument('querystring', required=False, default='pop=1'))
+
+    def get_context(self, context, obj, admin_site, querystring):
+        if not self.is_valid(context, obj):
             return context
 
-        if context_passes_test(context):
-            context.update(_add_link_to_context(admin_site, context['request'], obj._meta ,
-                'history', [obj.pk]))
+        context.update(_add_link_to_context(admin_site, context['request'],
+                                            obj._meta , 'changelist', None,
+                                            query=querystring))
         return context
-register.tag(AdminlinksHistory)
+register.tag(name='render_changelist_button', compile_function=ChangeList)
 
 
-class AdminlinksAll(InclusionTag):
-    name = 'render_admin_buttons'
+class Combined(BaseAdminLink, InclusionTag):
     template = 'adminlinks/grouped_link.html'
 
+    # TODO: support querystrings here.
     options = Options(
-        Argument(u'obj', required=True),
-        StringArgument(u'admin_site', required=False, default='admin'),
+        Argument('obj', required=True),
+        StringArgument('admin_site', required=False, default='admin'),
     )
 
     def get_context(self, context, obj, admin_site):
-        if not hasattr(obj, '_meta') or fake_context_payload in context:
+        if not self.is_valid(context, obj):
             return context
 
         opts = obj._meta
         site = get_admin_site(admin_site)
         if site is None:
+            logger.debug('Invalid admin site')
             return context
 
         admins = get_registered_modeladmins(context['request'], site)
         lookup = (opts.app_label.lower(), opts.module_name.lower())
-        context_tests = [
-            context_passes_test(context),
-            lookup in admins.keys(),
-        ]
-        if all(context_tests):
-            modeladmin_links = admins[lookup]
-            links = {
-                u'add': _admin_link_shortcut(
-                    modeladmin_links.get(u'add', u'')
-                ),
-                u'change': _admin_link_shortcut(
-                    modeladmin_links.get(u'change', u''), [obj.pk]
-                ),
-                u'history': _admin_link_shortcut(
-                    modeladmin_links.get(u'history', u''), [obj.pk]
-                ),
-                u'delete': _admin_link_shortcut(
-                    modeladmin_links.get(u'delete', u''), [obj.pk]
-                ),
-            }
-            context.update({u'links': links, u'verbose_name': opts.verbose_name})
-        return context
-register.tag(AdminlinksAll)
 
+        if not lookup in admins:
+            logger.debug('%s:%s not in admin' % lookup)
+            return context
+
+        modeladmin_links = admins[lookup]
+        links = {
+            'add': _admin_link_shortcut(
+                modeladmin_links.get('add', '')
+            ),
+            'change': _admin_link_shortcut(
+                modeladmin_links.get('change', ''), [obj.pk]
+            ),
+            'history': _admin_link_shortcut(
+                modeladmin_links.get('history', ''), [obj.pk]
+            ),
+            'delete': _admin_link_shortcut(
+                modeladmin_links.get('delete', ''), [obj.pk]
+            ),
+        }
+        context.update({'links': links, 'verbose_name': opts.verbose_name})
+        return context
+register.tag(name='render_admin_buttons', compile_function=Combined)
