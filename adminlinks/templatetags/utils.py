@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from collections import defaultdict
 from django.core.urlresolvers import reverse, resolve, NoReverseMatch
 from adminlinks.constants import (GET_ADMIN_SITES_KEY,

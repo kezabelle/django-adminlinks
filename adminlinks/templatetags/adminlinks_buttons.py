@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import logging
 from classytags.arguments import Argument, StringArgument
 from classytags.core import Options

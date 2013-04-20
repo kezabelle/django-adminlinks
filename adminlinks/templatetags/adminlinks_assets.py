@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from django.template.base import Library
 from classytags.helpers import InclusionTag
 from adminlinks.templatetags.utils import context_passes_test
