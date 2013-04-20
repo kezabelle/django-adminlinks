@@ -22,16 +22,53 @@ logger = logging.getLogger(__name__)
 
 
 class BaseAdminLink(object):
+    """
+    Class for mixing into other classes to provide
+    :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`,
+    allowing subclasses to test the incoming data and react accordingly::
+
+    class MyContextHandler(BaseAdminLink):
+        def get_context(self, context, obj):
+            assert self.is_valid(context, obj) == True
+
+    Also provides
+    :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
+    suitable for using in classy tags.
+    """
+
+    #: Default options involved in :class:`~classytags.helpers.InclusionTag`
+    #: subclasses. Stored as a tuple because manipulating Options lists is
+    #: more difficult than we'd like;
+    #: see https://github.com/ojii/django-classy-tags/issues/14
     base_options = (Argument('obj', required=True),
                     StringArgument('admin_site', required=False, default='admin'),
                     Argument('querystring', required=False, default='_popup=1'))
 
     def is_valid(self, context, obj, *args, **kwargs):
-        # no Options class? a fake context? fallover.
+        """
+        Performs some basic tests against the parameters passed to it to
+        ensure that work should carry on afterwards.
+
+        :param context: a :class:`~django.template.context.BaseContext` subclass,
+                        or dictionary-like object which fulfils certain criteria.
+                        Usually a :class:`~django.template.context.RequestContext`.
+        :param obj: the :class:`~django.db.models.Model`, either as a class or
+                    an instance. Or, more specifically, anything which as a
+                    :class:`~django.db.models.options.Options` object stored
+                    under the `_meta` attribute.
+
+        :return: whether or not the context and object pair are valid.
+        :rtype: :data:`True` or :data:`False`
+
+        .. seealso:: :func:`~adminlinks.templatetags.utils.context_passes_test`
+        """
+
         if not hasattr(obj, '_meta'):
             logger.debug('Object has no _meta attribute')
             return False
 
+        # This is to support editregions, which in turn depends on adminlinks.
+        # Yay for circular dependencies at a package level.
         if fake_context_payload in context:
             logger.debug('Fake payload discovered in context')
             return False
