@@ -265,11 +265,41 @@ register.tag(name='render_add_button', compile_function=Add)
 
 
 class History(BaseAdminLink, InclusionTag):
+    """
+    An :class:`~classytags.helpers.InclusionTag` to render a link
+    to the change history view in a
+    :class`~django.contrib.admin.options.ModelAdmin` instance::
+
+        {% render_history_button my_obj %}
+        {% render_history_button my_obj "my_custom_admin" %}
+        {% render_history_button my_obj "my_custom_admin" "a=1&b=2&a=3" %}
+    """
+
+    #: what gets rendered by this tag.
     template = 'adminlinks/history_link.html'
 
+    #: uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
     options = Options(*BaseAdminLink.base_options)
 
     def get_context(self, context, obj, admin_site, querystring):
+        """
+        Adds a `link` and `verbose_name` to the context, if
+        :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
+
+        :param context: Hopefully, a :class:`~django.template.context.RequestContext`
+                        otherwise :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
+                        is unlikely to be :data:`True`
+        :param obj: the :class:`~django.db.models.Model` instance to link to.
+                    Must have a primary key, and
+                    :class:`~django.db.models.options.Options` from which we can
+                    retrieve a :attr:`~django.db.models.Field.verbose_name`
+        :param admin_site: name of the admin site to use; defaults to **"admin"**
+        :param querystring: a querystring to include in the link output.
+                            Defaults to **"_popup=1"**
+        :return: the context, possibly modified with a new layer.
+        :rtype: :class:`~django.template.context.RequestContext` or other context/
+                dictionary-like object.
+        """
         context.update(_add_link_to_context(admin_site, context['request'],
                                             obj._meta , 'history', [obj.pk],
                                             query=querystring))
@@ -278,6 +308,16 @@ register.tag(name='render_history_button', compile_function=History)
 
 
 class ChangeList(BaseAdminLink, InclusionTag):
+    """
+    An :class:`~classytags.helpers.InclusionTag` to render a link
+    to list view (paginated objects) for a
+    :class`~django.contrib.admin.options.ModelAdmin` instance::
+
+        {% render_changelist_button my_class %}
+        {% render_changelist_button my_class "my_custom_admin" %}
+        {% render_changelist_button my_class "my_custom_admin" "a=1&b=2&a=3" %}
+    """
+
     template = 'adminlinks/changelist_link.html'
 
     #: This needs to have a different default querystring, because of
@@ -287,6 +327,24 @@ class ChangeList(BaseAdminLink, InclusionTag):
                       Argument('querystring', required=False, default='pop=1'))
 
     def get_context(self, context, obj, admin_site, querystring):
+        """
+        Adds a `link` and `verbose_name` to the context, if
+        :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
+
+        :param context: Hopefully, a :class:`~django.template.context.RequestContext`
+                        otherwise :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
+                        is unlikely to be :data:`True`
+        :param obj: the :class:`~django.db.models.Model` class to link to.
+                    Must have :class:`~django.db.models.options.Options`
+                    from which we can retrieve a
+                    :attr:`~django.db.models.Field.verbose_name`
+        :param admin_site: name of the admin site to use; defaults to **"admin"**
+        :param querystring: a querystring to include in the link output.
+                            Defaults to **"_popup=1"**
+        :return: the context, possibly modified with a new layer.
+        :rtype: :class:`~django.template.context.RequestContext` or other context/
+                dictionary-like object.
+        """
         if not self.is_valid(context, obj):
             return context
 
@@ -298,6 +356,9 @@ register.tag(name='render_changelist_button', compile_function=ChangeList)
 
 
 class Combined(BaseAdminLink, InclusionTag):
+    """
+    This needs reworking, I think.
+    """
     template = 'adminlinks/grouped_link.html'
 
     # TODO: support querystrings here.
