@@ -12,12 +12,10 @@ from django.utils.functional import update_wrapper
 from django.utils.safestring import mark_safe
 from django.views.decorators.csrf import csrf_protect
 from django.utils.translation import ugettext as _
-
+from adminlinks.constants import POPUP_QS_VAR, FRONTEND_QS_VAR
 csrf_protect_m = method_decorator(csrf_protect)
 
-# Note: _popup is hilariously hard coded throughout the admin.
-POPUP_VAR = '_popup'
-FRONTEND_VAR = '_frontend_editing'
+
 
 class AdminlinksMixin(object):
     frontend_editing = True
@@ -102,7 +100,7 @@ class AdminlinksMixin(object):
             'object_id': object_id,
             'original': obj,
             'show_delete': False,
-            'is_popup': POPUP_VAR in request.REQUEST,
+            'is_popup': POPUP_QS_VAR in request.REQUEST,
             'media': mark_safe(media),
             'errors': helpers.AdminErrorList(form, inline_formsets=[]),
             'root_path': getattr(self.admin_site, 'root_path', None),
@@ -112,7 +110,7 @@ class AdminlinksMixin(object):
         return self.render_change_form(request, context, obj=obj)
 
     def message_user(self, request, *args, **kwargs):
-        if POPUP_VAR not in request.REQUEST or FRONTEND_VAR not in request.REQUEST:
+        if POPUP_QS_VAR not in request.REQUEST or FRONTEND_QS_VAR not in request.REQUEST:
             return super(AdminlinksMixin, self).message_user(request, *args, **kwargs)
         return None
 
@@ -131,7 +129,7 @@ class AdminlinksMixin(object):
 
     def response_change(self, request, obj, *args, **kwargs):
         original_response = super(AdminlinksMixin, self).response_change(request, obj, *args, **kwargs)
-        if POPUP_VAR not in request.REQUEST or FRONTEND_VAR not in request.REQUEST:
+        if POPUP_QS_VAR not in request.REQUEST or FRONTEND_QS_VAR not in request.REQUEST:
             return original_response
         context = {
             'action': {
@@ -151,7 +149,7 @@ class AdminlinksMixin(object):
 
     def response_add(self, request, obj, post_url_continue='../%s/'):
         original_response = super(AdminlinksMixin, self).response_add(request, obj, post_url_continue)
-        if POPUP_VAR not in request.REQUEST or FRONTEND_VAR not in request.REQUEST:
+        if POPUP_QS_VAR not in request.REQUEST or FRONTEND_QS_VAR not in request.REQUEST:
             return original_response
         context = {
             'action': {
@@ -174,7 +172,7 @@ class AdminlinksMixin(object):
         we're just going to do a similar thing and hope for the best.
         """
         # silly Django, not providing the same variables to everything!
-        our_extra_context = {'is_popup': POPUP_VAR in request.REQUEST}
+        our_extra_context = {'is_popup': POPUP_QS_VAR in request.REQUEST}
         if extra_context is None:
             extra_context = {}
         extra_context.update(our_extra_context)
@@ -202,7 +200,7 @@ class AdminlinksMixin(object):
     def history_view(self, request, *args, **kwargs):
         #import pdb; pdb.set_trace()
         # silly Django, not providing the same variables to everything!
-        extra_context = {'is_popup': POPUP_VAR in request.REQUEST}
+        extra_context = {'is_popup': POPUP_QS_VAR in request.REQUEST}
         if 'extra_context' in kwargs:
             extra_context.update(kwargs['extra_context'])
         kwargs['extra_context'] = extra_context
