@@ -179,11 +179,38 @@ register.tag(name='render_edit_field_button', compile_function=EditField)
 
 
 class Delete(BaseAdminLink, InclusionTag):
+    """
+    An :class:`~classytags.helpers.InclusionTag` to render a link
+    to the delete confirmation form for an object::
+
+        {% render_delete_button my_obj %}
+        {% render_delete_button my_obj "my_custom_admin" %}
+        {% render_delete_button my_obj "my_custom_admin" "a=1&b=2&a=3" %}
+    """
     template = 'adminlinks/delete_link.html'
 
+    #: uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
     options = Options(*BaseAdminLink.base_options)
 
     def get_context(self, context, obj, admin_site, querystring):
+        """
+        Adds a `link` and `verbose_name` to the context, if
+        :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
+
+        :param context: Hopefully, a :class:`~django.template.context.RequestContext`
+                        otherwise :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
+                        is unlikely to be :data:`True`
+        :param obj: the :class:`~django.db.models.Model` instance to link to.
+                    Must have a primary key, and
+                    :class:`~django.db.models.options.Options` from which we can
+                    retrieve a :attr:`~django.db.models.Field.verbose_name`
+        :param admin_site: name of the admin site to use; defaults to **"admin"**
+        :param querystring: a querystring to include in the link output.
+                            Defaults to **"_popup=1"**
+        :return: the context, possibly modified with a new layer.
+        :rtype: :class:`~django.template.context.RequestContext` or other context/
+                dictionary-like object.
+        """
         if not self.is_valid(context, obj):
             return context
 
@@ -195,11 +222,38 @@ register.tag(name='render_delete_button', compile_function=Delete)
 
 
 class Add(BaseAdminLink, InclusionTag):
+    """
+    An :class:`~classytags.helpers.InclusionTag` to render a link
+    to add object form for a :class:`~django.db.models.Model` class::
+
+        {% render_add_button my_class %}
+        {% render_add_button my_class "my_custom_admin" %}
+        {% render_add_button my_class "my_custom_admin" "a=1&b=2&a=3" %}
+    """
     template = 'adminlinks/add_link.html'
 
+    #: uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
     options = Options(*BaseAdminLink.base_options)
 
     def get_context(self, context, obj, admin_site, querystring):
+        """
+        Adds a `link` and `verbose_name` to the context, if
+        :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
+
+        :param context: Hopefully, a :class:`~django.template.context.RequestContext`
+                        otherwise :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
+                        is unlikely to be :data:`True`
+        :param obj: the :class:`~django.db.models.Model` class to link to.
+                    Must have :class:`~django.db.models.options.Options`
+                    from which we can retrieve a
+                    :attr:`~django.db.models.Field.verbose_name`
+        :param admin_site: name of the admin site to use; defaults to **"admin"**
+        :param querystring: a querystring to include in the link output.
+                            Defaults to **"_popup=1"**
+        :return: the context, possibly modified with a new layer.
+        :rtype: :class:`~django.template.context.RequestContext` or other context/
+                dictionary-like object.
+        """
         if not self.is_valid(context, obj):
             return context
 
