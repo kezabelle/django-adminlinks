@@ -227,6 +227,14 @@ def _add_custom_link_to_context(admin_site, request, opts, permname, viewname,
 
 
 def _resort_modeladmins(modeladmins):
+    """
+    A pulled-up-and-out version of the sorting the standard Django
+    :class:`~django.contrib.admin.sites.AdminSite` does on the index view.
+
+    :param modeladmins: dictionary of modeladmins
+    :return: the same modeladmins, with their ordering changed.
+    :rtype: :data:`list`
+    """
     unsorted_resultset = defaultdict(list)
     for keypair, datavalues in modeladmins.items():
         app, model = keypair
