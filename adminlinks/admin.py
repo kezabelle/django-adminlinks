@@ -1,25 +1,20 @@
 # -*- coding: utf-8 -*-
 from django.contrib.admin import helpers
+from django.contrib.admin.options import csrf_protect_m
 from django.contrib.admin.util import unquote
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.forms.models import fields_for_model
 from django.http import Http404
 from django.shortcuts import render_to_response
-from django.utils.decorators import method_decorator
 from django.utils.encoding import force_unicode
 from django.utils.functional import update_wrapper
 from django.utils.safestring import mark_safe
-from django.views.decorators.csrf import csrf_protect
 from django.utils.translation import ugettext as _
 from adminlinks.constants import POPUP_QS_VAR, FRONTEND_QS_VAR
-csrf_protect_m = method_decorator(csrf_protect)
 
 
-
-class AdminlinksMixin(object):
-    frontend_editing = True
-
+class ChangeFieldView(object):
     def _get_wrap(self):
         def wrap(view):
             def wrapper(*args, **kwargs):
@@ -27,17 +22,22 @@ class AdminlinksMixin(object):
             return update_wrapper(wrapper, view)
         return wrap
 
-
     def get_urls(self):
+        """
+        Monkey patch the existing URLs and put our change field view on first,
+        so that changelist view doesn't greedily absorb it.
+
+        :return: a list of url :func:`~django.conf.urls.patterns`
+        :rtype: :data:`list`
+        """
         original_urls = super(AdminlinksMixin, self).get_urls()
         from django.conf.urls.defaults import patterns, url
         wrap = self._get_wrap()
         info = self.model._meta.app_label, self.model._meta.module_name
+        url_regex = r'^(?P<object_id>.+)/change_field/(?P<fieldname>\w+)/$'
         extra_urls = patterns('',
-            url(r'^(.+)/change_field/(.+)/$',
-            wrap(self.change_field_view),
-            name='%s_%s_change_field' % info)
-        )
+                              url(url_regex, wrap(self.change_field_view),
+                                  name='%s_%s_change_field' % info))
         # extras have to come first, otherwise everything is gobbled by the
         # greedy nature of (.+) for the changelist view.
         return extra_urls + original_urls
@@ -45,7 +45,10 @@ class AdminlinksMixin(object):
     @csrf_protect_m
     @transaction.commit_on_success
     def change_field_view(self, request, object_id, fieldname, extra_context=None):
-        """The 'change' admin view for this model."""
+        """
+        Allows a user to view a form with only one field (named in the URL args)
+        to edit. All others are ignored.
+        """
         model = self.model
         opts = model._meta
 
@@ -62,8 +65,9 @@ class AdminlinksMixin(object):
             raise Http404(_('%(field)s does not exist on this object') % {'field': force_unicode(fieldname)})
 
         del all_fields[fieldname]
-        fields_to_exclude = [k for k,v in all_fields.iteritems()]
-        ModelForm = self.get_form(request, obj, exclude=fields_to_exclude, fields=[fieldname])
+        fields_to_exclude = [k for k, v in all_fields.items()]
+        ModelForm = self.get_form(request, obj, exclude=fields_to_exclude,
+                                  fields=[fieldname])
         # delete anything set on the self.form class explicitly.
         for field_to_exclude in fields_to_exclude:
             if field_to_exclude in ModelForm.base_fields:
@@ -82,7 +86,8 @@ class AdminlinksMixin(object):
                 self.save_model(request, new_object, form, change=True)
                 form.save_m2m()
 
-                change_message = self.construct_change_message(request, form, formsets=None)
+                change_message = self.construct_change_message(request, form,
+                                                               formsets=None)
                 self.log_change(request, new_object, change_message)
                 return self.response_change(request, new_object)
 
@@ -91,11 +96,11 @@ class AdminlinksMixin(object):
 
         the_fieldset = [(None, {'fields': [fieldname]})]
         adminForm = helpers.AdminForm(form, the_fieldset, prepopulated_fields={},
-            readonly_fields=None, model_admin=self)
+                                      readonly_fields=None, model_admin=self)
         media = self.media + adminForm.media
 
         context = {
-            'title': '', #_('Change %s') % force_unicode(obj),
+            'title': '',
             'adminform': adminForm,
             'object_id': object_id,
             'original': obj,
@@ -105,9 +110,12 @@ class AdminlinksMixin(object):
             'errors': helpers.AdminErrorList(form, inline_formsets=[]),
             'root_path': getattr(self.admin_site, 'root_path', None),
             'app_label': opts.app_label,
-            }
+        }
         context.update(extra_context or {})
         return self.render_change_form(request, context, obj=obj)
+
+
+class AdminlinksMixin(object):
 
     def message_user(self, request, *args, **kwargs):
         if POPUP_QS_VAR not in request.REQUEST or FRONTEND_QS_VAR not in request.REQUEST:
@@ -168,7 +176,8 @@ class AdminlinksMixin(object):
         return render_to_response(self.get_success_templates(request), context)
 
     def delete_view(self, request, object_id, extra_context=None):
-        """Ridiculously, there's no response_delete method to patch, so instead
+        """
+        Ridiculously, there's no response_delete method to patch, so instead
         we're just going to do a similar thing and hope for the best.
         """
         # silly Django, not providing the same variables to everything!
@@ -195,7 +204,6 @@ class AdminlinksMixin(object):
             context.update(self.get_response_delete_context(request, object_id))
             resp = render_to_response(self.get_success_templates(request), context)
         return resp
-
 
     def history_view(self, request, *args, **kwargs):
         #import pdb; pdb.set_trace()
