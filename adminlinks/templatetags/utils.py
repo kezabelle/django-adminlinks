@@ -4,8 +4,7 @@ from collections import defaultdict
 from urlparse import urlsplit, urlunsplit
 from django.core.urlresolvers import reverse, resolve, NoReverseMatch
 from adminlinks.constants import (GET_ADMIN_SITES_KEY,
-                                  FRONTEND_EDITING_ADMIN_VAR, MODELADMIN_REVERSE,
-                                  PERMISSION_ATTRIBUTE)
+                                  MODELADMIN_REVERSE, PERMISSION_ATTRIBUTE)
 from django.http import QueryDict
 
 
@@ -95,12 +94,7 @@ def get_registered_modeladmins(request, admin_site):
     for model, model_admin in admin_site._registry.items():
         dict_key = (model._meta.app_label.lower(), model._meta.module_name.lower())
 
-        user_and_modeladmin_tests = [
-            request.user.has_module_perms(model._meta.app_label),
-            getattr(model_admin, FRONTEND_EDITING_ADMIN_VAR, False),
-        ]
-
-        if all(user_and_modeladmin_tests):
+        if request.user.has_module_perms(model._meta.app_label):
             # TODO: if a model has parents, use get_parent_list on the Options
             # instance to test all base permissions.
             urlparts = {

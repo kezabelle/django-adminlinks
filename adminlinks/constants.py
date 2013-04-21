@@ -10,12 +10,6 @@ MODELADMIN_REVERSE = '%(namespace)s:%(app)s_%(module)s_%(view)s'
 #: .. seealso:: :func:`~adminlinks.templatetags.utils.get_registered_modeladmins`
 PERMISSION_ATTRIBUTE = 'has_%s_permission'
 
-#: Used when finding :class:`~django.contrib.admin.ModelAdmin` which
-#: should be considered for having admin links output.
-#:
-#: .. seealso:: :func:`~adminlinks.templatetags.utils.get_registered_modeladmins`
-FRONTEND_EDITING_ADMIN_VAR = 'frontend_editing'
-
 #: a semi-secret attribute set onto
 #: :func:`~adminlinks.templatetags.utils.get_admin_site` to stash away all
 #: discovered valid :class:`~django.contrib.admin.sites.AdminSite` instances.
