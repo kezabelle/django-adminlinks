@@ -5,12 +5,14 @@ from __future__ import unicode_literals
 MODELADMIN_REVERSE = '%(namespace)s:%(app)s_%(module)s_%(view)s'
 
 #: Generic string format for getting methods on a
-#: :class:`~django.contrib.admin.options.ModelAdmin` which define permissions
+#: :class:`~django.contrib.admin.ModelAdmin` which define permissions
+#:
 #: .. seealso:: :func:`~adminlinks.templatetags.utils.get_registered_modeladmins`
 PERMISSION_ATTRIBUTE = 'has_%s_permission'
 
-#: Used when finding :class:`~django.contrib.admin.options.ModelAdmin` which
+#: Used when finding :class:`~django.contrib.admin.ModelAdmin` which
 #: should be considered for having admin links output.
+#:
 #: .. seealso:: :func:`~adminlinks.templatetags.utils.get_registered_modeladmins`
 FRONTEND_EDITING_ADMIN_VAR = 'frontend_editing'
 

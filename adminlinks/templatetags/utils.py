@@ -13,11 +13,11 @@ def context_passes_test(context):
     """
     Given a context, determine whether a `user` exists, and if they see anything.
 
-    :param context: a :class:`~django.template.context.RequestContext`. Accepts
-                    any :class:`~django.template.context.Context` like object,
+    :param context: a :class:`~django.template.RequestContext`. Accepts
+                    any :class:`~django.template.Context` like object,
                     but it explicitly tests for a `request` key and `request.user`
     :return: whether or not the given context should allow further processing.
-    :rtype: :type:`boolean`
+    :rtype: :data:`boolean`
     """
     if 'request' not in context:
         return False
@@ -37,17 +37,17 @@ def context_passes_test(context):
 
 def get_admin_site(admin_site):
     """
-    Given the name of an :class:`~django.contrib.admin.sites.AdminSite` instance,
+    Given the name of an :class:`~django.contrib.admin.AdminSite` instance,
     try to resolve that into an actual object, and store the result onto this
     function. Future calls to that same name will avoid finding the object all
     over again, opting for the cached copy.
 
     :param admin_site: the string name of an
-                       :class:`~django.contrib.admin.sites.AdminSite` named
+                       :class:`~django.contrib.admin.AdminSite` named
                        and mounted on the project.
-    :return: an :class:`~django.contrib.admin.sites.AdminSite` instance matching
+    :return: an :class:`~django.contrib.admin.AdminSite` instance matching
              that given in the `admin_site` parameter.
-    :rtype: :class:`~django.contrib.admin.sites.AdminSite` or :data:`None`
+    :rtype: :class:`~django.contrib.admin.AdminSite` or :data:`None`
     """
 
     # pop a dictionary onto this function and use it for keeping track
@@ -61,7 +61,7 @@ def get_admin_site(admin_site):
             wrapped_view = resolve(for_resolving)
             # unwrap the view, because all AdminSite urls get wrapped with a
             # decorator which goes through
-            # :meth:`~django.contrib.admin.sites.AdminSite.admin_view`
+            # :meth:`~django.contrib.admin.AdminSite.admin_view`
             admin_site_obj = wrapped_view.func.func_closure[0].cell_contents
             known_sites.update({
                 unicode(admin_site_obj.name): admin_site_obj,
@@ -75,22 +75,20 @@ def get_admin_site(admin_site):
 
 def get_registered_modeladmins(request, admin_site):
     """
-    Taken from django.contrib.admin.sites.AdminSite.index, find all ModelAdmin
-    classes attached to the given admin and compile a dictionary of Models
+    Taken from :class:`~django.contrib.admin.AdminSite`, find all
+    :class:`~django.contrib.admin.ModelAdmin`
+    classes attached to the given admin and compile a dictionary of
+    :class:`~django.db.models.Model` types
     visible to the current user, limiting the methods available
     (add/edit/history/delete) as appropriate.
 
     Always returns a dictionary, though it may be empty, and thus evaluate as Falsy.
 
     :param request: the current request, for permissions checking etc.
-    :param admin_site: a concrete :class:`~django.contrib.admin.sites.AdminSite`
+    :param admin_site: a concrete :class:`~django.contrib.admin.AdminSite`
                        named and mounted on the project.
-    :return: visible modeladmins.
-    :rtype: :type:`dictionary`
-
-    .. note:: for a :class:`~django.contrib.admin.options.ModelAdmin` to be
-              considered and returned, it must have a `frontend_editing`
-              attribute set to :data:`True`.
+    :return: visible :class:`~django.contrib.admin.ModelAdmin` classes.
+    :rtype: :data:`dictionary`
     """
     apps = defaultdict(dict)
 
@@ -172,7 +170,7 @@ def _add_link_to_context(admin_site, request, opts, permname, url_params,
     :return: a dictionary containing `link` and `verbose_name` keys, whose values
              are the reversed URL and the display name of the object. Both may
              be blank.
-    :rtype: :type:`dictionary`
+    :rtype: :data:`dictionary`
     """
     site = get_admin_site(admin_site)
     if site is not None:
@@ -206,7 +204,7 @@ def _add_custom_link_to_context(admin_site, request, opts, permname, viewname,
     :return: a dictionary containing `link` and `verbose_name` keys, whose values
              are the reversed URL and the display name of the object. Both may
              be blank.
-    :rtype: :type:`dictionary`
+    :rtype: :data:`dictionary`
     """
     site = get_admin_site(admin_site)
     if site is not None:
@@ -229,7 +227,7 @@ def _add_custom_link_to_context(admin_site, request, opts, permname, viewname,
 def _resort_modeladmins(modeladmins):
     """
     A pulled-up-and-out version of the sorting the standard Django
-    :class:`~django.contrib.admin.sites.AdminSite` does on the index view.
+    :class:`~django.contrib.admin.AdminSite` does on the index view.
 
     :param modeladmins: dictionary of modeladmins
     :return: the same modeladmins, with their ordering changed.

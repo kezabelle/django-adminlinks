@@ -247,4 +247,5 @@ intersphinx_mapping = {
     'python': ('http://python.readthedocs.org/en/latest/', None),
     'django': ('http://django.readthedocs.org/en/latest/', None),
     'sphinx': ('http://sphinx.readthedocs.org/en/latest/', None),
+    'classytags': ('http://django-classy-tags.readthedocs.org/en/latest/', None),
 }

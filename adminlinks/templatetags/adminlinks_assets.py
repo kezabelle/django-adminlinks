@@ -19,12 +19,12 @@ class AdminlinksCssShortcut(InclusionTag):
         """
         Tests and updates the existing context.
 
-        :param context: a :class:`~django.template.context.Context` which is
+        :param context: a :class:`~django.template.Context` which is
                         checked via
                         :meth:`~adminlinks.templatetags.utils.context_passes_test`,
                         and the result **always** put into the context.
         :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.context.RequestContext` or other context/
+        :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
         """
         result = context_passes_test(context)
@@ -36,23 +36,31 @@ register.tag(name='render_adminlinks_css', compile_function=AdminlinksCssShortcu
 class AdminlinksJsShortcut(InclusionTag):
     """
     Helper for rendering any JavaScript we want to ship by default,
-    inline or as external scripts.
+    inline or as external scripts::
+
+    {% render_adminlinks_js %}
+
     """
+    #: How to call this tag from a template.
+    name = 'render_adminlinks_js'
+
+    #: The template to use to render the JavaScripts. May be overridden by
+    #: project-level templates.
     template = 'adminlinks/js.html'
 
     def get_context(self, context):
         """
         Tests and updates the existing context.
 
-        :param context: a :class:`~django.template.context.Context` which is
+        :param context: a :class:`~django.template.Context` which is
                         checked via
                         :meth:`~adminlinks.templatetags.utils.context_passes_test`,
                         and the result **always** put into the context.
         :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.context.RequestContext` or other context/
+        :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
         """
         result = context_passes_test(context)
         context.update({'should_load_assets': result})
         return context
-register.tag(name='render_adminlinks_js', compile_function=AdminlinksJsShortcut)
+register.tag(name=AdminlinksJsShortcut.name, compile_function=AdminlinksJsShortcut)

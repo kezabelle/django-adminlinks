@@ -27,9 +27,9 @@ class BaseAdminLink(object):
     :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`,
     allowing subclasses to test the incoming data and react accordingly::
 
-    class MyContextHandler(BaseAdminLink):
-        def get_context(self, context, obj):
-            assert self.is_valid(context, obj) == True
+        class MyContextHandler(BaseAdminLink):
+            def get_context(self, context, obj):
+                assert self.is_valid(context, obj) == True
 
     Also provides
     :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
@@ -49,12 +49,12 @@ class BaseAdminLink(object):
         Performs some basic tests against the parameters passed to it to
         ensure that work should carry on afterwards.
 
-        :param context: a :class:`~django.template.context.BaseContext` subclass,
+        :param context: a :class:`~django.template.Context` subclass,
                         or dictionary-like object which fulfils certain criteria.
-                        Usually a :class:`~django.template.context.RequestContext`.
+                        Usually a :class:`~django.template.RequestContext`.
         :param obj: the :class:`~django.db.models.Model`, either as a class or
                     an instance. Or, more specifically, anything which as a
-                    :class:`~django.db.models.options.Options` object stored
+                    :class:`~django.db.models.Options` object stored
                     under the `_meta` attribute.
 
         :return: whether or not the context and object pair are valid.
@@ -79,6 +79,7 @@ class BaseAdminLink(object):
 
         return True
 
+
 class Edit(BaseAdminLink, InclusionTag):
     """
     An :class:`~classytags.helpers.InclusionTag` to render a link
@@ -90,7 +91,7 @@ class Edit(BaseAdminLink, InclusionTag):
     """
     template = 'adminlinks/edit_link.html'
 
-    #: uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
+    # uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
     options = Options(*BaseAdminLink.base_options)
 
     def get_context(self, context, obj, admin_site, querystring):
@@ -98,18 +99,18 @@ class Edit(BaseAdminLink, InclusionTag):
         Adds a `link` and `verbose_name` to the context, if
         :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
 
-        :param context: Hopefully, a :class:`~django.template.context.RequestContext`
+        :param context: Hopefully, a :class:`~django.template.RequestContext`
                         otherwise :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
                         is unlikely to be :data:`True`
         :param obj: the :class:`~django.db.models.Model` instance to link to.
                     Must have a primary key, and
-                    :class:`~django.db.models.options.Options` from which we can
+                    :class:`~django.db.models.Options` from which we can
                     retrieve a :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
                             Defaults to **"_popup=1"**
         :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.context.RequestContext` or other context/
+        :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
         """
         if not self.is_valid(context, obj):
@@ -133,7 +134,7 @@ class EditField(BaseAdminLink, InclusionTag):
         {% render_edit_field_button my_obj "field_name" "my_custom_admin" "a=1&b=2&a=3" %}
 
     .. note:: Use of this class requires that the
-              :class:`~django.contrib.admin.options.ModelAdmin` includes
+              :class:`~django.contrib.admin.ModelAdmin` includes
               :class:`~adminlinks.admin.AdminlinksMixin` or otherwise creates a
               named url ending in `change_field`.
     """
@@ -148,19 +149,19 @@ class EditField(BaseAdminLink, InclusionTag):
         Adds a `link` and `verbose_name` to the context, if
         :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
 
-        :param context: Hopefully, a :class:`~django.template.context.RequestContext`
+        :param context: Hopefully, a :class:`~django.template.RequestContext`
                         otherwise :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
                         is unlikely to be :data:`True`
         :param obj: the :class:`~django.db.models.Model` instance to link to.
                     Must have a primary key, and
-                    :class:`~django.db.models.options.Options` from which we can
+                    :class:`~django.db.models.Options` from which we can
                     retrieve a :attr:`~django.db.models.Field.verbose_name`
         :param fieldname: the specific model field to render a link for.
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
                             Defaults to **"_popup=1"**
         :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.context.RequestContext` or other context/
+        :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
         """
         if not self.is_valid(context, obj):
@@ -189,7 +190,7 @@ class Delete(BaseAdminLink, InclusionTag):
     """
     template = 'adminlinks/delete_link.html'
 
-    #: uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
+    # uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
     options = Options(*BaseAdminLink.base_options)
 
     def get_context(self, context, obj, admin_site, querystring):
@@ -197,18 +198,18 @@ class Delete(BaseAdminLink, InclusionTag):
         Adds a `link` and `verbose_name` to the context, if
         :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
 
-        :param context: Hopefully, a :class:`~django.template.context.RequestContext`
+        :param context: Hopefully, a :class:`~django.template.RequestContext`
                         otherwise :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
                         is unlikely to be :data:`True`
         :param obj: the :class:`~django.db.models.Model` instance to link to.
                     Must have a primary key, and
-                    :class:`~django.db.models.options.Options` from which we can
+                    :class:`~django.db.models.Options` from which we can
                     retrieve a :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
                             Defaults to **"_popup=1"**
         :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.context.RequestContext` or other context/
+        :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
         """
         if not self.is_valid(context, obj):
@@ -224,7 +225,10 @@ register.tag(name='render_delete_button', compile_function=Delete)
 class Add(BaseAdminLink, InclusionTag):
     """
     An :class:`~classytags.helpers.InclusionTag` to render a link
-    to add object form for a :class:`~django.db.models.Model` class::
+    to the :meth:`~django.contrib.admin.ModelAdmin.add_view` for a
+    :class:`~django.db.models.Model` mounted onto a
+    :class:`~django.contrib.admin.ModelAdmin` on the
+    :class:`~django.contrib.admin.AdminSite`::
 
         {% render_add_button my_class %}
         {% render_add_button my_class "my_custom_admin" %}
@@ -232,7 +236,7 @@ class Add(BaseAdminLink, InclusionTag):
     """
     template = 'adminlinks/add_link.html'
 
-    #: uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
+    # uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
     options = Options(*BaseAdminLink.base_options)
 
     def get_context(self, context, obj, admin_site, querystring):
@@ -240,18 +244,18 @@ class Add(BaseAdminLink, InclusionTag):
         Adds a `link` and `verbose_name` to the context, if
         :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
 
-        :param context: Hopefully, a :class:`~django.template.context.RequestContext`
+        :param context: Hopefully, a :class:`~django.template.RequestContext`
                         otherwise :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
                         is unlikely to be :data:`True`
         :param obj: the :class:`~django.db.models.Model` class to link to.
-                    Must have :class:`~django.db.models.options.Options`
+                    Must have :class:`~django.db.models.Options`
                     from which we can retrieve a
                     :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
                             Defaults to **"_popup=1"**
         :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.context.RequestContext` or other context/
+        :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
         """
         if not self.is_valid(context, obj):
@@ -267,8 +271,8 @@ register.tag(name='render_add_button', compile_function=Add)
 class History(BaseAdminLink, InclusionTag):
     """
     An :class:`~classytags.helpers.InclusionTag` to render a link
-    to the change history view in a
-    :class`~django.contrib.admin.options.ModelAdmin` instance::
+    to the object's :meth:`~django.contrib.admin.ModelAdmin.history_view` in a
+    :class:`~django.contrib.admin.ModelAdmin` instance::
 
         {% render_history_button my_obj %}
         {% render_history_button my_obj "my_custom_admin" %}
@@ -278,7 +282,7 @@ class History(BaseAdminLink, InclusionTag):
     #: what gets rendered by this tag.
     template = 'adminlinks/history_link.html'
 
-    #: uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
+    # uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
     options = Options(*BaseAdminLink.base_options)
 
     def get_context(self, context, obj, admin_site, querystring):
@@ -286,18 +290,18 @@ class History(BaseAdminLink, InclusionTag):
         Adds a `link` and `verbose_name` to the context, if
         :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
 
-        :param context: Hopefully, a :class:`~django.template.context.RequestContext`
+        :param context: Hopefully, a :class:`~django.template.RequestContext`
                         otherwise :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
                         is unlikely to be :data:`True`
         :param obj: the :class:`~django.db.models.Model` instance to link to.
                     Must have a primary key, and
-                    :class:`~django.db.models.options.Options` from which we can
+                    :class:`~django.db.models.Options` from which we can
                     retrieve a :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
                             Defaults to **"_popup=1"**
         :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.context.RequestContext` or other context/
+        :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
         """
         context.update(_add_link_to_context(admin_site, context['request'],
@@ -310,8 +314,8 @@ register.tag(name='render_history_button', compile_function=History)
 class ChangeList(BaseAdminLink, InclusionTag):
     """
     An :class:`~classytags.helpers.InclusionTag` to render a link
-    to list view (paginated objects) for a
-    :class`~django.contrib.admin.options.ModelAdmin` instance::
+    to the :meth:`~django.contrib.admin.ModelAdmin.changelist_view` (paginated
+    objects) for a :class:`~django.contrib.admin.ModelAdmin` instance::
 
         {% render_changelist_button my_class %}
         {% render_changelist_button my_class "my_custom_admin" %}
@@ -320,8 +324,8 @@ class ChangeList(BaseAdminLink, InclusionTag):
 
     template = 'adminlinks/changelist_link.html'
 
-    #: This needs to have a different default querystring, because of
-    #: https://code.djangoproject.com/ticket/20288#ticket
+    # This needs to have a different default querystring, because of
+    # https://code.djangoproject.com/ticket/20288#ticket
     options = Options(BaseAdminLink.base_options[0],  # obj
                       BaseAdminLink.base_options[1],  # admin_site
                       Argument('querystring', required=False, default='pop=1'))
@@ -331,18 +335,18 @@ class ChangeList(BaseAdminLink, InclusionTag):
         Adds a `link` and `verbose_name` to the context, if
         :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
 
-        :param context: Hopefully, a :class:`~django.template.context.RequestContext`
+        :param context: Hopefully, a :class:`~django.template.RequestContext`
                         otherwise :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
                         is unlikely to be :data:`True`
         :param obj: the :class:`~django.db.models.Model` class to link to.
-                    Must have :class:`~django.db.models.options.Options`
+                    Must have :class:`~django.db.models.Options`
                     from which we can retrieve a
                     :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
                             Defaults to **"_popup=1"**
         :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.context.RequestContext` or other context/
+        :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
         """
         if not self.is_valid(context, obj):
