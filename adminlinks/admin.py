@@ -14,7 +14,51 @@ from django.utils.translation import ugettext as _
 from adminlinks.constants import POPUP_QS_VAR, FRONTEND_QS_VAR
 
 
+class AllowMorePopups(object):
+    """
+    We want to be able to show the delete view without the standard Django
+    header etc, unfortunately Django doesn't allow for this, and apparently
+    won't; see https://code.djangoproject.com/ticket/20302
+
+    As a result, we just extend whatever `extra_context` is given, to
+    include the desired context variable.
+    """
+    def delete_view(self, request, object_id, extra_context=None):
+        """
+        Adds key `is_popup` to the context, via `extra_context`.
+        Must check `request.REQUEST` because we don't know if we've been
+        POSTed to through the confirmation.
+        """
+        extra_context = extra_context or {}
+        extra_context.update(is_popup=POPUP_QS_VAR in request.REQUEST)
+        return super(AllowMorePopups, self).delete_view(request, object_id, extra_context)
+
+    def history_view(self, request, object_id, extra_context=None):
+        """
+        Adds key `is_popup` to the context, via `extra_context`
+        """
+        extra_context = extra_context or {}
+        extra_context.update(is_popup=POPUP_QS_VAR in request.GET)
+        return super(AllowMorePopups, self).history_view(request, object_id, extra_context)
+
+
+class HideMessages(object):
+    """
+    If we're in a popup, it's useless to message the user, as they won't see it
+    in the admin, and *may* see it in the frontend if the site uses the messages
+    framework. As such, we're just going to ignore it, for consistency's sake.
+    """
+    def message_user(self, request, *args, **kwargs):
+        if POPUP_QS_VAR not in request.REQUEST or FRONTEND_QS_VAR not in request.REQUEST:
+            return super(HideMessages, self).message_user(request, *args, **kwargs)
+        return None
+
+
 class ChangeFieldView(object):
+    """
+    Adds a new view onto ModelAdmin objects, enabling a user to edit only
+    a single field at a time.
+    """
     def _get_wrap(self):
         def wrap(view):
             def wrapper(*args, **kwargs):
@@ -30,7 +74,7 @@ class ChangeFieldView(object):
         :return: a list of url :func:`~django.conf.urls.patterns`
         :rtype: :data:`list`
         """
-        original_urls = super(AdminlinksMixin, self).get_urls()
+        original_urls = super(SuccessResponses, self).get_urls()
         from django.conf.urls.defaults import patterns, url
         wrap = self._get_wrap()
         info = self.model._meta.app_label, self.model._meta.module_name
@@ -115,12 +159,12 @@ class ChangeFieldView(object):
         return self.render_change_form(request, context, obj=obj)
 
 
-class AdminlinksMixin(object):
-
-    def message_user(self, request, *args, **kwargs):
-        if POPUP_QS_VAR not in request.REQUEST or FRONTEND_QS_VAR not in request.REQUEST:
-            return super(AdminlinksMixin, self).message_user(request, *args, **kwargs)
-        return None
+class SuccessResponses(object):
+    """
+    Because Django doesn't offer the exact hooks we need, this class exists
+    to handle responses from inside a popup, where we ideally don't want to
+    redirect or otherwise present the original response.
+    """
 
     def get_success_templates(self, request):
         """
@@ -136,30 +180,40 @@ class AdminlinksMixin(object):
         ]
 
     def response_change(self, request, obj, *args, **kwargs):
-        original_response = super(AdminlinksMixin, self).response_change(request, obj, *args, **kwargs)
+        original_response = super(SuccessResponses, self).response_change(request, obj, *args, **kwargs)
         if POPUP_QS_VAR not in request.REQUEST or FRONTEND_QS_VAR not in request.REQUEST:
             return original_response
-        context = {
-            'action': {
-                'add': False,
-                'change': True,
-                'delete': False,
-                'as_string': 'change',
-            },
-            'object': {
-                'pk': obj._get_pk_val(),
-                'id': obj._get_pk_val(),
-                'original': obj,
-            }
-        }
+        context = {}
         context.update(self.get_response_change_context(request, obj))
         return render_to_response(self.get_success_templates(request), context)
 
     def response_add(self, request, obj, post_url_continue='../%s/'):
-        original_response = super(AdminlinksMixin, self).response_add(request, obj, post_url_continue)
+        response = super(SuccessResponses, self).response_add(request, obj, post_url_continue)
         if POPUP_QS_VAR not in request.REQUEST or FRONTEND_QS_VAR not in request.REQUEST:
-            return original_response
-        context = {
+            return response
+        context = {}
+        context.update(self.get_response_add_context(request, obj))
+        return render_to_response(self.get_success_templates(request), context)
+
+    def delete_view(self, request, object_id, extra_context=None):
+        """
+        Ridiculously, there's no response_delete method to patch, so instead
+        we're just going to do a similar thing and hope for the best.
+        """
+        resp = super(SuccessResponses, self).delete_view(request, object_id, extra_context)
+
+        # Hijack the redirect on success to instead present our JS enabled template.
+        if resp.status_code in (302,):
+            context = {}
+            context.update(self.get_response_delete_context(request, object_id))
+            resp = render_to_response(self.get_success_templates(request), context)
+        return resp
+
+    def get_response_add_context(self, request, obj):
+        """
+        .. seealso:: :meth:`adminlinks.admin.SuccessResponses.response_add`
+        """
+        return {
             'action': {
                 'add': True,
                 'change': False,
@@ -172,53 +226,51 @@ class AdminlinksMixin(object):
                 'original': obj,
             }
         }
-        context.update(self.get_response_add_context(request, obj))
-        return render_to_response(self.get_success_templates(request), context)
-
-    def delete_view(self, request, object_id, extra_context=None):
-        """
-        Ridiculously, there's no response_delete method to patch, so instead
-        we're just going to do a similar thing and hope for the best.
-        """
-        # silly Django, not providing the same variables to everything!
-        our_extra_context = {'is_popup': POPUP_QS_VAR in request.REQUEST}
-        if extra_context is None:
-            extra_context = {}
-        extra_context.update(our_extra_context)
-        resp = super(AdminlinksMixin, self).delete_view(request, object_id, extra_context)
-
-        # Hijack the redirect on success to instead present our JS enabled template.
-        if resp.status_code in (302,):
-            context = {
-                'action': {
-                    'add': False,
-                    'change': False,
-                    'delete': True,
-                    'as_string': 'delete',
-                },
-                'object': {
-                    'pk': object_id,
-                    'id': object_id,
-                }
-            }
-            context.update(self.get_response_delete_context(request, object_id))
-            resp = render_to_response(self.get_success_templates(request), context)
-        return resp
-
-    def history_view(self, request, *args, **kwargs):
-        #import pdb; pdb.set_trace()
-        # silly Django, not providing the same variables to everything!
-        extra_context = {'is_popup': POPUP_QS_VAR in request.REQUEST}
-        if 'extra_context' in kwargs:
-            extra_context.update(kwargs['extra_context'])
-        kwargs['extra_context'] = extra_context
-        return super(AdminlinksMixin, self).history_view(request, *args, **kwargs)
-
-    def get_response_add_context(self, request, obj):
-        return {}
 
     def get_response_change_context(self, request, obj):
-        return {}
+        """
+        .. seealso:: :meth:`adminlinks.admin.SuccessResponses.response_change`
+        """
+        return {
+            'action': {
+                'add': False,
+                'change': True,
+                'delete': False,
+                'as_string': 'change',
+            },
+            'object': {
+                'pk': obj._get_pk_val(),
+                'id': obj._get_pk_val(),
+                'original': obj,
+            }
+        }
 
     def get_response_delete_context(self, request, obj_id):
-        return {}
+        """
+        .. seealso:: :meth:`adminlinks.admin.SuccessResponses.delete_view`
+        """
+        return {
+            'action': {
+                'add': False,
+                'change': False,
+                'delete': True,
+                'as_string': 'delete',
+            },
+            'object': {
+                'pk': obj_id,
+                'id': obj_id,
+            }
+        }
+
+
+class AdminlinksMixin(HideMessages, AllowMorePopups, ChangeFieldView, SuccessResponses):
+    """
+    An object whose sole purposes is to facilitate all the combined functionality
+    provided by the classes it inherits from.
+
+    .. seealso:: :class:`~adminlinks.admin.HideMessages`
+    .. seealso:: :class:`~adminlinks.admin.AllowMorePopups`
+    .. seealso:: :class:`~adminlinks.admin.ChangeFieldView`
+    .. seealso:: :class:`~adminlinks.admin.SuccessResponses`
+    """
+    pass
