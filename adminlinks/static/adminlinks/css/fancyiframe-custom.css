@@ -9,25 +9,28 @@
 }
 
 #django-adminlinks-wrapper {
-    width: 59%;
-    min-width: 740px;
+    width: 86%;
+    min-width: 780px;
+    max-width: 86%;
+    min-height: 5%;
     height: 59%;
     position: fixed;
     top: 20%;
-    left: 20%;
+    left: 7%;
     margin: 0;
     padding: 0.5%;
-    background: #5B80B2;
-    background: #5B80B2 url(data:image/gif;base64,R0lGODlhEAALAPQAAFuAsv///3KRvHiWv2eJt/r7/P///+Dn8Kq918DO4Yahxujt887Z56W51L3M4ISfxeXr8vv8/MvX5mqLuXOSvWGEtNri7XCQvGKFtYmjx5euznyZwWWHtgAAAAAAAAAAACH+GkNyZWF0ZWQgd2l0aCBhamF4bG9hZC5pbmZvACH5BAALAAAAIf8LTkVUU0NBUEUyLjADAQAAACwAAAAAEAALAAAFLSAgjmRpnqSgCuLKAq5AEIM4zDVw03ve27ifDgfkEYe04kDIDC5zrtYKRa2WQgAh+QQACwABACwAAAAAEAALAAAFJGBhGAVgnqhpHIeRvsDawqns0qeN5+y967tYLyicBYE7EYkYAgAh+QQACwACACwAAAAAEAALAAAFNiAgjothLOOIJAkiGgxjpGKiKMkbz7SN6zIawJcDwIK9W/HISxGBzdHTuBNOmcJVCyoUlk7CEAAh+QQACwADACwAAAAAEAALAAAFNSAgjqQIRRFUAo3jNGIkSdHqPI8Tz3V55zuaDacDyIQ+YrBH+hWPzJFzOQQaeavWi7oqnVIhACH5BAALAAQALAAAAAAQAAsAAAUyICCOZGme1rJY5kRRk7hI0mJSVUXJtF3iOl7tltsBZsNfUegjAY3I5sgFY55KqdX1GgIAIfkEAAsABQAsAAAAABAACwAABTcgII5kaZ4kcV2EqLJipmnZhWGXaOOitm2aXQ4g7P2Ct2ER4AMul00kj5g0Al8tADY2y6C+4FIIACH5BAALAAYALAAAAAAQAAsAAAUvICCOZGme5ERRk6iy7qpyHCVStA3gNa/7txxwlwv2isSacYUc+l4tADQGQ1mvpBAAIfkEAAsABwAsAAAAABAACwAABS8gII5kaZ7kRFGTqLLuqnIcJVK0DeA1r/u3HHCXC/aKxJpxhRz6Xi0ANAZDWa+kEAA7AAAAAAAAAAAA) 50% 50% no-repeat;
-    -webkit-box-shadow: 1px 1px 15px 3px rgba(0, 0, 0, 0.3);
-    box-shadow: 1px 1px 15px 3px rgba(0, 0, 0, 0.3);
+    background: white;
+    background: white url(data:image/gif;base64,R0lGODlhEAALAPQAAFuAsv///3KRvHiWv2eJt/r7/P///+Dn8Kq918DO4Yahxujt887Z56W51L3M4ISfxeXr8vv8/MvX5mqLuXOSvWGEtNri7XCQvGKFtYmjx5euznyZwWWHtgAAAAAAAAAAACH+GkNyZWF0ZWQgd2l0aCBhamF4bG9hZC5pbmZvACH5BAALAAAAIf8LTkVUU0NBUEUyLjADAQAAACwAAAAAEAALAAAFLSAgjmRpnqSgCuLKAq5AEIM4zDVw03ve27ifDgfkEYe04kDIDC5zrtYKRa2WQgAh+QQACwABACwAAAAAEAALAAAFJGBhGAVgnqhpHIeRvsDawqns0qeN5+y967tYLyicBYE7EYkYAgAh+QQACwACACwAAAAAEAALAAAFNiAgjothLOOIJAkiGgxjpGKiKMkbz7SN6zIawJcDwIK9W/HISxGBzdHTuBNOmcJVCyoUlk7CEAAh+QQACwADACwAAAAAEAALAAAFNSAgjqQIRRFUAo3jNGIkSdHqPI8Tz3V55zuaDacDyIQ+YrBH+hWPzJFzOQQaeavWi7oqnVIhACH5BAALAAQALAAAAAAQAAsAAAUyICCOZGme1rJY5kRRk7hI0mJSVUXJtF3iOl7tltsBZsNfUegjAY3I5sgFY55KqdX1GgIAIfkEAAsABQAsAAAAABAACwAABTcgII5kaZ4kcV2EqLJipmnZhWGXaOOitm2aXQ4g7P2Ct2ER4AMul00kj5g0Al8tADY2y6C+4FIIACH5BAALAAYALAAAAAAQAAsAAAUvICCOZGme5ERRk6iy7qpyHCVStA3gNa/7txxwlwv2isSacYUc+l4tADQGQ1mvpBAAIfkEAAsABwAsAAAAABAACwAABS8gII5kaZ7kRFGTqLLuqnIcJVK0DeA1r/u3HHCXC/aKxJpxhRz6Xi0ANAZDWa+kEAA7AAAAAAAAAAAA) 50% 50% no-repeat;
+    -webkit-box-shadow: 1px 1px 30px 3px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 1px 1px 30px 3px rgba(0, 0, 0, 0.5);
+    box-shadow: 1px 1px 30px 3px rgba(0, 0, 0, 0.5);
     z-index: 9999;
 }
 
 #django-adminlinks-close {
     position: absolute;
-    top: -24px;
-    right: -24px;
+    top: -20px;
+    right: -20px;
     width: 24px;
     height: 24px;
     cursor: pointer;
@@ -38,23 +41,12 @@
     overflow: hidden;
     font-family: arial, sans-serif;
     text-align: center;
-    /* this is used for the over state */
-    -webkit-border-radius: 12px;
-    -moz-border-radius: 12px;
-    border-radius: 12px;
     color: white;
 }
 
 #django-adminlinks-close:hover {
-    color: white;
-    background: #5B80B2;
-    background: -moz-linear-gradient(top, #b3c5e5 0%, #708abd 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#b3c5e5), color-stop(100%,#708abd)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, #b3c5e5 0%,#708abd 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #b3c5e5 0%,#708abd 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #b3c5e5 0%,#708abd 100%); /* IE10+ */
-    background: linear-gradient(to bottom, #b3c5e5 0%,#708abd 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3c5e5', endColorstr='#708abd',GradientType=0 ); /* IE6-9 */
+    color: #FCC;
+    font-size: 32px;
 }
 
 #django-adminlinks-content,
@@ -67,3 +59,4 @@
 .django-adminlinks-open {
     overflow: auto;
 }
+
