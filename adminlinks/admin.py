@@ -7,6 +7,7 @@ from django.db import transaction
 from django.forms.models import fields_for_model
 from django.http import Http404
 from django.shortcuts import render_to_response
+from django.utils import simplejson
 from django.utils.encoding import force_unicode
 from django.utils.functional import update_wrapper
 from django.utils.safestring import mark_safe
@@ -197,10 +198,12 @@ class SuccessResponses(object):
 
     def response_change(self, request, obj, *args, **kwargs):
         original_response = super(SuccessResponses, self).response_change(request, obj, *args, **kwargs)
-        if POPUP_QS_VAR not in request.REQUEST or FRONTEND_QS_VAR not in request.REQUEST:
+        if (POPUP_QS_VAR not in request.REQUEST
+                and response.status_code > 300 and response.status_code < 400):
             return original_response
-        context = {}
-        context.update(self.get_response_change_context(request, obj))
+        ctx_dict = self.get_response_change_context(request, obj)
+        ctx_json = simplejson.dumps(ctx_dict)
+        context = {'data': ctx_dict, 'json': ctx_json}
         return render_to_response(self.get_success_templates(request), context)
 
     def response_add(self, request, obj, post_url_continue='../%s/'):
@@ -208,8 +211,9 @@ class SuccessResponses(object):
         if (POPUP_QS_VAR not in request.REQUEST
                 and response.status_code > 300 and response.status_code < 400):
             return response
-        context = {}
-        context.update(self.get_response_add_context(request, obj))
+        ctx_dict = self.get_response_add_context(request, obj)
+        ctx_json = simplejson.dumps(ctx_dict)
+        context = {'data': ctx_dict, 'json': ctx_json}
         return render_to_response(self.get_success_templates(request), context)
 
     def delete_view(self, request, object_id, extra_context=None):
@@ -221,8 +225,9 @@ class SuccessResponses(object):
 
         # Hijack the redirect on success to instead present our JS enabled template.
         if resp.status_code in (302,):
-            context = {}
-            context.update(self.get_response_delete_context(request, object_id))
+            ctx_dict = self.get_response_delete_context(request, object_id)
+            ctx_json = simplejson.dumps(ctx_dict)
+            context = {'data': ctx_dict, 'json': ctx_json}
             resp = render_to_response(self.get_success_templates(request), context)
         return resp
 
