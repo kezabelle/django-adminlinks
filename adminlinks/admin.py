@@ -235,7 +235,6 @@ class SuccessResponses(object):
                 'add': True,
                 'change': False,
                 'delete': False,
-                'as_string': 'add',
             },
             'object': {
                 'pk': obj._get_pk_val(),
@@ -253,7 +252,6 @@ class SuccessResponses(object):
                 'add': False,
                 'change': True,
                 'delete': False,
-                'as_string': 'change',
             },
             'object': {
                 'pk': obj._get_pk_val(),
@@ -271,7 +269,6 @@ class SuccessResponses(object):
                 'add': False,
                 'change': False,
                 'delete': True,
-                'as_string': 'delete',
             },
             'object': {
                 'pk': obj_id,
