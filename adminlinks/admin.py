@@ -168,16 +168,32 @@ class SuccessResponses(object):
 
     def get_success_templates(self, request):
         """
-        Hook method to allow subclases to add or modify the templates provided
-        in the case of a response.
-        """
-        app_label, model_name = self.model._meta.app_label, self.model._meta.object_name.lower()
+        Forces the attempted loading of the following:
+            - a template for this model.
+            - a template for this app.
+            - a template for any parent model.
+            - a template for any parent app.
+            - a guaranteed to exist template (the base success file)
 
-        return [
+        :param request: The WSGIRequest
+        :return: list of strings representing templates to look for.
+        """
+        app_label = self.model._meta.app_label
+        model_name = self.model._meta.object_name.lower()
+        any_parents = self.model._meta.parents.keys()
+        templates = [
             "adminlinks/%s/%s/success.html" % (app_label, model_name),
-            "adminlinks/%s/success.html" % app_label,
-            "adminlinks/success.html"
+            "adminlinks/%ssuccess.html" % app_label,
         ]
+        for parent in any_parents:
+            app_label = parent._meta.app_label
+            model_name = parent._meta.object_name.lower()
+            templates.extend([
+                "adminlinks/%s/%s/ssuccess.html" % (app_label, model_name),
+                "adminlinks/%s/success.html" % app_label,
+            ])
+        templates.extend(['adminlinks/success.html'])
+        return templates
 
     def response_change(self, request, obj, *args, **kwargs):
         original_response = super(SuccessResponses, self).response_change(request, obj, *args, **kwargs)
