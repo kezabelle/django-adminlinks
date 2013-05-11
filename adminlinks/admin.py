@@ -205,7 +205,8 @@ class SuccessResponses(object):
 
     def response_add(self, request, obj, post_url_continue='../%s/'):
         response = super(SuccessResponses, self).response_add(request, obj, post_url_continue)
-        if POPUP_QS_VAR not in request.REQUEST or FRONTEND_QS_VAR not in request.REQUEST:
+        if (POPUP_QS_VAR not in request.REQUEST
+                and response.status_code > 300 and response.status_code < 400):
             return response
         context = {}
         context.update(self.get_response_add_context(request, obj))
