@@ -91,6 +91,9 @@ the same sort of thing:
 
   * `Martin Mahner's django-frontendadmin`_
   * `Yaco Sistemas' django-inplaceedit`_
+  * `Ryan Berg's django-jumptoadmin`_
+  * `Maxime Haineault's django-editlive`_
+  * `Interaction Consortium's django-adminboost`_
 
 If you're aware of any others working in the same space, let me know and I'll
 add them here.
@@ -101,4 +104,6 @@ add them here.
 .. _my Twitter account: https://twitter.com/kezabelle/
 .. _Martin Mahner's django-frontendadmin: https://github.com/bartTC/django-frontendadmin/
 .. _Yaco Sistemas' django-inplaceedit: https://github.com/Yaco-Sistemas/django-inplaceedit/
-
+.. _Ryan Berg's django-jumptoadmin: https://github.com/ryanberg/django-jumptoadmin/
+.. _Maxime Haineault's django-editlive: https://github.com/h3/django-editlive/
+.. _Interaction Consortium's django-adminboost: https://github.com/ixc/glamkit-adminboost/
