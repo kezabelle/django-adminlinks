@@ -11,12 +11,6 @@ from adminlinks.templatetags.utils import (context_passes_test,
                                            _admin_link_shortcut,
                                            _add_link_to_context,
                                            _add_custom_link_to_context)
-
-try:
-    from editregions.utils.regions import fake_context_payload
-except ImportError:
-    fake_context_payload = 'nothing_should_ever_match_this'
-
 register = Library()
 logger = logging.getLogger(__name__)
 
@@ -65,12 +59,6 @@ class BaseAdminLink(object):
 
         if not hasattr(obj, '_meta'):
             logger.debug('Object has no _meta attribute')
-            return False
-
-        # This is to support editregions, which in turn depends on adminlinks.
-        # Yay for circular dependencies at a package level.
-        if fake_context_payload in context:
-            logger.debug('Fake payload discovered in context')
             return False
 
         if not context_passes_test(context):
