@@ -18,17 +18,19 @@
     }
     $('.admin-toolbar-toggle .icon-cog-circled').bind('click', toggle_editing);
 
-    $to_iframe.fancyiframe({
-        elements: {
-            prefix: 'django-adminlinks',
-            classes: 'adminlinks'
-        },
-        fades: {
-            opacity: 0.85,
-            overlayIn: 100,
-            overlayOut: 250,
-            wrapperIn: 0,
-            wrapperOut: 250
-        }
-    });
+    if (window.frameElement === null) {
+        $to_iframe.fancyiframe({
+            elements: {
+                prefix: 'django-adminlinks',
+                classes: 'adminlinks'
+            },
+            fades: {
+                opacity: 0.85,
+                overlayIn: 100,
+                overlayOut: 250,
+                wrapperIn: 0,
+                wrapperOut: 250
+            }
+        });
+    }
 })(typeof django !== 'undefined' && django.jQuery || window.jQuery, document);
