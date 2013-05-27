@@ -101,9 +101,11 @@ class Edit(BaseAdminLink, InclusionTag):
         :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
         """
+
         if not self.is_valid(context, obj):
             return context
 
+        context = context.__copy__()
         context.update(_add_link_to_context(admin_site, context['request'],
                                             obj._meta, 'change', [obj.pk],
                                             query=querystring))
@@ -155,6 +157,7 @@ class EditField(BaseAdminLink, InclusionTag):
         if not self.is_valid(context, obj):
             return context
 
+        context = context.__copy__()
         context.update(_add_custom_link_to_context(admin_site, context['request'],
                                                    obj._meta, 'change',
                                                    'change_field',
@@ -203,6 +206,7 @@ class Delete(BaseAdminLink, InclusionTag):
         if not self.is_valid(context, obj):
             return context
 
+        context = context.__copy__()
         context.update(_add_link_to_context(admin_site, context['request'],
                                             obj._meta, 'delete', [obj.pk],
                                             query=querystring))
@@ -246,9 +250,11 @@ class Add(BaseAdminLink, InclusionTag):
         :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
         """
+        # context = context.new()
         if not self.is_valid(context, obj):
             return context
 
+        context = context.__copy__()
         context.update(_add_link_to_context(admin_site, context['request'],
                                             obj._meta, 'add', None,
                                             query=querystring))
@@ -292,6 +298,10 @@ class History(BaseAdminLink, InclusionTag):
         :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
         """
+        if not self.is_valid(context, obj):
+            return context
+
+        context = context.__copy__()
         context.update(_add_link_to_context(admin_site, context['request'],
                                             obj._meta , 'history', [obj.pk],
                                             query=querystring))
@@ -340,6 +350,7 @@ class ChangeList(BaseAdminLink, InclusionTag):
         if not self.is_valid(context, obj):
             return context
 
+        context = context.__copy__()
         context.update(_add_link_to_context(admin_site, context['request'],
                                             obj._meta , 'changelist', None,
                                             query=querystring))
@@ -391,6 +402,7 @@ class Combined(BaseAdminLink, InclusionTag):
                 modeladmin_links.get('delete', ''), [obj.pk]
             ),
         }
+        context = context.__copy__()
         context.update({'links': links, 'verbose_name': opts.verbose_name})
         return context
 register.tag(name='render_admin_buttons', compile_function=Combined)
