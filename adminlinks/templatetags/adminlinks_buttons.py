@@ -42,7 +42,7 @@ class BaseAdminLink(object):
     #: see https://github.com/ojii/django-classy-tags/issues/14
     base_options = (Argument('obj', required=True),
                     StringArgument('admin_site', required=False, default='admin'),
-                    Argument('querystring', required=False, default='_popup=1'))
+                    Argument('querystring', required=False, default=''))
 
     def is_valid(self, context, obj, *args, **kwargs):
         """
@@ -328,7 +328,7 @@ class ChangeList(BaseAdminLink, InclusionTag):
     # https://code.djangoproject.com/ticket/20288#ticket
     options = Options(BaseAdminLink.base_options[0],  # obj
                       BaseAdminLink.base_options[1],  # admin_site
-                      Argument('querystring', required=False, default='pop=1'))
+                      Argument('querystring', required=False, default=''))
 
     def get_context(self, context, obj, admin_site, querystring):
         """
