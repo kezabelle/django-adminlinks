@@ -244,7 +244,6 @@ class SuccessResponses(object):
             'object': {
                 'pk': obj._get_pk_val(),
                 'id': obj._get_pk_val(),
-                'original': obj,
             }
         }
 
@@ -261,7 +260,6 @@ class SuccessResponses(object):
             'object': {
                 'pk': obj._get_pk_val(),
                 'id': obj._get_pk_val(),
-                'original': obj,
             }
         }
 
