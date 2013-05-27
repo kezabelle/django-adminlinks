@@ -10,7 +10,7 @@ from adminlinks.templatetags.utils import (context_passes_test,
                                            get_registered_modeladmins,
                                            _admin_link_shortcut,
                                            _add_link_to_context,
-                                           _add_custom_link_to_context)
+                                           _add_custom_link_to_context, convert_context_to_dict)
 register = Library()
 logger = logging.getLogger(__name__)
 
@@ -105,7 +105,7 @@ class Edit(BaseAdminLink, InclusionTag):
         if not self.is_valid(context, obj):
             return context
 
-        context = context.__copy__()
+        context = convert_context_to_dict(context)
         context.update(_add_link_to_context(admin_site, context['request'],
                                             obj._meta, 'change', [obj.pk],
                                             query=querystring))
@@ -157,7 +157,7 @@ class EditField(BaseAdminLink, InclusionTag):
         if not self.is_valid(context, obj):
             return context
 
-        context = context.__copy__()
+        context = convert_context_to_dict(context)
         context.update(_add_custom_link_to_context(admin_site, context['request'],
                                                    obj._meta, 'change',
                                                    'change_field',
@@ -254,7 +254,7 @@ class Add(BaseAdminLink, InclusionTag):
         if not self.is_valid(context, obj):
             return context
 
-        context = context.__copy__()
+        context = convert_context_to_dict(context)
         context.update(_add_link_to_context(admin_site, context['request'],
                                             obj._meta, 'add', None,
                                             query=querystring))
@@ -301,7 +301,7 @@ class History(BaseAdminLink, InclusionTag):
         if not self.is_valid(context, obj):
             return context
 
-        context = context.__copy__()
+        context = convert_context_to_dict(context)
         context.update(_add_link_to_context(admin_site, context['request'],
                                             obj._meta , 'history', [obj.pk],
                                             query=querystring))
@@ -350,7 +350,7 @@ class ChangeList(BaseAdminLink, InclusionTag):
         if not self.is_valid(context, obj):
             return context
 
-        context = context.__copy__()
+        context = convert_context_to_dict(context)
         context.update(_add_link_to_context(admin_site, context['request'],
                                             obj._meta , 'changelist', None,
                                             query=querystring))
@@ -402,7 +402,7 @@ class Combined(BaseAdminLink, InclusionTag):
                 modeladmin_links.get('delete', ''), [obj.pk]
             ),
         }
-        context = context.__copy__()
+        context = convert_context_to_dict(context)
         context.update({'links': links, 'verbose_name': opts.verbose_name})
         return context
 register.tag(name='render_admin_buttons', compile_function=Combined)

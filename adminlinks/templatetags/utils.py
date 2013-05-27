@@ -235,3 +235,11 @@ def _resort_modeladmins(modeladmins):
     resultset = list(unsorted_resultset.items())
     resultset.sort(key=lambda x: x[0])
     return resultset
+
+
+def convert_context_to_dict(context):
+    out = {}
+    for d in context.dicts:
+        for key, value in d.items():
+            out[key] = value
+    return out
