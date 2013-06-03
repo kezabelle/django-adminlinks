@@ -50,8 +50,6 @@ class HideMessages(object):
     framework. As such, we're just going to ignore it, for consistency's sake.
     """
     def message_user(self, request, *args, **kwargs):
-        if POPUP_QS_VAR not in request.REQUEST or FRONTEND_QS_VAR not in request.REQUEST:
-            return super(HideMessages, self).message_user(request, *args, **kwargs)
         return None
 
 
@@ -198,8 +196,7 @@ class SuccessResponses(object):
 
     def response_change(self, request, obj, *args, **kwargs):
         original_response = super(SuccessResponses, self).response_change(request, obj, *args, **kwargs)
-        if (POPUP_QS_VAR not in request.REQUEST
-                and response.status_code > 300 and response.status_code < 400):
+        if original_response.status_code <= 300 or original_response.status_code >= 400:
             return original_response
         ctx_dict = self.get_response_change_context(request, obj)
         ctx_json = simplejson.dumps(ctx_dict)
@@ -208,8 +205,7 @@ class SuccessResponses(object):
 
     def response_add(self, request, obj, post_url_continue='../%s/'):
         response = super(SuccessResponses, self).response_add(request, obj, post_url_continue)
-        if (POPUP_QS_VAR not in request.REQUEST
-                and response.status_code > 300 and response.status_code < 400):
+        if response.status_code <= 300 or response.status_code >= 400:
             return response
         ctx_dict = self.get_response_add_context(request, obj)
         ctx_json = simplejson.dumps(ctx_dict)
@@ -224,12 +220,13 @@ class SuccessResponses(object):
         resp = super(SuccessResponses, self).delete_view(request, object_id, extra_context)
 
         # Hijack the redirect on success to instead present our JS enabled template.
-        if resp.status_code in (302,):
-            ctx_dict = self.get_response_delete_context(request, object_id)
-            ctx_json = simplejson.dumps(ctx_dict)
-            context = {'data': ctx_dict, 'json': ctx_json}
-            resp = render_to_response(self.get_success_templates(request), context)
-        return resp
+        if resp.status_code <= 300 or resp.status_code >= 400:
+            return resp
+
+        ctx_dict = self.get_response_delete_context(request, object_id)
+        ctx_json = simplejson.dumps(ctx_dict)
+        context = {'data': ctx_dict, 'json': ctx_json}
+        return render_to_response(self.get_success_templates(request), context)
 
     def get_response_add_context(self, request, obj):
         """
