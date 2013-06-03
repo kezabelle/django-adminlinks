@@ -7,6 +7,8 @@
             window.location.reload(true);
         }
     }
+    window.__data_changed__ = false;
+
     $doc.bind('fancyiframe-close', on_popup_close);
 
     var toggle_editing = function(event) {
