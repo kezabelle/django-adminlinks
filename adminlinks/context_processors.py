@@ -18,6 +18,11 @@ def fix_admin_popups(request):
                      "they're not signed in.")
         return invalid_value
 
+    if request.path.startswith(('/admin/', '/administration/', '/backend/')):
+        logger.info("Common admin URL prefix detected, assuming it's "
+                    "an AdminSite")
+        return valid_value
+
     try:
         resolved_func = resolve(request.path)
         real_func = resolved_func.func.func_closure[0].cell_contents
