@@ -6,7 +6,8 @@ logger = logging.getLogger(__name__)
 
 
 def fix_admin_popups(request):
-    valid_value = {'is_popup': True}
+    valid_value = {'is_popup': '_popup' in request.REQUEST or
+                               'pop' in request.GET}
     invalid_value = {}
     if not hasattr(request, 'user'):
         logger.debug("No user on request, probably don't need to fix popups")
