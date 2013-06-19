@@ -96,7 +96,7 @@ class Edit(BaseAdminLink, InclusionTag):
                     retrieve a :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
-                            Defaults to **"_popup=1"**
+                            Defaults to ""
         :return: the context, possibly modified with a new layer.
         :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
@@ -149,7 +149,7 @@ class EditField(BaseAdminLink, InclusionTag):
         :param fieldname: the specific model field to render a link for.
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
-                            Defaults to **"_popup=1"**
+                            Defaults to ""
         :return: the context, possibly modified with a new layer.
         :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
@@ -198,7 +198,7 @@ class Delete(BaseAdminLink, InclusionTag):
                     retrieve a :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
-                            Defaults to **"_popup=1"**
+                            Defaults to ""
         :return: the context, possibly modified with a new layer.
         :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
@@ -245,7 +245,7 @@ class Add(BaseAdminLink, InclusionTag):
                     :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
-                            Defaults to **"_popup=1"**
+                            Defaults to ""
         :return: the context, possibly modified with a new layer.
         :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
@@ -293,7 +293,7 @@ class History(BaseAdminLink, InclusionTag):
                     retrieve a :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
-                            Defaults to **"_popup=1"**
+                            Defaults to ""
         :return: the context, possibly modified with a new layer.
         :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.
@@ -342,7 +342,7 @@ class ChangeList(BaseAdminLink, InclusionTag):
                     :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
-                            Defaults to **"_popup=1"**
+                            Defaults to ""
         :return: the context, possibly modified with a new layer.
         :rtype: :class:`~django.template.RequestContext` or other context/
                 dictionary-like object.

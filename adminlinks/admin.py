@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 from django.contrib.admin import helpers
 from django.contrib.admin.options import csrf_protect_m
 from django.contrib.admin.util import unquote
@@ -12,35 +13,8 @@ from django.utils.encoding import force_unicode
 from django.utils.functional import update_wrapper
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
-from adminlinks.constants import POPUP_QS_VAR, FRONTEND_QS_VAR
 
-
-class AllowMorePopups(object):
-    """
-    We want to be able to show the delete view without the standard Django
-    header etc, unfortunately Django doesn't allow for this, and apparently
-    won't; see https://code.djangoproject.com/ticket/20302
-
-    As a result, we just extend whatever `extra_context` is given, to
-    include the desired context variable.
-    """
-    def delete_view(self, request, object_id, extra_context=None):
-        """
-        Adds key `is_popup` to the context, via `extra_context`.
-        Must check `request.REQUEST` because we don't know if we've been
-        POSTed to through the confirmation.
-        """
-        extra_context = extra_context or {}
-        extra_context.update(is_popup=POPUP_QS_VAR in request.REQUEST)
-        return super(AllowMorePopups, self).delete_view(request, object_id, extra_context)
-
-    def history_view(self, request, object_id, extra_context=None):
-        """
-        Adds key `is_popup` to the context, via `extra_context`
-        """
-        extra_context = extra_context or {}
-        extra_context.update(is_popup=POPUP_QS_VAR in request.GET)
-        return super(AllowMorePopups, self).history_view(request, object_id, extra_context)
+logger = logging.getLogger(__name__)
 
 
 class HideMessages(object):
@@ -148,7 +122,6 @@ class ChangeFieldView(object):
             'object_id': object_id,
             'original': obj,
             'show_delete': False,
-            'is_popup': POPUP_QS_VAR in request.REQUEST,
             'media': mark_safe(media),
             'errors': helpers.AdminErrorList(form, inline_formsets=[]),
             'root_path': getattr(self.admin_site, 'root_path', None),
@@ -277,13 +250,12 @@ class SuccessResponses(object):
         }
 
 
-class AdminlinksMixin(HideMessages, AllowMorePopups, ChangeFieldView, SuccessResponses):
+class AdminlinksMixin(HideMessages, ChangeFieldView, SuccessResponses):
     """
     An object whose sole purposes is to facilitate all the combined functionality
     provided by the classes it inherits from.
 
     .. seealso:: :class:`~adminlinks.admin.HideMessages`
-    .. seealso:: :class:`~adminlinks.admin.AllowMorePopups`
     .. seealso:: :class:`~adminlinks.admin.ChangeFieldView`
     .. seealso:: :class:`~adminlinks.admin.SuccessResponses`
     """

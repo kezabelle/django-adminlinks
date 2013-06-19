@@ -14,12 +14,3 @@ PERMISSION_ATTRIBUTE = 'has_%s_permission'
 #: :func:`~adminlinks.templatetags.utils.get_admin_site` to stash away all
 #: discovered valid :class:`~django.contrib.admin.sites.AdminSite` instances.
 GET_ADMIN_SITES_KEY = '_found_previously'
-
-
-#: Used through-out the :class:`~adminlinks.admin.AdminlinksMixin` to test
-#: whether or not we're in a popup window.
-POPUP_QS_VAR = '_popup'
-
-#: Used through-out the :class:`~adminlinks.admin.AdminlinksMixin` to test
-#: whether or not we're in a popup window, and frontend editing.
-FRONTEND_QS_VAR = '_frontend_editing'
