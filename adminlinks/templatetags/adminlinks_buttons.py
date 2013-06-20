@@ -10,7 +10,8 @@ from adminlinks.templatetags.utils import (context_passes_test,
                                            get_registered_modeladmins,
                                            _admin_link_shortcut,
                                            _add_link_to_context,
-                                           _add_custom_link_to_context, convert_context_to_dict)
+                                           _add_custom_link_to_context,
+                                           convert_context_to_dict)
 register = Library()
 logger = logging.getLogger(__name__)
 
