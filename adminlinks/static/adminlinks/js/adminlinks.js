@@ -1,13 +1,18 @@
 ;(function($, document, undefined) {
+    // this dude is super important, because it reflects to the page that something
+    // from one of the child windows has decided the page needs changing.
+    // when we close the popup, we check it to decide whether to reload.
+    window.__data_changed__ = false;
+
     var $to_iframe = $('.admin-add, .admin-edit, .admin-delete, .admin-history, .admin-toolbar-link');
     var $doc = $(document);
     var $body = $('body', $doc).eq(0);
     var on_popup_close = function(event, action, data) {
-        if (typeof action !== 'undefined') {
-            window.location.reload(true);
+        if (window.__data_changed__ === true) {
+            window.location.reload();
         }
     }
-    window.__data_changed__ = false;
+
 
     $doc.bind('fancyiframe-close', on_popup_close);
 
