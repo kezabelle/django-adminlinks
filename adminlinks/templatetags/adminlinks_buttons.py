@@ -77,6 +77,18 @@ class BaseAdminLink(object):
 
         return True
 
+    def get_link_context(self, context, obj, *args, **kwargs):
+        raise NotImplementedError('Subclass should implement this')
+
+    def get_context(self, context, obj, *args, **kwargs):
+        """
+        Entry point for all subsequent tags. Tests the context and bails
+        early if possible.
+        """
+        if not self.is_valid(context, obj):
+            return {}
+        return self.get_link_context(context, obj, *args, **kwargs)
+
 
 class Edit(BaseAdminLink, InclusionTag):
     """
@@ -92,7 +104,7 @@ class Edit(BaseAdminLink, InclusionTag):
     # uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
     options = Options(*BaseAdminLink.base_options)
 
-    def get_context(self, context, obj, admin_site, querystring):
+    def get_link_context(self, context, obj, admin_site, querystring):
         """
         Adds a `link` and `verbose_name` to the context, if
         :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
@@ -106,20 +118,13 @@ class Edit(BaseAdminLink, InclusionTag):
                     retrieve a :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
-                            Defaults to ""
-        :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.RequestContext` or other context/
-                dictionary-like object.
+                            Defaults to "_popup=1"
+        :return: the link values.
+        :rtype: dictionary.
         """
-
-        if not self.is_valid(context, obj):
-            return context
-
-        context = convert_context_to_dict(context)
-        context.update(_add_link_to_context(admin_site, context['request'],
-                                            obj._meta, 'change', [obj.pk],
-                                            query=querystring))
-        return context
+        return _add_link_to_context(admin_site, context['request'],
+                                    obj._meta, 'change', [obj.pk],
+                                    query=querystring)
 register.tag(name='render_edit_button', compile_function=Edit)
 
 
@@ -144,7 +149,7 @@ class EditField(BaseAdminLink, InclusionTag):
                       StringArgument('fieldname', required=True),
                       *BaseAdminLink.base_options[1:])  # admin_site, querystring
 
-    def get_context(self, context, obj, fieldname, admin_site, querystring):
+    def get_link_context(self, context, obj, fieldname, admin_site, querystring):
         """
         Adds a `link` and `verbose_name` to the context, if
         :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
@@ -159,15 +164,11 @@ class EditField(BaseAdminLink, InclusionTag):
         :param fieldname: the specific model field to render a link for.
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
-                            Defaults to ""
-        :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.RequestContext` or other context/
-                dictionary-like object.
+                            Defaults to "_popup=1"
+        :return: the link values.
+        :rtype: dictionary.
         """
-        if not self.is_valid(context, obj):
-            return context
-
-        context = convert_context_to_dict(context)
+        context = {}
         context.update(_add_custom_link_to_context(admin_site, context['request'],
                                                    obj._meta, 'change',
                                                    'change_field',
@@ -175,7 +176,8 @@ class EditField(BaseAdminLink, InclusionTag):
                                                    query=querystring))
         # successfully loaded link, add the fieldname.
         if 'link' in context:
-            context.update({'verbose_name': obj._meta.get_field_by_name(fieldname)[0].verbose_name})
+            context.update({'verbose_name':
+                            obj._meta.get_field_by_name(fieldname)[0].verbose_name})
         return context
 register.tag(name='render_edit_field_button', compile_function=EditField)
 
@@ -194,7 +196,7 @@ class Delete(BaseAdminLink, InclusionTag):
     # uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
     options = Options(*BaseAdminLink.base_options)
 
-    def get_context(self, context, obj, admin_site, querystring):
+    def get_link_context(self, context, obj, admin_site, querystring):
         """
         Adds a `link` and `verbose_name` to the context, if
         :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
@@ -208,19 +210,13 @@ class Delete(BaseAdminLink, InclusionTag):
                     retrieve a :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
-                            Defaults to ""
-        :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.RequestContext` or other context/
-                dictionary-like object.
+                            Defaults to "_popup=1"
+        :return: the link values.
+        :rtype: dictionary.
         """
-        if not self.is_valid(context, obj):
-            return context
-
-        context = context.__copy__()
-        context.update(_add_link_to_context(admin_site, context['request'],
-                                            obj._meta, 'delete', [obj.pk],
-                                            query=querystring))
-        return context
+        return _add_link_to_context(admin_site, context['request'],
+                                    obj._meta, 'delete', [obj.pk],
+                                    query=querystring)
 register.tag(name='render_delete_button', compile_function=Delete)
 
 
@@ -241,7 +237,7 @@ class Add(BaseAdminLink, InclusionTag):
     # uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
     options = Options(*BaseAdminLink.base_options)
 
-    def get_context(self, context, obj, admin_site, querystring):
+    def get_link_context(self, context, obj, admin_site, querystring):
         """
         Adds a `link` and `verbose_name` to the context, if
         :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
@@ -255,20 +251,13 @@ class Add(BaseAdminLink, InclusionTag):
                     :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
-                            Defaults to ""
-        :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.RequestContext` or other context/
-                dictionary-like object.
+                            Defaults to "_popup=1"
+        :return: the link values.
+        :rtype: dictionary.
         """
-        # context = context.new()
-        if not self.is_valid(context, obj):
-            return context
-
-        context = convert_context_to_dict(context)
-        context.update(_add_link_to_context(admin_site, context['request'],
-                                            obj._meta, 'add', None,
-                                            query=querystring))
-        return context
+        return _add_link_to_context(admin_site, context['request'],
+                                    obj._meta, 'add', None,
+                                    query=querystring)
 register.tag(name='render_add_button', compile_function=Add)
 
 
@@ -289,7 +278,7 @@ class History(BaseAdminLink, InclusionTag):
     # uses :attr:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.base_options`
     options = Options(*BaseAdminLink.base_options)
 
-    def get_context(self, context, obj, admin_site, querystring):
+    def get_link_context(self, context, obj, admin_site, querystring):
         """
         Adds a `link` and `verbose_name` to the context, if
         :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
@@ -303,19 +292,13 @@ class History(BaseAdminLink, InclusionTag):
                     retrieve a :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
-                            Defaults to ""
-        :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.RequestContext` or other context/
-                dictionary-like object.
+                            Defaults to "_popup=1"
+        :return: the link values.
+        :rtype: dictionary.
         """
-        if not self.is_valid(context, obj):
-            return context
-
-        context = convert_context_to_dict(context)
-        context.update(_add_link_to_context(admin_site, context['request'],
-                                            obj._meta , 'history', [obj.pk],
-                                            query=querystring))
-        return context
+        return _add_link_to_context(admin_site, context['request'],
+                                    obj._meta , 'history', [obj.pk],
+                                    query=querystring)
 register.tag(name='render_history_button', compile_function=History)
 
 
@@ -339,7 +322,7 @@ class ChangeList(BaseAdminLink, InclusionTag):
                       Argument('querystring', required=False,
                                default=_changelist_popup_qs()))
 
-    def get_context(self, context, obj, admin_site, querystring):
+    def get_link_context(self, context, obj, admin_site, querystring):
         """
         Adds a `link` and `verbose_name` to the context, if
         :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
@@ -353,19 +336,14 @@ class ChangeList(BaseAdminLink, InclusionTag):
                     :attr:`~django.db.models.Field.verbose_name`
         :param admin_site: name of the admin site to use; defaults to **"admin"**
         :param querystring: a querystring to include in the link output.
-                            Defaults to ""
-        :return: the context, possibly modified with a new layer.
-        :rtype: :class:`~django.template.RequestContext` or other context/
-                dictionary-like object.
+                            Defaults to "pop=1" unless Django > 1.6, when it
+                            changes to "_popup=1"
+        :return: the link values.
+        :rtype: dictionary.
         """
-        if not self.is_valid(context, obj):
-            return context
-
-        context = convert_context_to_dict(context)
-        context.update(_add_link_to_context(admin_site, context['request'],
-                                            obj._meta , 'changelist', None,
-                                            query=querystring))
-        return context
+        return _add_link_to_context(admin_site, context['request'],
+                                    obj._meta , 'changelist', None,
+                                    query=querystring)
 register.tag(name='render_changelist_button', compile_function=ChangeList)
 
 
@@ -381,10 +359,21 @@ class Combined(BaseAdminLink, InclusionTag):
         StringArgument('admin_site', required=False, default='admin'),
     )
 
-    def get_context(self, context, obj, admin_site):
-        if not self.is_valid(context, obj):
-            return context
+    def get_link_context(self, context, obj, admin_site):
+        """
+        Wraps all the other adminlink template tags into one.
 
+        :param context: Hopefully, a :class:`~django.template.RequestContext`
+                        otherwise :meth:`~adminlinks.templatetags.adminlinks_buttons.BaseAdminLink.is_valid`
+                        is unlikely to be :data:`True`
+        :param obj: the :class:`~django.db.models.Model` class to link to.
+                    Must have :class:`~django.db.models.Options`
+                    from which we can retrieve a
+                    :attr:`~django.db.models.Field.verbose_name`
+        :param admin_site: name of the admin site to use; defaults to **"admin"**
+        :return: the link values.
+        :rtype: dictionary.
+        """
         opts = obj._meta
         site = get_admin_site(admin_site)
         if site is None:
@@ -413,7 +402,5 @@ class Combined(BaseAdminLink, InclusionTag):
                 modeladmin_links.get('delete', ''), [obj.pk]
             ),
         }
-        context = convert_context_to_dict(context)
-        context.update({'links': links, 'verbose_name': opts.verbose_name})
-        return context
+        return {'links': links, 'verbose_name': opts.verbose_name}
 register.tag(name='render_admin_buttons', compile_function=Combined)
