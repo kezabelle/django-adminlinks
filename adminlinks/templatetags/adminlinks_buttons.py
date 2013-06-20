@@ -5,6 +5,8 @@ from classytags.arguments import Argument, StringArgument
 from classytags.core import Options
 from django.template.base import Library
 from classytags.helpers import InclusionTag
+from distutils.version import LooseVersion
+from django import get_version
 from adminlinks.templatetags.utils import (context_passes_test,
                                            get_admin_site,
                                            get_registered_modeladmins,
@@ -14,6 +16,13 @@ from adminlinks.templatetags.utils import (context_passes_test,
                                            convert_context_to_dict)
 register = Library()
 logger = logging.getLogger(__name__)
+
+
+def _changelist_popup_qs():
+    changelist_popup_qs = 'pop=1'
+    if LooseVersion(get_version()) >= LooseVersion('1.6'):
+        changelist_popup_qs = '_popup=1'
+    return changelist_popup_qs
 
 
 class BaseAdminLink(object):
@@ -37,7 +46,7 @@ class BaseAdminLink(object):
     #: see https://github.com/ojii/django-classy-tags/issues/14
     base_options = (Argument('obj', required=True),
                     StringArgument('admin_site', required=False, default='admin'),
-                    Argument('querystring', required=False, default=''))
+                    Argument('querystring', required=False, default='_popup=1'))
 
     def is_valid(self, context, obj, *args, **kwargs):
         """
@@ -327,7 +336,8 @@ class ChangeList(BaseAdminLink, InclusionTag):
     # https://code.djangoproject.com/ticket/20288#ticket
     options = Options(BaseAdminLink.base_options[0],  # obj
                       BaseAdminLink.base_options[1],  # admin_site
-                      Argument('querystring', required=False, default=''))
+                      Argument('querystring', required=False,
+                               default=_changelist_popup_qs()))
 
     def get_context(self, context, obj, admin_site, querystring):
         """
