@@ -168,16 +168,18 @@ class SuccessResponses(object):
         return templates
 
     def response_change(self, request, obj, *args, **kwargs):
-        original_response = super(SuccessResponses, self).response_change(request, obj, *args, **kwargs)
-        if original_response.status_code <= 300 or original_response.status_code >= 400:
-            return original_response
+        response = super(SuccessResponses, self).response_change(request, obj,
+                                                                 *args, **kwargs)
+        if response.status_code <= 300 or response.status_code >= 400:
+            return response
         ctx_dict = self.get_response_change_context(request, obj)
         ctx_json = simplejson.dumps(ctx_dict)
         context = {'data': ctx_dict, 'json': ctx_json}
         return render_to_response(self.get_success_templates(request), context)
 
     def response_add(self, request, obj, post_url_continue='../%s/'):
-        response = super(SuccessResponses, self).response_add(request, obj, post_url_continue)
+        response = super(SuccessResponses, self).response_add(request, obj,
+                                                              post_url_continue)
         if response.status_code <= 300 or response.status_code >= 400:
             return response
         ctx_dict = self.get_response_add_context(request, obj)
@@ -190,12 +192,10 @@ class SuccessResponses(object):
         Ridiculously, there's no response_delete method to patch, so instead
         we're just going to do a similar thing and hope for the best.
         """
-        resp = super(SuccessResponses, self).delete_view(request, object_id, extra_context)
-
-        # Hijack the redirect on success to instead present our JS enabled template.
-        if resp.status_code <= 300 or resp.status_code >= 400:
-            return resp
-
+        response = super(SuccessResponses, self).delete_view(request, object_id,
+                                                             extra_context)
+        if response.status_code <= 300 or response.status_code >= 400:
+            return response
         ctx_dict = self.get_response_delete_context(request, object_id)
         ctx_json = simplejson.dumps(ctx_dict)
         context = {'data': ctx_dict, 'json': ctx_json}
