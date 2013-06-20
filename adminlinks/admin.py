@@ -155,7 +155,7 @@ class SuccessResponses(object):
         any_parents = self.model._meta.parents.keys()
         templates = [
             "adminlinks/%s/%s/success.html" % (app_label, model_name),
-            "adminlinks/%ssuccess.html" % app_label,
+            "adminlinks/%s/success.html" % app_label,
         ]
         for parent in any_parents:
             app_label = parent._meta.app_label
