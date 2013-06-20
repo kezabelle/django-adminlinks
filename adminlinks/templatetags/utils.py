@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from collections import defaultdict
+import logging
 from urlparse import urlsplit, urlunsplit
 from django.core.urlresolvers import reverse, resolve, NoReverseMatch
 from adminlinks.constants import (GET_ADMIN_SITES_KEY,
                                   MODELADMIN_REVERSE, PERMISSION_ATTRIBUTE)
 from django.http import QueryDict
+
+logger = logging.getLogger(__name__)
 
 
 def context_passes_test(context):
@@ -19,10 +22,12 @@ def context_passes_test(context):
     :rtype: :data:`boolean`
     """
     if 'request' not in context:
+        logger.debug('request not found in %r' % context)
         return False
     request = context['request']
 
     if not hasattr(request, 'user'):
+        logger.debug('%r has no "user"')
         return False
 
     user = request.user
@@ -31,6 +36,7 @@ def context_passes_test(context):
         user.is_active,
         len(user.get_all_permissions()) > 0,
     ]
+    logger.debug('Tested conditions: %r' % valid_admin_conditions)
     return all(valid_admin_conditions)
 
 
@@ -52,9 +58,8 @@ def get_admin_site(admin_site):
     # pop a dictionary onto this function and use it for keeping track
     # of discovered admin sites as they're found.
     known_sites = getattr(get_admin_site, GET_ADMIN_SITES_KEY, {})
-
-    # Not previously used, so we'll do the more expensive lookup.
     if admin_site not in known_sites:
+        logger.debug('admin site not previously discovered, so do the lookup')
         try:
             for_resolving = reverse('%s:index' % admin_site)
             wrapped_view = resolve(for_resolving)
