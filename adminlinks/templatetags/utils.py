@@ -13,13 +13,15 @@ logger = logging.getLogger(__name__)
 
 def context_passes_test(context):
     """
-    Given a context, determine whether a `user` exists, and if they see anything.
+    Given a context, determine whether a
+    :class:`~django.contrib.auth.models.User` exists, and if they see anything.
 
     :param context: a :class:`~django.template.RequestContext`. Accepts
                     any :class:`~django.template.Context` like object,
-                    but it explicitly tests for a `request` key and `request.user`
+                    but it explicitly tests for a `request` key and
+                    `request.user`
     :return: whether or not the given context should allow further processing.
-    :rtype: :data:`boolean`
+    :rtype: :data:`True` or :data:`False`
     """
     if 'request' not in context:
         logger.debug('request not found in %r' % context)
@@ -83,8 +85,8 @@ def get_registered_modeladmins(request, admin_site):
     :class:`~django.contrib.admin.ModelAdmin`
     classes attached to the given admin and compile a dictionary of
     :class:`~django.db.models.Model` types
-    visible to the current user, limiting the methods available
-    (add/edit/history/delete) as appropriate.
+    visible to the current :class:`~django.contrib.auth.models.User`, limiting
+    the methods available (add/edit/history/delete) as appropriate.
 
     Always returns a dictionary, though it may be empty, and thus evaluate as Falsy.
 

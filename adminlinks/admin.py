@@ -24,6 +24,11 @@ class HideMessages(object):
     framework. As such, we're just going to ignore it, for consistency's sake.
     """
     def message_user(self, request, *args, **kwargs):
+        """
+        Avoid adding any message to the request using the messages framework
+
+        :return: :data:`None`
+        """
         return None
 
 
@@ -168,6 +173,12 @@ class SuccessResponses(object):
         return templates
 
     def response_change(self, request, obj, *args, **kwargs):
+        """
+        Overrides the Django default, to try and provide a better experience
+        for frontend editing when editing an existing object.
+
+        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_success_templates`
+        """
         response = super(SuccessResponses, self).response_change(request, obj,
                                                                  *args, **kwargs)
         if response.status_code <= 300 or response.status_code >= 400:
@@ -178,6 +189,12 @@ class SuccessResponses(object):
         return render_to_response(self.get_success_templates(request), context)
 
     def response_add(self, request, obj, post_url_continue='../%s/'):
+        """
+        Overrides the Django default, to try and provide a better experience
+        for frontend editing when adding a new object.
+
+        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_success_templates`
+        """
         response = super(SuccessResponses, self).response_add(request, obj,
                                                               post_url_continue)
         if response.status_code <= 300 or response.status_code >= 400:
@@ -191,6 +208,9 @@ class SuccessResponses(object):
         """
         Ridiculously, there's no response_delete method to patch, so instead
         we're just going to do a similar thing and hope for the best.
+
+        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_response_delete_context`
+        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_success_templates`
         """
         response = super(SuccessResponses, self).delete_view(request, object_id,
                                                              extra_context)
@@ -203,7 +223,7 @@ class SuccessResponses(object):
 
     def get_response_add_context(self, request, obj):
         """
-        .. seealso:: :meth:`adminlinks.admin.SuccessResponses.response_add`
+        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.response_add`
         """
         return {
             'action': {
@@ -219,7 +239,7 @@ class SuccessResponses(object):
 
     def get_response_change_context(self, request, obj):
         """
-        .. seealso:: :meth:`adminlinks.admin.SuccessResponses.response_change`
+        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.response_change`
         """
         return {
             'action': {
@@ -235,7 +255,7 @@ class SuccessResponses(object):
 
     def get_response_delete_context(self, request, obj_id):
         """
-        .. seealso:: :meth:`adminlinks.admin.SuccessResponses.delete_view`
+        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.delete_view`
         """
         return {
             'action': {

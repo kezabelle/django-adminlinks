@@ -8,7 +8,7 @@ Usage documentation
 -------------------
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 5
 
     getting_started
     extras
@@ -19,7 +19,7 @@ API information (auto-generated)
 --------------------------------
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 3
 
     api/templatetags
     api/admin
@@ -35,10 +35,6 @@ A suite of template tags for rendering links to a Django
 At it's most basic, given a :class:`~django.db.models.Model`, it will do the
 appropriate checks to ensure that the currently signed in user can perform the
 requested action via the admin.
-
-It comes with :doc:`a few niceities <extras>`, none of which are required, and
-a few configuration obstacles, which are. See the :doc:`getting started <getting_started>`
-documentation for more details.
 
 Why
 ---
@@ -60,12 +56,9 @@ Here's a brief run-down on what's in the box:
       the specific administration view.
 
 * Bundled with a smattering of CSS and JavaScript to make things a bit better.
-  Links are rendered in the same style as the admin form inputs, though without
-  the use of any images.  JavaScript is provided to render the admin view
-  'in-place' via an iframe modal, using the Admin in *popup* mode.
 * Pretty reasonable documentation. Or at least that's the aim.
 * An additional view on all instances which subclass our `ModelAdmin`, to edit
-  a specific field on a model, which can b eused for some fairly neat in-place
+  a specific field on a model, which can be used for some fairly neat in-place
   editing of only distinct parts of some data.
 
 .. _contributing:
