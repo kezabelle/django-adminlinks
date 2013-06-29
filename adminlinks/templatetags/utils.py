@@ -135,7 +135,7 @@ def _admin_link_shortcut(urlname, params=None, query=None):
         params = params or ()
         url = reverse(urlname, args=params)
     except NoReverseMatch:
-        url = ''
+        return ''
 
     scheme, netloc, path, query2, frag = urlsplit(url, allow_fragments=False)
     existing_qs = QueryDict(query_string=query2, mutable=True)
