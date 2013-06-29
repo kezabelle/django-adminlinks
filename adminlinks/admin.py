@@ -4,6 +4,7 @@ from django.contrib.admin import helpers
 from django.contrib.admin.options import csrf_protect_m
 from django.contrib.admin.util import unquote
 from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse_lazy
 from django.db import transaction
 from django.forms.models import fields_for_model
 from django.http import Http404
@@ -13,56 +14,23 @@ from django.utils.encoding import force_unicode
 from django.utils.functional import update_wrapper
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
+from adminlinks.constants import MODELADMIN_REVERSE
 
 logger = logging.getLogger(__name__)
 
 
-class HideMessages(object):
-    """
-    If we're in a popup, it's useless to message the user, as they won't see it
-    in the admin, and *may* see it in the frontend if the site uses the messages
-    framework. As such, we're just going to ignore it, for consistency's sake.
-    """
-    def message_user(self, request, *args, **kwargs):
-        """
-        Avoid adding any message to the request using the messages framework
-
-        :return: :data:`None`
-        """
-        return None
-
-
-class ChangeFieldView(object):
-    """
-    Adds a new view onto ModelAdmin objects, enabling a user to edit only
-    a single field at a time.
-    """
+class AdminUrlWrap(object):
     def _get_wrap(self):
+        assert hasattr(self, 'admin_site') is True, "No AdminSite found ..."
+
         def wrap(view):
             def wrapper(*args, **kwargs):
                 return self.admin_site.admin_view(view)(*args, **kwargs)
             return update_wrapper(wrapper, view)
         return wrap
 
-    def get_urls(self):
-        """
-        Monkey patch the existing URLs and put our change field view on first,
-        so that changelist view doesn't greedily absorb it.
 
-        :return: a list of url :func:`~django.conf.urls.patterns`
-        :rtype: :data:`list`
-        """
-        original_urls = super(SuccessResponses, self).get_urls()
-        from django.conf.urls.defaults import patterns, url
-        wrap = self._get_wrap()
-        info = self.model._meta.app_label, self.model._meta.module_name
-        url_regex = r'^(?P<object_id>.+)/change_field/(?P<fieldname>\w+)/$'
-        extra_urls = patterns('',
-                              url(url_regex, wrap(self.change_field_view),
-                                  name='%s_%s_change_field' % info))
-        # extras have to come first, otherwise everything is gobbled by the
-        # greedy nature of (.+) for the changelist view.
-        return extra_urls + original_urls
+class AdminlinksMixin(AdminUrlWrap):
 
     @csrf_protect_m
     @transaction.commit_on_success
@@ -135,14 +103,6 @@ class ChangeFieldView(object):
         context.update(extra_context or {})
         return self.render_change_form(request, context, obj=obj)
 
-
-class SuccessResponses(object):
-    """
-    Because Django doesn't offer the exact hooks we need, this class exists
-    to handle responses from inside a popup, where we ideally don't want to
-    redirect or otherwise present the original response.
-    """
-
     def get_success_templates(self, request):
         """
         Forces the attempted loading of the following:
@@ -179,7 +139,7 @@ class SuccessResponses(object):
 
         .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_success_templates`
         """
-        response = super(SuccessResponses, self).response_change(request, obj,
+        response = super(AdminlinksMixin, self).response_change(request, obj,
                                                                  *args, **kwargs)
         if response.status_code <= 300 or response.status_code >= 400:
             return response
@@ -195,7 +155,7 @@ class SuccessResponses(object):
 
         .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_success_templates`
         """
-        response = super(SuccessResponses, self).response_add(request, obj,
+        response = super(AdminlinksMixin, self).response_add(request, obj,
                                                               post_url_continue)
         if response.status_code <= 300 or response.status_code >= 400:
             return response
@@ -212,7 +172,7 @@ class SuccessResponses(object):
         .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_response_delete_context`
         .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_success_templates`
         """
-        response = super(SuccessResponses, self).delete_view(request, object_id,
+        response = super(AdminlinksMixin, self).delete_view(request, object_id,
                                                              extra_context)
         if response.status_code <= 300 or response.status_code >= 400:
             return response
@@ -269,14 +229,99 @@ class SuccessResponses(object):
             }
         }
 
+    def get_urls(self):
+        urls = super(AdminlinksMixin, self).get_urls()
+        from django.conf.urls import url
+        info = self.model._meta.app_label, self.model._meta.module_name
+        # add change_field view into our URLConf
+        urls.insert(0, url(r'^(?P<object_id>.+)/change_field/(?P<fieldname>\w+)/$',
+                           self._get_wrap()(self.change_field_view),
+                           name='%s_%s_change_field' % info))
 
-class AdminlinksMixin(HideMessages, ChangeFieldView, SuccessResponses):
-    """
-    An object whose sole purposes is to facilitate all the combined functionality
-    provided by the classes it inherits from.
+        # basically duplicate the existing views ...
+        extra_urls = [url(regex=old_url.regex.pattern.replace('^', '^frontend/'),
+                          view=getattr(self, 'frontend_{name}'.format(name=old_url.callback.func_name)),
+                          name='{name}_frontend'.format(name=old_url.name))
+                      for old_url in urls
+                      if hasattr(self, 'frontend_{name}'.format(name=old_url.callback.func_name))]
+        if urls and extra_urls:
+            extra_urls.extend(urls)
+        return extra_urls
 
-    .. seealso:: :class:`~adminlinks.admin.HideMessages`
-    .. seealso:: :class:`~adminlinks.admin.ChangeFieldView`
-    .. seealso:: :class:`~adminlinks.admin.SuccessResponses`
-    """
-    pass
+    @csrf_protect_m
+    def frontend_changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context.update(is_popup=True, frontend_editor=True,
+                             is_ajax=request.is_ajax())
+        return super(AdminlinksMixin, self).changelist_view(request,
+                                                            extra_context)
+
+    def frontend_add_view(self, request, form_url='', extra_context=None):
+        info = self.model._meta.app_label, self.model._meta.module_name
+        reversed_url = MODELADMIN_REVERSE % {'namespace': self.admin_site.name,
+                                             'app': info[0], 'module': info[1],
+                                             'view': 'add_frontend'}
+        form_url = form_url or reverse_lazy(reversed_url)
+        extra_context = extra_context or {}
+        extra_context.update(is_popup=True, frontend_editor=True,
+                             is_ajax=request.is_ajax())
+
+        response = super(AdminlinksMixin, self).add_view(request, form_url,
+                                                         extra_context)
+
+        if '_popup' in request.REQUEST and response.status_code in (301, 302):
+            logger.debug("we received a redirect, and we're in the popup "
+                         "mechanism, so we want to override the response.")
+            ctx_dict = self.get_response_add_context(request, obj)
+            ctx_json = simplejson.dumps(ctx_dict)
+            context = {'data': ctx_dict, 'json': ctx_json}
+            response = render_to_response(self.get_success_templates(request),
+                                          context)
+        return response
+
+    def frontend_change_view(self, request, object_id, form_url='',
+                             extra_context=None):
+        info = self.model._meta.app_label, self.model._meta.module_name
+        reversed_url = MODELADMIN_REVERSE % {'namespace': self.admin_site.name,
+                                             'app': info[0], 'module': info[1],
+                                             'view': 'change_frontend'}
+        form_url = form_url or reverse_lazy(reversed_url, args=[object_id])
+        extra_context = extra_context or {}
+        extra_context.update(is_popup=True, frontend_editor=True,
+                             is_ajax=request.is_ajax())
+
+        response = super(AdminlinksMixin, self).change_view(request, object_id,
+                                                            form_url, extra_context)
+
+        if '_popup' in request.REQUEST and response.status_code in (301, 302):
+            logger.debug("we received a redirect, and we're in the popup "
+                         "mechanism, so we want to override the response.")
+            ctx_dict = self.get_response_change_context(request, obj)
+            ctx_json = simplejson.dumps(ctx_dict)
+            context = {'data': ctx_dict, 'json': ctx_json}
+            response = render_to_response(self.get_success_templates(request),
+                                          context)
+        return response
+
+    def frontend_history_view(self, request, object_id, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context.update(is_popup=True, frontend_editor=True,
+                             is_ajax=request.is_ajax())
+        return super(AdminlinksMixin, self).history_view(request, object_id,
+                                                         extra_context)
+
+    def frontend_delete_view(self, request, object_id, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context.update(is_popup=True, frontend_editor=True,
+                             is_ajax=request.is_ajax())
+        response = super(AdminlinksMixin, self).delete_view(request, object_id,
+                                                            extra_context)
+        if '_popup' in request.REQUEST and response.status_code in (301, 302):
+            logger.debug("we received a redirect, and we're in the popup "
+                         "mechanism, so we want to override the response.")
+            ctx_dict = self.get_response_delete_context(request, object_id)
+            ctx_json = simplejson.dumps(ctx_dict)
+            context = {'data': ctx_dict, 'json': ctx_json}
+            response = render_to_response(self.get_success_templates(request),
+                                          context)
+        return response

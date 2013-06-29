@@ -1,4 +1,4 @@
 {% if link %}
     {% load i18n %}
-    <a href="{{ link }}" class="admin-toolbar-btn admin-changelist">{% blocktrans with verbose_name as name %}List {{ name }} items{% endblocktrans %}</a>
+    <a href="{{ link }}" class="admin-toolbar-btn admin-changelist">{% blocktrans with verbose_name as name %}List {{ name }}{% endblocktrans %}</a>
 {% endif %}

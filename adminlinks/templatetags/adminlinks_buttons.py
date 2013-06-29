@@ -122,9 +122,10 @@ class Edit(BaseAdminLink, InclusionTag):
         :return: the link values.
         :rtype: dictionary.
         """
-        return _add_link_to_context(admin_site, context['request'],
-                                    obj._meta, 'change', [obj.pk],
-                                    query=querystring)
+        return _add_custom_link_to_context(admin_site, context['request'],
+                                           obj._meta, 'change',
+                                           'change_frontend', [obj.pk],
+                                           query=querystring)
 register.tag(name='render_edit_button', compile_function=Edit)
 
 
@@ -171,7 +172,7 @@ class EditField(BaseAdminLink, InclusionTag):
         context = {}
         context.update(_add_custom_link_to_context(admin_site, context['request'],
                                                    obj._meta, 'change',
-                                                   'change_field',
+                                                   'change_field_frontend',
                                                    [obj.pk, fieldname],
                                                    query=querystring))
         # successfully loaded link, add the fieldname.
@@ -214,9 +215,10 @@ class Delete(BaseAdminLink, InclusionTag):
         :return: the link values.
         :rtype: dictionary.
         """
-        return _add_link_to_context(admin_site, context['request'],
-                                    obj._meta, 'delete', [obj.pk],
-                                    query=querystring)
+        return _add_custom_link_to_context(admin_site, context['request'],
+                                           obj._meta, 'delete',
+                                           'delete_frontend', [obj.pk],
+                                           query=querystring)
 register.tag(name='render_delete_button', compile_function=Delete)
 
 
@@ -255,9 +257,9 @@ class Add(BaseAdminLink, InclusionTag):
         :return: the link values.
         :rtype: dictionary.
         """
-        return _add_link_to_context(admin_site, context['request'],
-                                    obj._meta, 'add', None,
-                                    query=querystring)
+        return _add_custom_link_to_context(admin_site, context['request'],
+                                           obj._meta, 'add', 'add_frontend',
+                                           None, query=querystring)
 register.tag(name='render_add_button', compile_function=Add)
 
 
@@ -296,9 +298,10 @@ class History(BaseAdminLink, InclusionTag):
         :return: the link values.
         :rtype: dictionary.
         """
-        return _add_link_to_context(admin_site, context['request'],
-                                    obj._meta , 'history', [obj.pk],
-                                    query=querystring)
+        return _add_custom_link_to_context(admin_site, context['request'],
+                                           obj._meta , 'history',
+                                           'history_frontend', [obj.pk],
+                                           query=querystring)
 register.tag(name='render_history_button', compile_function=History)
 
 
@@ -341,9 +344,15 @@ class ChangeList(BaseAdminLink, InclusionTag):
         :return: the link values.
         :rtype: dictionary.
         """
-        return _add_link_to_context(admin_site, context['request'],
-                                    obj._meta , 'changelist', None,
-                                    query=querystring)
+        ctx = _add_custom_link_to_context(admin_site, context['request'],
+                                           obj._meta , 'change',
+                                           'changelist_frontend', None,
+                                           query=querystring)
+        if ctx['link']:
+            logger.debug('link created successfully, swapping out the '
+                         '`verbose_name` available to the context')
+            ctx['verbose_name'] = obj._meta.verbose_name_plural
+        return ctx
 register.tag(name='render_changelist_button', compile_function=ChangeList)
 
 
