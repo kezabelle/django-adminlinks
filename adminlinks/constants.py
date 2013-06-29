@@ -12,9 +12,3 @@ MODELADMIN_REVERSE = '%(namespace)s:%(app)s_%(module)s_%(view)s'
 #:
 #: .. seealso:: :func:`~adminlinks.templatetags.utils.get_registered_modeladmins`
 PERMISSION_ATTRIBUTE = 'has_%s_permission'
-
-#: a semi-secret attribute set onto our function to stash away all
-#: discovered valid :class:`~django.contrib.admin.sites.AdminSite` instances.
-#:
-#: .. seealso:: :func:`~adminlinks.templatetags.utils.get_admin_site`
-GET_ADMIN_SITES_KEY = '_found_previously'

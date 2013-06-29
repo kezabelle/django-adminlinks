@@ -4,11 +4,12 @@ from collections import defaultdict
 import logging
 from urlparse import urlsplit, urlunsplit
 from django.core.urlresolvers import reverse, resolve, NoReverseMatch
-from adminlinks.constants import (GET_ADMIN_SITES_KEY,
-                                  MODELADMIN_REVERSE, PERMISSION_ATTRIBUTE)
+from django.utils.functional import memoize
+from adminlinks.constants import MODELADMIN_REVERSE, PERMISSION_ATTRIBUTE
 from django.http import QueryDict
 
 logger = logging.getLogger(__name__)
+_admin_sites_cache = {}
 
 
 def context_passes_test(context):
@@ -42,7 +43,7 @@ def context_passes_test(context):
     return all(valid_admin_conditions)
 
 
-def get_admin_site(admin_site):
+def _get_admin_site(admin_site):
     """
     Given the name of an :class:`~django.contrib.admin.AdminSite` instance,
     try to resolve that into an actual object, and store the result onto this
@@ -59,24 +60,17 @@ def get_admin_site(admin_site):
 
     # pop a dictionary onto this function and use it for keeping track
     # of discovered admin sites as they're found.
-    known_sites = getattr(get_admin_site, GET_ADMIN_SITES_KEY, {})
-    if admin_site not in known_sites:
-        logger.debug('admin site not previously discovered, so do the lookup')
-        try:
-            for_resolving = reverse('%s:index' % admin_site)
-            wrapped_view = resolve(for_resolving)
-            # unwrap the view, because all AdminSite urls get wrapped with a
-            # decorator which goes through
-            # :meth:`~django.contrib.admin.AdminSite.admin_view`
-            admin_site_obj = wrapped_view.func.func_closure[0].cell_contents
-            known_sites.update({
-                unicode(admin_site_obj.name): admin_site_obj,
-            })
-            setattr(get_admin_site, GET_ADMIN_SITES_KEY, known_sites)
-        except NoReverseMatch:
-            return None
-
-    return known_sites[admin_site]
+    logger.debug('admin site not previously discovered, so do the lookup')
+    try:
+        for_resolving = reverse('%s:index' % admin_site)
+        wrapped_view = resolve(for_resolving)
+        # unwrap the view, because all AdminSite urls get wrapped with a
+        # decorator which goes through
+        # :meth:`~django.contrib.admin.AdminSite.admin_view`
+        return wrapped_view.func.func_closure[0].cell_contents
+    except NoReverseMatch:
+        return None
+get_admin_site = memoize(_get_admin_site, _admin_sites_cache, num_args=1)
 
 
 def get_registered_modeladmins(request, admin_site):
