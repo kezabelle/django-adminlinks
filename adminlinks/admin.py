@@ -238,7 +238,9 @@ class AdminlinksMixin(AdminUrlWrap):
                            self._get_wrap()(self.change_field_view),
                            name='%s_%s_change_field' % info))
 
-        # basically duplicate the existing views ...
+        # basically duplicate the existing views, if their equivalents exist
+        # (all the default ones are accounted for; custom views need exposing
+        # themselves)
         extra_urls = [url(regex=old_url.regex.pattern.replace('^', '^frontend/'),
                           view=getattr(self, 'frontend_{name}'.format(name=old_url.callback.func_name)),
                           name='{name}_frontend'.format(name=old_url.name))
