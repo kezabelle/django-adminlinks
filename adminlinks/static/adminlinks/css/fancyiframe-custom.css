@@ -1,63 +1,61 @@
-#django-adminlinks-overlay {
+#django-fancyiframe-overlay {
     width: 100%;
     height: 100%;
     position: fixed;
     top: 0;
     left: 0;
-    background: #10141c;
+    background: #303030 url(data:image/gif;base64,R0lGODlhFAAUAPUJAFRSVMzOzHx+fPz6/OTi5DAwMFRWVFxeXMzKzDQyNPz+/IyKjNze3FxaXKSipDw+PPTy9LS2tGRiZLy+vDw6PKyurJyanKSmpJSSlISChLy6vISGhIyOjJyenERCRPT29KyqrLSytMTGxERGRMTCxNTW1HR2dOTm5NTS1Ozq7GxqbHx6fNza3GRmZExKTOzu7AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQECQD/ACwAAAAAFAAUAAAGSMCCUJgwWECAoXIpNAQUUAZzuhlAoazpcnGFElra4cEKRRwSYSLq6kCnhZKryP0uOK6G+nCC1Q9bL19+Q3SDhoeIiYqLjI2OQQAh+QQFCQAAACwAAAAADwALAAAGOMCCUJg4dBAMlshiGAoPKIV0KrUMFwOqFiJ0ZacAkugkBXW/IkOCeDishS1Q5u2s2+/4vH7PzwcBACH5BAUJAAsALAIAAAARAAgAAAY4wIJQ6NEQCIjOITFsCjuKqBRhcA4z0uxAYC0kOJMJIavgdoWJA0L6AZyHCZA09IYHoqD60IPBUIIAIfkEBQkAAAAsBwAAAA0ADQAABjvAgnBILA5Hk0nDOOwoFIMNs2B5PjPMB8I6MDATFysi8d0+l8yD1TJNnJ6kacFckoue9SnnCZInTBwUQQAh+QQFCQACACwMAAEACAARAAAGO8CCcEgsGo8FSjExUVQSQ4liehgaporOMEGYioikKQss3p68wwPWIkwEsAYhBxsYgqYfQPrzWRUpD0NBACH5BAUJAAAALAoABAAKABAAAAY7wIJwSCwaj8ikcpg4qgipA2BKZSgUkWLjquhQpwjugXn5NhOHAHfQKDy514zQupYLT1yEgdgAWQxNREEAIfkEBQkAAAAsBAAJABAACwAABjrAgnBILBqPyKRyyVwmNiAJMXFoJISJhkihGHiGFS6BRGJwuYMRdnBuowFEh/scaBgbFgSDgegcrkRBACH5BAUJAAAALAEADAARAAgAAAY4wAcG8ygYj8hjRaFAJJLQgoapuDyjR8OAijBcsRkqkzGZLL7IzVbMFGAbAbbCgi0kDo4AgaApIoMAIfkEBQkAAAAsAAAHAA0ADQAABj5ACseUKBiPx4pCsUA6GUuSEwlVSKdGxJJQxHaWCgO2cACLus4ECtxBIw8AMOmBXYAVmPEirrCMySQaHn9/QQAh+QQFCQAVACwAAAIACAARAAAGQMCC8EERGgUDiMFoGCgUDmEi8FQshIcqIiF0VBtGxJPAFRKeE2PhrEgbqQqG2vsEGCXVgzERUUTKRkVqg4SFhEEAOw==) center 2em no-repeat;
     z-index: 9998;
 }
 
-#django-adminlinks-wrapper {
+#django-fancyiframe {
     width: 86%;
     min-width: 780px;
-    max-width: 86%;
-    min-height: 5%;
-    height: 59%;
+    max-width: 80%;
+    min-height: 1%;
+    max-height: 90%;
     position: fixed;
-    top: 20%;
-    left: 7%;
+    top: -100%;
+    left: 10%;
     margin: 0;
     padding: 0;
     border: 1px solid white;
     background: white;
-    background: white url(data:image/gif;base64,R0lGODlhEAALAPQAAFuAsv///3KRvHiWv2eJt/r7/P///+Dn8Kq918DO4Yahxujt887Z56W51L3M4ISfxeXr8vv8/MvX5mqLuXOSvWGEtNri7XCQvGKFtYmjx5euznyZwWWHtgAAAAAAAAAAACH+GkNyZWF0ZWQgd2l0aCBhamF4bG9hZC5pbmZvACH5BAALAAAAIf8LTkVUU0NBUEUyLjADAQAAACwAAAAAEAALAAAFLSAgjmRpnqSgCuLKAq5AEIM4zDVw03ve27ifDgfkEYe04kDIDC5zrtYKRa2WQgAh+QQACwABACwAAAAAEAALAAAFJGBhGAVgnqhpHIeRvsDawqns0qeN5+y967tYLyicBYE7EYkYAgAh+QQACwACACwAAAAAEAALAAAFNiAgjothLOOIJAkiGgxjpGKiKMkbz7SN6zIawJcDwIK9W/HISxGBzdHTuBNOmcJVCyoUlk7CEAAh+QQACwADACwAAAAAEAALAAAFNSAgjqQIRRFUAo3jNGIkSdHqPI8Tz3V55zuaDacDyIQ+YrBH+hWPzJFzOQQaeavWi7oqnVIhACH5BAALAAQALAAAAAAQAAsAAAUyICCOZGme1rJY5kRRk7hI0mJSVUXJtF3iOl7tltsBZsNfUegjAY3I5sgFY55KqdX1GgIAIfkEAAsABQAsAAAAABAACwAABTcgII5kaZ4kcV2EqLJipmnZhWGXaOOitm2aXQ4g7P2Ct2ER4AMul00kj5g0Al8tADY2y6C+4FIIACH5BAALAAYALAAAAAAQAAsAAAUvICCOZGme5ERRk6iy7qpyHCVStA3gNa/7txxwlwv2isSacYUc+l4tADQGQ1mvpBAAIfkEAAsABwAsAAAAABAACwAABS8gII5kaZ7kRFGTqLLuqnIcJVK0DeA1r/u3HHCXC/aKxJpxhRz6Xi0ANAZDWa+kEAA7AAAAAAAAAAAA) 50% 50% no-repeat;
-    -webkit-box-shadow: 1px 1px 30px 3px rgba(0, 0, 0, 0.5);
-    -moz-box-shadow: 1px 1px 30px 3px rgba(0, 0, 0, 0.5);
-    box-shadow: 1px 1px 30px 3px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 30px 3px rgba(0, 0, 0, 1);
+    -moz-box-shadow: 0 0 30px 3px rgba(0, 0, 0, 1);
+    box-shadow: 0 0 30px 3px rgba(0, 0, 0, 1);
     z-index: 9999;
 }
 
-#django-adminlinks-close {
+#django-fancyiframe-close {
     position: absolute;
-    top: -20px;
-    right: -20px;
-    width: 24px;
-    height: 24px;
+    top: 0;
+    right: 0;
+    padding: 0.2em 0.15em;
     cursor: pointer;
     z-index: 9999;
-    font-size: 24px;
+
     font-weight: bold;
-    line-height: 24px;
+    background: white;
+    font-size: 1em;
+    line-height: 1;
+    height: 1em;
+    width: 1em;
     overflow: hidden;
-    font-family: arial, sans-serif;
+    font-family: sans-serif;
     text-align: center;
-    color: white;
+    color: #555;
+    -webkit-box-shadow: 0 0 30px 3px rgba(0, 0, 0, 1);
+    -moz-box-shadow: 0 0 30px 3px rgba(0, 0, 0, 1);
+    box-shadow: 0 0 30px 3px rgba(0, 0, 0, 1);
+
 }
 
-#django-adminlinks-close:hover {
-    color: #FCC;
-    font-size: 32px;
+#django-fancyiframe-close:hover {
+    color: #F00;
 }
 
-#django-adminlinks-content,
-#django-adminlinks-content iframe {
-    width: 100%;
-    height: 100%;
-    border: 0 !important;
-}
-
-.django-adminlinks-open {
-    overflow: auto;
+.django-fancyiframe-open {
+    overflow-y: hidden;
 }
 

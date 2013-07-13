@@ -27,16 +27,15 @@
 
     if (window.frameElement === null) {
         $to_iframe.fancyiframe({
+            debug: true,
             elements: {
                 prefix: 'django-adminlinks',
                 classes: 'adminlinks'
             },
             fades: {
-                opacity: 0.85,
-                overlayIn: 100,
-                overlayOut: 250,
-                wrapperIn: 0,
-                wrapperOut: 250
+                opacity: 0.93,
+                overlayIn: 0,
+                overlayOut: 0
             }
         });
     }
