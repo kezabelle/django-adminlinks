@@ -1,35 +1,15 @@
 {% if links %}
 {% load i18n %}
-<ul class="admin-toolbar-btn-group">
-    <li>
-        <a class="admin-toolbar-btn admin-toolbar-dropdown-toggle" href="#">
-        {% blocktrans with verbose_name as name %}Manage this {{ name }}{% endblocktrans %}
-        </a>
+<div class="django-adminlinks-btn--grouper">
+    <span class="django-adminlinks--btn">{% blocktrans with verbose_name as name %}Manage this {{ name }}{% endblocktrans %}</span>
 
-        <ul class="admin-toolbar-dropdown-menu">
+    <span class="django-adminlinks--btn--collection">
+        {% include "adminlinks/edit_link.html" with link=links.change verbose_name=verbose_name only %}
+        {% include "adminlinks/delete_link.html" with link=links.delete verbose_name=verbose_name only %}
+        {% include "adminlinks/history_link.html" with link=links.history verbose_name=verbose_name only %}
+        {% include "adminlinks/add_link.html" with link=links.add verbose_name=verbose_name only %}
+        {% include "adminlinks/changelist_link.html" with link=links.changelist verbose_name=verbose_name_plural only %}
 
-        {% if links.change %}
-            <li><a href="{{ links.change }}" class="admin-edit">{% blocktrans with verbose_name as name %}Edit this {{ name }}{% endblocktrans %}</a></li>
-        {% endif %}
-
-        {% if links.delete %}
-            <li><a href="{{ links.delete }}" class="admin-delete">{% blocktrans with verbose_name as name %}Delete this {{ name }}{% endblocktrans %}</a></li>
-        {% endif %}
-
-        {% if links.history %}
-            <li><a href="{{ links.history }}" class="admin-history">{% blocktrans with verbose_name as name %}View edit history for this {{ name }}{% endblocktrans %}</a></li>
-        {% endif %}
-
-        {%  if links.change or links.delete or links.history %}
-            {% if links.add %}
-                <li class="divider"></li>
-            {% endif %}
-        {% endif %}
-
-        {% if links.add %}
-            <li><a href="{{ links.add }}" class="admin-add">{% blocktrans with verbose_name as name %}Add {{ name }}{% endblocktrans %}</a></li>
-        {% endif %}
-        </ul>
-    </li>
-</ul>
+    </span>
+</div>
 {% endif %}

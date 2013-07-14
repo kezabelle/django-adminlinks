@@ -1,4 +1,6 @@
 {% if link %}
-    {% load i18n %}
-    <a href="{{ link }}" class="admin-toolbar-btn admin-history">{% blocktrans with verbose_name as name %}View edit history for this {{ name }}{% endblocktrans %}</a>
+{% load i18n %}
+<a href="{{ link }}" class="django-adminlinks--btn django-adminlinks--history">
+    {% blocktrans with verbose_name as name %}History for this <span class="django-adminlinks--btn--important">{{ name }}</span>{% endblocktrans %}
+</a>
 {% endif %}

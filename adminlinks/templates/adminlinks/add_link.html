@@ -1,4 +1,6 @@
 {% if link %}
-    {% load i18n %}
-    <a href="{{ link }}" class="admin-toolbar-btn admin-add">{% blocktrans with verbose_name as name %}Add {{ name }}{% endblocktrans %}</a>
+{% load i18n %}
+<a href="{{ link }}" class="django-adminlinks--btn django-adminlinks--add">
+    {% blocktrans with verbose_name as name %}Add <span class="django-adminlinks--btn--important">{{ name }}</span>{% endblocktrans %}
+</a>
 {% endif %}
