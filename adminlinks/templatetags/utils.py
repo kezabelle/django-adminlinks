@@ -102,15 +102,19 @@ def get_registered_modeladmins(request, admin_site):
                 'namespace': admin_site.name,
                 'app': model._meta.app_label,
                 'module': model._meta.module_name,
-                'view': 'history'
             }
-            apps[dict_key].update({
-                'name': model._meta.verbose_name,
-                'history': MODELADMIN_REVERSE % urlparts,
-            })
+
+            apps[dict_key].update(name=model._meta.verbose_name)
+
+            for val in ('history', 'changelist'):
+                urlparts.update(view=val)
+                apps[dict_key].update({
+                    val: MODELADMIN_REVERSE % urlparts,
+                })
+            # require their permissions to be checked.
             for val in ('add', 'change', 'delete'):
                 perm = getattr(model_admin, PERMISSION_ATTRIBUTE % val)
-                urlparts.update({'view': val})
+                urlparts.update(view=val)
                 if perm(request):
                     apps[dict_key].update({
                         val: MODELADMIN_REVERSE % urlparts,
