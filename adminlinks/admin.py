@@ -229,27 +229,6 @@ class AdminlinksMixin(AdminUrlWrap):
             }
         }
 
-    def get_urls(self):
-        urls = super(AdminlinksMixin, self).get_urls()
-        from django.conf.urls import url
-        info = self.model._meta.app_label, self.model._meta.module_name
-        # add change_field view into our URLConf
-        urls.insert(0, url(r'^(?P<object_id>.+)/change_field/(?P<fieldname>\w+)/$',
-                           self._get_wrap()(self.change_field_view),
-                           name='%s_%s_change_field' % info))
-
-        # basically duplicate the existing views, if their equivalents exist
-        # (all the default ones are accounted for; custom views need exposing
-        # themselves)
-        extra_urls = [url(regex=old_url.regex.pattern.replace('^', '^frontend/'),
-                          view=getattr(self, 'frontend_{name}'.format(name=old_url.callback.func_name)),
-                          name='{name}_frontend'.format(name=old_url.name))
-                      for old_url in urls
-                      if hasattr(self, 'frontend_{name}'.format(name=old_url.callback.func_name))]
-        if urls and extra_urls:
-            extra_urls.extend(urls)
-        return extra_urls
-
     @csrf_protect_m
     def frontend_changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}

@@ -46,7 +46,7 @@ class BaseAdminLink(object):
     #: see https://github.com/ojii/django-classy-tags/issues/14
     base_options = (Argument('obj', required=True),
                     StringArgument('admin_site', required=False, default='admin'),
-                    Argument('querystring', required=False, default='_popup=1'))
+                    Argument('querystring', required=False, default=''))
 
     def is_valid(self, context, obj, *args, **kwargs):
         """
@@ -122,10 +122,9 @@ class Edit(BaseAdminLink, InclusionTag):
         :return: the link values.
         :rtype: dictionary.
         """
-        return _add_custom_link_to_context(admin_site, context['request'],
-                                           obj._meta, 'change',
-                                           'change_frontend', [obj.pk],
-                                           query=querystring)
+        return _add_link_to_context(admin_site, context['request'],
+                                    obj._meta, 'change', [obj.pk],
+                                    query=querystring)
 register.tag(name='render_edit_button', compile_function=Edit)
 
 
@@ -170,11 +169,10 @@ class EditField(BaseAdminLink, InclusionTag):
         :rtype: dictionary.
         """
         context = {}
-        context.update(_add_custom_link_to_context(admin_site, context['request'],
-                                                   obj._meta, 'change',
-                                                   'change_field_frontend',
-                                                   [obj.pk, fieldname],
-                                                   query=querystring))
+        context.update(_add_link_to_context(admin_site, context['request'],
+                                            obj._meta, 'change',
+                                            [obj.pk, fieldname],
+                                            query=querystring))
         # successfully loaded link, add the fieldname.
         if 'link' in context:
             context.update({'verbose_name':
@@ -215,10 +213,9 @@ class Delete(BaseAdminLink, InclusionTag):
         :return: the link values.
         :rtype: dictionary.
         """
-        return _add_custom_link_to_context(admin_site, context['request'],
-                                           obj._meta, 'delete',
-                                           'delete_frontend', [obj.pk],
-                                           query=querystring)
+        return _add_link_to_context(admin_site, context['request'],
+                                    obj._meta, 'delete', [obj.pk],
+                                    query=querystring)
 register.tag(name='render_delete_button', compile_function=Delete)
 
 
@@ -257,9 +254,8 @@ class Add(BaseAdminLink, InclusionTag):
         :return: the link values.
         :rtype: dictionary.
         """
-        return _add_custom_link_to_context(admin_site, context['request'],
-                                           obj._meta, 'add', 'add_frontend',
-                                           None, query=querystring)
+        return _add_link_to_context(admin_site, context['request'],
+                                    obj._meta, 'add', None, query=querystring)
 register.tag(name='render_add_button', compile_function=Add)
 
 
@@ -298,10 +294,9 @@ class History(BaseAdminLink, InclusionTag):
         :return: the link values.
         :rtype: dictionary.
         """
-        return _add_custom_link_to_context(admin_site, context['request'],
-                                           obj._meta , 'history',
-                                           'history_frontend', [obj.pk],
-                                           query=querystring)
+        return _add_link_to_context(admin_site, context['request'],
+                                    obj._meta, 'history', [obj.pk],
+                                    query=querystring)
 register.tag(name='render_history_button', compile_function=History)
 
 
@@ -322,8 +317,7 @@ class ChangeList(BaseAdminLink, InclusionTag):
     # https://code.djangoproject.com/ticket/20288#ticket
     options = Options(BaseAdminLink.base_options[0],  # obj
                       BaseAdminLink.base_options[1],  # admin_site
-                      Argument('querystring', required=False,
-                               default=_changelist_popup_qs()))
+                      Argument('querystring', required=False, default=''))
 
     def get_link_context(self, context, obj, admin_site, querystring):
         """
@@ -344,10 +338,8 @@ class ChangeList(BaseAdminLink, InclusionTag):
         :return: the link values.
         :rtype: dictionary.
         """
-        ctx = _add_custom_link_to_context(admin_site, context['request'],
-                                           obj._meta , 'change',
-                                           'changelist_frontend', None,
-                                           query=querystring)
+        ctx = _add_link_to_context(admin_site, context['request'],
+                                   obj._meta, 'change', None, query=querystring)
         if ctx['link']:
             logger.debug('link created successfully, swapping out the '
                          '`verbose_name` available to the context')
@@ -362,7 +354,6 @@ class Combined(BaseAdminLink, InclusionTag):
     """
     template = 'adminlinks/grouped_link.html'
 
-    # TODO: support querystrings here.
     options = Options(
         Argument('obj', required=True),
         StringArgument('admin_site', required=False, default='admin'),
@@ -397,6 +388,7 @@ class Combined(BaseAdminLink, InclusionTag):
             return context
 
         modeladmin_links = admins[lookup]
+        print(modeladmin_links)
         links = {
             'add': _admin_link_shortcut(
                 modeladmin_links.get('add', '')
@@ -410,6 +402,10 @@ class Combined(BaseAdminLink, InclusionTag):
             'delete': _admin_link_shortcut(
                 modeladmin_links.get('delete', ''), [obj.pk]
             ),
+            'changelist': _admin_link_shortcut(
+                modeladmin_links.get('changelist', '')
+            ),
         }
-        return {'links': links, 'verbose_name': opts.verbose_name}
+        return {'links': links, 'verbose_name': opts.verbose_name,
+                'verbose_name_plural': opts.verbose_name_plural}
 register.tag(name='render_admin_buttons', compile_function=Combined)
