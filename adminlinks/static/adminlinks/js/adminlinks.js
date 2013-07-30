@@ -9,7 +9,13 @@
     var $body = $('body', $doc).eq(0);
     var on_popup_close = function(event, action, data) {
         if (window.__data_changed__ === true) {
-            window.location.reload();
+            if (window.Turbolinks !== void(0) &&
+                window.Turbolinks.visit !== void(0) &&
+                window.Turblinks.visit !== null) {
+                window.Turbolinks.visit(window.location.href);
+            } else {
+                window.location.reload();
+            }
         }
     };
     $doc.bind('fancyiframe-close', on_popup_close);
