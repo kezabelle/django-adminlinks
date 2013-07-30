@@ -60,7 +60,10 @@
                 overlay.removeClass('django-fancyiframe-overlay--working');
                 iframe.height(iframe.contents().find("html").height());
                 iframe.show() && close.show();
-                if (window.Modernizer !== void(0) && window.Modernizr.csstransitions !== null && window.Modernizr.csstransitions == true) {
+                if (window.Modernizer !== void(0) &&
+                    window.Modernizr.csstransitions !== void(0) &&
+                    window.Modernizr.csstransitions !== null &&
+                    window.Modernizr.csstransitions == true) {
                     iframe.css({
                         'top': 0,
                         '-webkit-transition': 'All 0.5s linear',
