@@ -29,11 +29,12 @@
 
         var hide = function(event) {
             //debug(event);
-            $iframe = $('#django-fancyiframe').remove();
-            /* Listen for clicks, or escapes, and close if appropriate */
+            var $iframe = $('#django-fancyiframe');
+            var distance = 0 - $iframe.height();
+            $iframe.remove();
             overlay.fadeOut(options.fades.overlayOut);
             close.fadeOut(options.fades.overlayOut);
-
+            /* Listen for clicks, or escapes, and close if appropriate */
             doc.unbind('mousewheel.fancyiframe DOMMouseScroll.fancyiframe');
             close.unbind('click');
             overlay.unbind('click');
@@ -65,10 +66,10 @@
                     window.Modernizr.csstransitions !== null &&
                     window.Modernizr.csstransitions == true) {
                     iframe.css({
-                        '-webkit-transition': 'All 0.5s linear',
-                        '-moz-transition': 'All 0.5s linear',
-                        '-o-transition': 'All 0.5s linear',
-                        'transition': 'All 0.5s linear',
+                        '-webkit-transition': 'All 0.4s linear',
+                        '-moz-transition': 'All 0.4s linear',
+                        '-o-transition': 'All 0.4s linear',
+                        'transition': 'All 0.4s linear',
                         'top': 0
                     });
                 } else {
