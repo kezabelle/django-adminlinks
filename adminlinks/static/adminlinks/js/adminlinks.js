@@ -34,6 +34,23 @@
                 opacity: 0.93,
                 overlayIn: 0,
                 overlayOut: 0
+            },
+            callbacks: {
+                href: function($el) {
+                    var href = $el.attr('href');
+                    var adminlinks_action = $el.data('adminlinks') || $el.attr('data-adminlinks');
+                    if (adminlinks_action === void(0) || adminlinks_action === '') {
+                        return href;
+                    }
+                    if (adminlinks_action.toString() === 'autoclose') {
+                        if (href.indexOf('?') > -1) {
+                            href += '&_autoclose=1';
+                        } else {
+                            href += '?_autoclose=1';
+                        }
+                        return href;
+                    }
+                }
             }
         });
     }
