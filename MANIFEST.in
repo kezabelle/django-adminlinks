@@ -1,0 +1,15 @@
+exclude .gitignore
+recursive-include adminlinks *.css
+recursive-include adminlinks *.eot
+recursive-include adminlinks *.gif
+recursive-include adminlinks *.html
+recursive-include adminlinks *.js
+recursive-include adminlinks *.json
+recursive-include adminlinks *.png
+recursive-include adminlinks *.svg
+recursive-include adminlinks *.ttf
+recursive-include adminlinks *.txt
+recursive-include adminlinks *.woff
+recursive-include docs *.py
+recursive-include docs *.rst
+recursive-include docs Makefile
