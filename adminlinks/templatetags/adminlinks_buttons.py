@@ -426,7 +426,6 @@ class AdminRoot(InclusionTag):
         return self.get_link_context(context, *args, **kwargs)
 
     def get_link_context(self, context, admin_site, querystring, *args, **kwargs):
-        import pdb; pdb.set_trace()
         site = get_admin_site(admin_site)
         if site is None:
             logger.debug('Invalid admin site ...')
