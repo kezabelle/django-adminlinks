@@ -102,6 +102,18 @@ class AdminlinksMixin(AdminUrlWrap):
         context.update(extra_context or {})
         return self.render_change_form(request, context, obj=obj)
 
+    def get_urls(self):
+        urls = super(AdminlinksMixin, self).get_urls()
+        from django.conf.urls import url
+        info = self.model._meta.app_label, self.model._meta.module_name
+        # add change_field view into our URLConf
+        urls.insert(0, url(
+            regex=r'^(?P<object_id>.+)/change_field/(?P<fieldname>[\w_]+)/$',
+            view=self._get_wrap()(self.change_field_view),
+            name='%s_%s_change_field' % info)
+        )
+        return urls
+
     def get_success_templates(self, request):
         """
         Forces the attempted loading of the following:
