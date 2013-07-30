@@ -120,7 +120,21 @@
         callbacks: {
             href: function($element) {
                 //return $element.attr('href') || $element.data('href') || $element.attr('rel');
-                return $element.attr('href');
+                var href = $element.attr('href');
+                var adminlinks_action = $element.data('adminlinks') || $element.attr('data-adminlinks');
+                if (adminlinks_action === void(0) || adminlinks_action === '') {
+                    return href;
+                }
+                if (adminlinks_action.toString() === 'autoclose') {
+                    if (href.indexOf('?') > -1) {
+                        href += '&_autoclose=1';
+                    } else {
+                        href += '?_autoclose=1';
+                    }
+                    return href;
+                }
+                // none of the previous if branches caught
+                return href;
             },
             closeTitle: function($el) {
                 return 'Close';
