@@ -150,14 +150,14 @@ class AdminlinksMixin(AdminUrlWrap):
 
         .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_success_templates`
         """
-        response = super(AdminlinksMixin, self).response_change(request, obj,
-                                                                 *args, **kwargs)
-        if response.status_code <= 300 or response.status_code >= 400:
-            return response
-        ctx_dict = self.get_response_change_context(request, obj)
-        ctx_json = simplejson.dumps(ctx_dict)
-        context = {'data': ctx_dict, 'json': ctx_json}
-        return render_to_response(self.get_success_templates(request), context)
+        if '_autoclose' in request.REQUEST:
+            ctx_dict = self.get_response_change_context(request, obj)
+            ctx_json = simplejson.dumps(ctx_dict)
+            context = {'data': ctx_dict, 'json': ctx_json}
+            return render_to_response(self.get_success_templates(request),
+                                      context)
+        return super(AdminlinksMixin, self).response_change(request, obj,
+                                                            *args, **kwargs)
 
     def response_add(self, request, obj, post_url_continue='../%s/'):
         """
@@ -166,14 +166,14 @@ class AdminlinksMixin(AdminUrlWrap):
 
         .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_success_templates`
         """
-        response = super(AdminlinksMixin, self).response_add(request, obj,
-                                                             post_url_continue)
-        if response.status_code <= 300 or response.status_code >= 400:
-            return response
-        ctx_dict = self.get_response_add_context(request, obj)
-        ctx_json = simplejson.dumps(ctx_dict)
-        context = {'data': ctx_dict, 'json': ctx_json}
-        return render_to_response(self.get_success_templates(request), context)
+        if '_autoclose' in request.REQUEST:
+            ctx_dict = self.get_response_add_context(request, obj)
+            ctx_json = simplejson.dumps(ctx_dict)
+            context = {'data': ctx_dict, 'json': ctx_json}
+            return render_to_response(self.get_success_templates(request),
+                                          context)
+        return super(AdminlinksMixin, self).response_add(request, obj,
+                                                         post_url_continue)
 
     def delete_view(self, request, object_id, extra_context=None):
         """
@@ -184,13 +184,14 @@ class AdminlinksMixin(AdminUrlWrap):
         .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_success_templates`
         """
         response = super(AdminlinksMixin, self).delete_view(request, object_id,
-                                                             extra_context)
-        if response.status_code <= 300 or response.status_code >= 400:
-            return response
-        ctx_dict = self.get_response_delete_context(request, object_id)
-        ctx_json = simplejson.dumps(ctx_dict)
-        context = {'data': ctx_dict, 'json': ctx_json}
-        return render_to_response(self.get_success_templates(request), context)
+                                                            extra_context)
+        if '_autoclose' in request.REQUEST and response.status_code in (301, 302):
+            ctx_dict = self.get_response_delete_context(request, object_id)
+            ctx_json = simplejson.dumps(ctx_dict)
+            context = {'data': ctx_dict, 'json': ctx_json}
+            response = render_to_response(self.get_success_templates(request),
+                                          context)
+        return response
 
     def get_response_add_context(self, request, obj):
         """
@@ -239,8 +240,3 @@ class AdminlinksMixin(AdminUrlWrap):
                 'id': obj_id,
             }
         }
-
-
-class AdminlinksSite(AdminSite):
-    pass
-# frontend_site = AdminlinksSite(name='frontend_admin', app_name='admin')

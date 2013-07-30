@@ -1,8 +1,7 @@
 <script type="text/javascript">
-    (function($, doc, iframe, data_changed, undefined) {
-        params = [{{ json|safe }}];
-        data_changed = true;
+    (function($, doc, iframe, undefined) {
+        params = {{ json|safe }};
+        parent.window.__data_changed__ = true;
         $(doc).trigger('fancyiframe-close', params);
-        //$.event.trigger('click.fancyiframe.close')
-    })(parent.window.jQuery, parent.document, document, parent.window.__data_changed__);
+    })(parent.window.jQuery, parent.document, document);
 </script>
