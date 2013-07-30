@@ -168,16 +168,16 @@ class EditField(BaseAdminLink, InclusionTag):
         :return: the link values.
         :rtype: dictionary.
         """
-        context = {}
-        context.update(_add_link_to_context(admin_site, context['request'],
-                                            obj._meta, 'change',
-                                            [obj.pk, fieldname],
-                                            query=querystring))
+        ctx = {}
+        ctx.update(_add_link_to_context(admin_site, context['request'],
+                                        obj._meta, 'change',
+                                        [obj.pk, fieldname],
+                                        query=querystring))
         # successfully loaded link, add the fieldname.
-        if 'link' in context:
-            context.update({'verbose_name':
+        if 'link' in ctx:
+            ctx.update({'verbose_name':
                             obj._meta.get_field_by_name(fieldname)[0].verbose_name})
-        return context
+        return ctx
 register.tag(name='render_edit_field_button', compile_function=EditField)
 
 
