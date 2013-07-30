@@ -4,3 +4,9 @@
 build
 docs/_build
 tricks.yaml
+*~
+.DS_Store
+*.orig
+*.sqlite3
+django_adminlinks.egg-info
+dist
