@@ -65,11 +65,11 @@
                     window.Modernizr.csstransitions !== null &&
                     window.Modernizr.csstransitions == true) {
                     iframe.css({
-                        'top': 0,
                         '-webkit-transition': 'All 0.5s linear',
                         '-moz-transition': 'All 0.5s linear',
                         '-o-transition': 'All 0.5s linear',
-                        'transition': 'All 0.5s linear'
+                        'transition': 'All 0.5s linear',
+                        'top': 0
                     });
                 } else {
                     iframe.animate({top: 0}, 400);
