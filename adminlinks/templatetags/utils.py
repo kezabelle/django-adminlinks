@@ -35,6 +35,7 @@ def context_passes_test(context):
 
     user = request.user
     valid_admin_conditions = [
+        user.is_authenticated(),
         user.is_staff,
         user.is_active,
         len(user.get_all_permissions()) > 0,
