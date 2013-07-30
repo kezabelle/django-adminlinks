@@ -100,6 +100,11 @@ class AdminlinksMixin(AdminUrlWrap):
             'app_label': opts.app_label,
         }
         context.update(extra_context or {})
+        # tidy up after ourselves; by this point we don't need anything much ...
+        # print(', '.join(locals().keys()))
+        del (all_fields, adminForm, form, ModelForm, media, object_id,
+             fields_to_exclude, fieldname, model, extra_context,
+             the_fieldset, opts)
         return self.render_change_form(request, context, obj=obj)
 
     def get_urls(self):
@@ -112,6 +117,7 @@ class AdminlinksMixin(AdminUrlWrap):
             view=self._get_wrap()(self.change_field_view),
             name='%s_%s_change_field' % info)
         )
+        del info
         return urls
 
     def get_success_templates(self, request):
@@ -141,6 +147,7 @@ class AdminlinksMixin(AdminUrlWrap):
                 "adminlinks/%s/success.html" % app_label,
             ])
         templates.extend(['adminlinks/success.html'])
+        del app_label, model_name, any_parents
         return templates
 
     def response_change(self, request, obj, *args, **kwargs):
@@ -191,6 +198,7 @@ class AdminlinksMixin(AdminUrlWrap):
             context = {'data': ctx_dict, 'json': ctx_json}
             response = render_to_response(self.get_success_templates(request),
                                           context)
+            del context, ctx_dict, ctx_json
         return response
 
     def get_response_add_context(self, request, obj):
