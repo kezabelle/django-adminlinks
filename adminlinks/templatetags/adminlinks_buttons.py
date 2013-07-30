@@ -169,10 +169,11 @@ class EditField(BaseAdminLink, InclusionTag):
         :rtype: dictionary.
         """
         ctx = {}
-        ctx.update(_add_link_to_context(admin_site, context['request'],
-                                        obj._meta, 'change',
-                                        [obj.pk, fieldname],
-                                        query=querystring))
+        ctx.update(_add_custom_link_to_context(admin_site, context['request'],
+                                               obj._meta, 'change',
+                                               'change_field',
+                                               [obj.pk, fieldname],
+                                               query=querystring))
         # successfully loaded link, add the fieldname.
         if 'link' in ctx:
             ctx.update({'verbose_name':
