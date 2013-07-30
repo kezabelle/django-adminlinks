@@ -409,3 +409,32 @@ class Combined(BaseAdminLink, InclusionTag):
         return {'links': links, 'verbose_name': opts.verbose_name,
                 'verbose_name_plural': opts.verbose_name_plural}
 register.tag(name='render_admin_buttons', compile_function=Combined)
+
+
+class AdminRoot(InclusionTag):
+    options = Options(*BaseAdminLink.base_options[1:])  # admin_site, querystring
+    template = 'adminlinks/admin_root_link.html'
+
+    def get_context(self, context, *args, **kwargs):
+        """
+        Entry point for all subsequent tags. Tests the context and bails
+        early if possible.
+        """
+        if not context_passes_test(context):
+            logger.debug('Invalid context')
+            return {}
+        return self.get_link_context(context, *args, **kwargs)
+
+    def get_link_context(self, context, admin_site, querystring, *args, **kwargs):
+        import pdb; pdb.set_trace()
+        site = get_admin_site(admin_site)
+        if site is None:
+            logger.debug('Invalid admin site ...')
+            return {}
+        index_link = _admin_link_shortcut('%(namespace)s:index' % {
+            'namespace': site.name,
+        }, params=None, query=querystring)
+        return {
+            'link': index_link
+        }
+register.tag(name='render_admin_button', compile_function=AdminRoot)
