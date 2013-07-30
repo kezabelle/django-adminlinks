@@ -1,6 +1,6 @@
 {% if link %}
 {% load i18n %}
-<a href="{{ link }}" class="django-adminlinks--btn django-adminlinks--changelist">
+<a href="{{ link }}" class="django-adminlinks--btn django-adminlinks--changelist" data-no-turbolink>
     {% blocktrans with verbose_name as name %}List <span class="django-adminlinks--btn--important">{{ name }}</span>{% endblocktrans %}
 </a>
 {% endif %}

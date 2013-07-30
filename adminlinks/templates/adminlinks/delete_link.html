@@ -1,6 +1,6 @@
 {% if link %}
 {% load i18n %}
-<a href="{{ link }}" class="django-adminlinks--btn django-adminlinks--delete" data-adminlinks="autoclose">
+<a href="{{ link }}" class="django-adminlinks--btn django-adminlinks--delete" data-adminlinks="autoclose" data-no-turbolink>
     {% blocktrans with verbose_name as name %}Delete this <span class="django-adminlinks--btn--important">{{ name }}</span>{% endblocktrans %}
 </a>
 {% endif %}
