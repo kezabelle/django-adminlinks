@@ -11,7 +11,7 @@
         if (window.__data_changed__ === true) {
             if (window.Turbolinks !== void(0) &&
                 window.Turbolinks.visit !== void(0) &&
-                window.Turblinks.visit !== null) {
+                window.Turbolinks.visit !== null) {
                 window.Turbolinks.visit(window.location.href);
             } else {
                 window.location.reload();
