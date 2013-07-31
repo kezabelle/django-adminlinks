@@ -6,3 +6,4 @@ These provide additional functionality which may be depended on by
 
 .. automodule:: adminlinks.admin
     :members:
+    :private-members:

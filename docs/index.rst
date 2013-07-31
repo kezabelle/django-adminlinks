@@ -34,10 +34,11 @@ A suite of template tags for rendering links to a Django
 
 At it's most basic, given a :class:`~django.db.models.Model`, it will do the
 appropriate checks to ensure that the currently signed in user can perform the
-requested action via the admin.
+requested action via the admin, and displays a configurable template with a link
+to the right place.
 
-Why
----
+Why?
+----
 
 Because I wedge the Django admin into everything, whether it should fit or not.
 Not so much because I love the admin, but because it provides a well-understood
@@ -55,9 +56,11 @@ Here's a brief run-down on what's in the box:
     * Users must be signed in, and pass the permission checking for
       the specific administration view.
 
-* Bundled with a smattering of CSS and JavaScript to make things a bit better.
+* Optional CSS and Javascript to improve the functionality by providing "button"
+  like links, and a modal window for opening links.
 * Pretty reasonable documentation. Or at least that's the aim.
-* An additional view on all instances which subclass our `ModelAdmin`, to edit
+* An additional view on all instances which subclass our
+  :class:`~adminlinks.admin.AdminlinksMixin`, to edit
   a specific field on a model, which can be used for some fairly neat in-place
   editing of only distinct parts of some data.
 
@@ -69,8 +72,7 @@ Contributing
 Please do!
 
 The project is hosted on `GitHub`_ in the `kezabelle/django-adminlinks`_
-repository. The main branch is *master*, but all work is carried out on
-*develop* and merged in.
+repository. The main branch is *master*.
 
 Bug reports and feature requests can be filed on the repository's `issue tracker`_.
 

@@ -19,7 +19,29 @@ logger = logging.getLogger(__name__)
 
 
 class AdminUrlWrap(object):
+    """
+    A minor helper for mixing into :class:`~django.contrib.admin.ModelAdmin`
+    instances, exposing the url wrapping function used in the standard
+    :meth:`~django.contrib.admin.ModelAdmin.get_urls`.
+    """
+
     def _get_wrap(self):
+        """
+        Returns some magical decorated view that applies
+        :meth:`~django.contrib.admin.AdminSite.admin_view` to a
+        :class:`~django.contrib.admin.ModelAdmin` view::
+
+            from django.contrib.admin import ModelAdmin
+
+            class MyObj(AdminUrlWrap, ModelAdmin):
+
+                def do_something(self):
+                    wrapper = self._get_wrap()
+                    wrapped_view = wrapper(self.my_custom_view)
+                    return wrapped_view
+
+        :return: a decorated view.
+        """
         assert hasattr(self, 'admin_site') is True, "No AdminSite found ..."
 
         def wrap(view):
@@ -30,6 +52,31 @@ class AdminUrlWrap(object):
 
 
 class AdminlinksMixin(AdminUrlWrap):
+    """
+    Our mixin, which serves two purposes:
+
+    * Allows for per-field editing through the use of the use of
+      :meth:`~adminlinks.admin.AdminlinksMixin.change_field_view`.
+
+       * Per-field editing requires the *change* permission for the object.
+       * Per-field editing is not exposed in the :class:`~django.contrib.admin.AdminSite`
+         at all.
+       * Per-field editing may be enabled in the frontend by using the
+         :class:`~adminlinks.templatetags.adminlinks_buttons.EditField` template
+         tag
+
+    * Allows for the following views to be automatically closed on success,
+      using a customisable template (see
+      :meth:`~adminlinks.admin.AdminlinksMixin.get_success_templates` for how
+      template discovery works.)
+
+        * The add view (:meth:`~django.contrib.admin.ModelAdmin.add_view`)
+        * The edit view (:meth:`~django.contrib.admin.ModelAdmin.change_view`)
+        * The delete view (:meth:`~django.contrib.admin.ModelAdmin.delete_view`)
+        * The edit-field view (
+          :meth:`~adminlinks.admin.AdminlinksMixin.change_field_view`)
+
+    """
 
     @csrf_protect_m
     @transaction.commit_on_success
@@ -129,6 +176,7 @@ class AdminlinksMixin(AdminUrlWrap):
             - a template for any parent app.
             - a guaranteed to exist template (the base success file)
 
+
         :param request: The WSGIRequest
         :return: list of strings representing templates to look for.
         """
@@ -154,8 +202,6 @@ class AdminlinksMixin(AdminUrlWrap):
         """
         Overrides the Django default, to try and provide a better experience
         for frontend editing when editing an existing object.
-
-        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_success_templates`
         """
         if '_autoclose' in request.REQUEST:
             ctx_dict = self.get_response_change_context(request, obj)
@@ -170,8 +216,6 @@ class AdminlinksMixin(AdminUrlWrap):
         """
         Overrides the Django default, to try and provide a better experience
         for frontend editing when adding a new object.
-
-        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_success_templates`
         """
         if '_autoclose' in request.REQUEST:
             ctx_dict = self.get_response_add_context(request, obj)
@@ -184,11 +228,11 @@ class AdminlinksMixin(AdminUrlWrap):
 
     def delete_view(self, request, object_id, extra_context=None):
         """
+        Overrides the Django default, to try and provide a better experience
+        for frontend editing when deleting an object successfully.
+
         Ridiculously, there's no response_delete method to patch, so instead
         we're just going to do a similar thing and hope for the best.
-
-        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_response_delete_context`
-        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.get_success_templates`
         """
         response = super(AdminlinksMixin, self).delete_view(request, object_id,
                                                             extra_context)
@@ -203,7 +247,18 @@ class AdminlinksMixin(AdminUrlWrap):
 
     def get_response_add_context(self, request, obj):
         """
-        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.response_add`
+        Provides a context for the template discovered by
+        :meth:`~adminlinks.admin.AdminlinksMixin.get_success_templates`. Only
+        used when we could reliably determine that the request was in our
+        JavaScript modal window, allowing us to close it automatically.
+
+        For clarity's sake, it should always return the minimum values
+        represented here.
+
+        :return: Data which may be given to a template.
+                 Must be JSON serializable, so that a template may pass it
+                 back to the browser's JavaScript engine.
+        :rtype: a dictionary.
         """
         return {
             'action': {
@@ -219,7 +274,18 @@ class AdminlinksMixin(AdminUrlWrap):
 
     def get_response_change_context(self, request, obj):
         """
-        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.response_change`
+        Provides a context for the template discovered by
+        :meth:`~adminlinks.admin.AdminlinksMixin.get_success_templates`. Only
+        used when we could reliably determine that the request was in our
+        JavaScript modal window, allowing us to close it automatically.
+
+        For clarity's sake, it should always return the minimum values
+        represented here.
+
+        :return: Data which may be given to a template.
+                 Must be JSON serializable, so that a template may pass it
+                 back to the browser's JavaScript engine.
+        :rtype: a dictionary.
         """
         return {
             'action': {
@@ -235,7 +301,22 @@ class AdminlinksMixin(AdminUrlWrap):
 
     def get_response_delete_context(self, request, obj_id):
         """
-        .. seealso:: :meth:`~adminlinks.admin.SuccessResponses.delete_view`
+        Provides a context for the template discovered by
+        :meth:`~adminlinks.admin.AdminlinksMixin.get_success_templates`. Only
+        used when we could reliably determine that the request was in our
+        JavaScript modal window, allowing us to close it automatically.
+
+        For clarity's sake, it should always return the minimum values
+        represented here.
+
+        .. note::
+            At the point this is called, the original object no longer exists,
+            so we are stuck trusting the `obj_id` given as an argument.
+
+        :return: Data which may be given to a template.
+                 Must be JSON serializable, so that a template may pass it
+                 back to the browser's JavaScript engine.
+        :rtype: a dictionary.
         """
         return {
             'action': {
