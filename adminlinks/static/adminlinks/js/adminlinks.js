@@ -34,7 +34,7 @@
         } else {
             now.setDate(now.getDate() - 365);
         }
-        document.cookie = final_cookie + '; expires=' + now.toUTCString();
+        document.cookie = final_cookie + '; expires=' + now.toUTCString() + '; path=/';
         return toggle_editing(event);
     };
 
