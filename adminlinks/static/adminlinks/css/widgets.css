@@ -170,6 +170,18 @@
 
 }
 
+.django-adminlinks--toggle--disable {
+    display: none;
+}
+
+.django-adminlinks--admin-editing .django-adminlinks--toggle .django-adminlinks--toggle--disable {
+    display: block;
+}
+
+.django-adminlinks--admin-editing .django-adminlinks--toggle .django-adminlinks--toggle--enable {
+    display: none;
+}
+
 /*.admin-toolbar-dropdown-menu {*/
     /*position: absolute;*/
     /*left: -999em;*/
