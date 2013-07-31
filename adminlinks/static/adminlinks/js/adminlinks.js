@@ -19,7 +19,7 @@
     };
 
     var toggle_editing = function(event) {
-        if ($.inArray('django-adminlinks-state=1', document.cookie.split('; ')) > -1) {
+        if ($.inArray(final_cookie, document.cookie.split('; ')) > -1) {
             $(document.body).addClass('django-adminlinks--admin-editing');
         } else {
             $(document.body).removeClass('django-adminlinks--admin-editing');
