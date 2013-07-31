@@ -59,8 +59,17 @@
             iframe.insertAfter(overlay);
             iframe.load(function(evt) {
                 overlay.removeClass('django-fancyiframe-overlay--working');
+                // set the height
                 iframe.height(iframe.contents().find("html").height());
                 iframe.show() && close.show();
+                // retrieve the height; this may be different from the one
+                // we just set because of maximum heights in CSS.
+                var distance = 0 - iframe.height();
+                // set the height to -???px, which is the real height to slide
+                // down by.
+                iframe.css({'top': distance.toString() + 'px'});
+                // if we have CSS transitions, apply and use those instead of
+                // using jQuery's animation methods.
                 if (window.Modernizer !== void(0) &&
                     window.Modernizr.csstransitions !== void(0) &&
                     window.Modernizr.csstransitions !== null &&
@@ -96,14 +105,6 @@
             });
             body.addClass('django-fancyiframe-open');
         };
-
-        var supports_transitions = [
-            "transition",
-            "WebkitTransition",
-            "MozTransition",
-            "OTransition",
-            "msTransition"
-        ];
 
         return this.each(function(index, value) {
             $(value).bind('click.fancyiframe-open', show);
