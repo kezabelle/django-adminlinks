@@ -126,7 +126,7 @@
     color: #242424;
 }
 
-.django-adminlinks-btn--grouper {
+.django-adminlinks--btn--grouper {
     position: absolute;
 }
 
@@ -137,8 +137,35 @@
     padding: 0;
 }
 
-.django-adminlinks-btn--grouper:hover .django-adminlinks--btn--collection {
+.django-adminlinks--btn--grouper:hover .django-adminlinks--btn--collection {
     display: inline-block;
+}
+
+.django-adminlinks--toggle {
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+
+.django-adminlinks--btn {
+    display: none;
+}
+
+.django-adminlinks--admin-editing .django-adminlinks--btn {
+    /* inline block is what the buttons are declared as above */
+    display: inline-block;
+
+    /* an alternative way would be:
+    position: absolute;
+    top: -1000px;
+    and then on active (ie: here)
+    position: static;
+    */
+}
+
+/* active admin */
+.django-adminlinks--admin-editing .django-adminlinks--toggle {
+
 }
 
 /*.admin-toolbar-dropdown-menu {*/

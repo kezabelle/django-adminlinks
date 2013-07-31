@@ -1,0 +1,6 @@
+{% if link %}
+{% load i18n %}
+<a href="{{ link }}" class="django-adminlinks--toggle" data-no-turbolink>
+    {% trans "Administration" %}
+</a>
+{% endif %}

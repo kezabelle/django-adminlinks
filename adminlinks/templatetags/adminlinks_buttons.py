@@ -438,3 +438,8 @@ class AdminRoot(InclusionTag):
             'link': index_link
         }
 register.tag(name='render_admin_button', compile_function=AdminRoot)
+
+
+class AdminlinksToggle(AdminRoot):
+    template = 'adminlinks/admin_toggle.html'
+register.tag(name='render_toggle_button', compile_function=AdminlinksToggle)
