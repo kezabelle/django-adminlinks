@@ -168,3 +168,26 @@ the existing modeladmin methods
 :meth:`~django.contrib.admin.ModelAdmin.delete_view` to handle sending a message
 to the modal window. That too is covered by including
 :class:`~adminlinks.admin.AdminlinksMixin`.
+
+Simplifying the :class:`~django.contrib.admin.AdminSite` visual clutter
+-----------------------------------------------------------------------
+
+If you're aiming for doing *everything* via the front-end, using the template
+tags to their fullest potential, you may want to get rid of some of the visual
+noise the admin provides (header, breadcrumbs, *etc*). Add the following to
+your ``TEMPLATE_CONTEXT_PROCESSORS`` to make it behave as if it were in a
+popup, reducing the visual context appropriately::
+
+    TEMPLATE_CONTEXT_PROCESSORS = (
+
+        # These are other context processors we probably already have ...
+        "django.contrib.auth.context_processors.auth",
+        "django.core.context_processors.media",
+        "django.core.context_processors.static",
+        "django.core.context_processors.request",
+
+        # This is our new context processor!
+        "adminlinks.context_processors.fix_admin_popups",
+    )
+
+See :func:`~adminlinks.context_processors.fix_admin_popups` for more.

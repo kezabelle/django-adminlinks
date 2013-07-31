@@ -64,6 +64,7 @@ API information (auto-generated)
     api/admin
     api/views
     api/utils
+    api/context
     api/constants
 
 .. _contributing:
