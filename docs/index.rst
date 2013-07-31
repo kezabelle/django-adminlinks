@@ -12,19 +12,6 @@ Usage documentation
 
     getting_started
     extras
-    under_the_hood
-
-
-API information (auto-generated)
---------------------------------
-
-.. toctree::
-    :maxdepth: 3
-
-    api/templatetags
-    api/admin
-    api/utils
-    api/constants
 
 What it is
 ----------
@@ -49,20 +36,35 @@ Features
 
 Here's a brief run-down on what's in the box:
 
-* Basic, sane permission checking:
+* Basic, sane permission checking
 
-    * Calling the template tags without a RequestContext should not expose any
-      markup.
-    * Users must be signed in, and pass the permission checking for
-      the specific administration view.
+  * Calling the template tags without a RequestContext should not expose any
+    markup.
+  * Users must be signed in, and pass the permission checking for
+    the specific administration view.
 
-* Optional CSS and Javascript to improve the functionality by providing "button"
-  like links, and a modal window for opening links.
+* Optional :ref:`CSS <bundled_css>` and :ref:`JavaScript <bundled_js>` to
+  improve the functionality by
+  :ref:`providing "button" like links <preview_buttons>`, and a modal window
+  for opening links.
 * Pretty reasonable documentation. Or at least that's the aim.
 * An additional view on all instances which subclass our
   :class:`~adminlinks.admin.AdminlinksMixin`, to edit
   a specific field on a model, which can be used for some fairly neat in-place
   editing of only distinct parts of some data.
+
+
+API information (auto-generated)
+--------------------------------
+
+.. toctree::
+    :maxdepth: 3
+
+    api/templatetags
+    api/admin
+    api/views
+    api/utils
+    api/constants
 
 .. _contributing:
 
@@ -84,11 +86,11 @@ Similar projects
 In the course of writing this, I have become aware of other packages tackling
 the same sort of thing:
 
-  * `Martin Mahner's django-frontendadmin`_
-  * `Yaco Sistemas' django-inplaceedit`_
-  * `Ryan Berg's django-jumptoadmin`_
-  * `Maxime Haineault's django-editlive`_
-  * `Interaction Consortium's django-adminboost`_
+* `Martin Mahner's django-frontendadmin`_
+* `Yaco Sistemas' django-inplaceedit`_
+* `Ryan Berg's django-jumptoadmin`_
+* `Maxime Haineault's django-editlive`_
+* `Interaction Consortium's django-adminboost`_
 
 If you're aware of any others working in the same space, let me know and I'll
 add them here.

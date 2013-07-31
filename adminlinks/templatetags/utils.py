@@ -47,9 +47,13 @@ def context_passes_test(context):
 def _get_admin_site(admin_site):
     """
     Given the name of an :class:`~django.contrib.admin.AdminSite` instance,
-    try to resolve that into an actual object, and store the result onto this
-    function. Future calls to that same name will avoid finding the object all
-    over again, opting for the cached copy.
+    try to resolve that into an actual object
+
+    .. note::
+        This function is exposed in the public API as
+        :func:`~adminlinks.templatetags.utils.get_admin_site`, which uses
+        memoization to cache discovered :class:`~django.contrib.admin.AdminSite`
+        objects.
 
     :param admin_site: the string name of an
                        :class:`~django.contrib.admin.AdminSite` named
@@ -72,6 +76,11 @@ def _get_admin_site(admin_site):
     except NoReverseMatch:
         return None
 get_admin_site = memoize(_get_admin_site, _admin_sites_cache, num_args=1)
+get_admin_site.__doc__ = """
+The public API implementation of
+:func:`~adminlinks.templatetags.utils._get_admin_site`, wrapped to use
+memoization.
+"""
 
 
 def get_registered_modeladmins(request, admin_site):
@@ -153,14 +162,14 @@ def _admin_link_shortcut(urlname, params=None, query=None):
 def _add_link_to_context(admin_site, request, opts, permname, url_params,
                          query=None):
     """
-    Find out if a model is in our known list (those with frontend editing enabled
-    and at least 1 permission. If it's in there, try and reverse the URL to
-    return a dictionary for the final Inclusion Tag's context.
+    Find out if a model is in our known list and at has least 1 permission.
+    If it's in there, try and reverse the URL to return a dictionary for the
+    final Inclusion Tag's context.
 
     Always returns a dictionary with two keys, whose values may be empty strings.
 
     :param admin_site: the string name of an admin site; eg: `admin`
-    :param request: the current `~django.core.handlers.wsgi.WSGIRequest`
+    :param request: the current :class:`~django.core.handlers.wsgi.WSGIRequest`
     :param opts: the `_meta` Options object to get the `app_label` and
                 `module_name` for the desired URL.
     :param permname: The permission name to find; eg: `add`, `change`, `delete`
@@ -187,13 +196,17 @@ def _add_link_to_context(admin_site, request, opts, permname, url_params,
 def _add_custom_link_to_context(admin_site, request, opts, permname, viewname,
                                 url_params, query=None):
     """
-    Like `_add_link_to_context`, but allows for using a specific permission, and
-    any named url on the modeladmin, with optional url parameters.
+    Like :func:`~adminlinks.templatetags.utils._add_link_to_context`, but allows
+    for using a specific named permission, and  any named url on the modeladmin,
+    with optional url parameters.
+
+    Uses :func:`~adminlinks.templatetags.utils._add_link_to_context` internally
+    once it has established the permissions are OK.
 
     Always returns a dictionary with two keys, whose values may be empty strings.
 
     :param admin_site: the string name of an admin site; eg: `admin`
-    :param request: the current `~django.core.handlers.wsgi.WSGIRequest`
+    :param request: the current :class:`~django.core.handlers.wsgi.WSGIRequest`
     :param opts: the `_meta` Options object to get the `app_label` and
                 `module_name` for the desired URL.
     :param permname: The permission name to find; eg: `add`, `change`, `delete`
