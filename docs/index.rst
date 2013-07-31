@@ -105,3 +105,10 @@ add them here.
 .. _Ryan Berg's django-jumptoadmin: https://github.com/ryanberg/django-jumptoadmin/
 .. _Maxime Haineault's django-editlive: https://github.com/h3/django-editlive/
 .. _Interaction Consortium's django-adminboost: https://github.com/ixc/glamkit-adminboost/
+
+License
+-------
+
+``django-adminlinks`` is available under the terms of the Simplified BSD
+License (alternatively known as the FreeBSD License, or the 2-clause License).
+See the ``LICENSE`` file in the source distribution for a complete copy.
