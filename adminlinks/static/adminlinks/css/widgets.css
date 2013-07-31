@@ -147,20 +147,22 @@
     right: 0;
 }
 
-.django-adminlinks--btn {
+/* if jQuery found toggle buttons, hide the main buttons */
+.django-adminlinks--maytoggle .django-adminlinks--btn {
     display: none;
 }
 
-.django-adminlinks--admin-editing .django-adminlinks--btn {
-    /* inline block is what the buttons are declared as above */
+/* if jQuery found toggle buttons, and the toggle is currently ON, show stuff */
+.django-adminlinks--maytoggle.django-adminlinks--admin-editing .django-adminlinks--btn {
+     /*inline block is what the buttons are declared as above */
     display: inline-block;
 
-    /* an alternative way would be:
-    position: absolute;
-    top: -1000px;
-    and then on active (ie: here)
-    position: static;
-    */
+     /*an alternative way would be:*/
+    /*position: absolute;*/
+    /*top: -1000px;*/
+    /*and then on active (ie: here)*/
+    /*position: static;*/
+
 }
 
 /* active admin */

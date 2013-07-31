@@ -55,8 +55,14 @@
             });
         }
         // this has to be here because of document readiness
-        $('.django-adminlinks--toggle').bind('click', set_toggle_state);
-        toggle_editing($.Event());
+        var $toggles = $('.django-adminlinks--toggle');
+        if ($toggles.length > 0) {
+            $(document.body).addClass('django-adminlinks--maytoggle');
+            toggle_editing($.Event());
+            $toggles.bind('click', set_toggle_state);
+        }
+
+
     };
     // hopefully doing what https://github.com/kossnocorp/jquery.turbolinks says
     // so that after a Turbolinks refresh, events work?
