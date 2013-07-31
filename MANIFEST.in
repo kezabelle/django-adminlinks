@@ -12,4 +12,5 @@ recursive-include adminlinks *.txt
 recursive-include adminlinks *.woff
 recursive-include docs *.py
 recursive-include docs *.rst
+recursive-include docs *.gif
 recursive-include docs Makefile
