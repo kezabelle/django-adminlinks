@@ -1,82 +1,3 @@
-/*.admin-toolbar {*/
-    /*padding: 5px;*/
-    /*border: 1px solid #CCC;*/
-    /*margin: 0;*/
-    /*overflow: hidden;*/
-    /*background: white;*/
-    /*background: -moz-linear-gradient(top, #ffffff 0%, #dadada 100%); *//* FF3.6+ */
-    /*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#dadada)); *//* Chrome,Safari4+ */
-    /*background: -webkit-linear-gradient(top, #ffffff 0%,#dadada 100%); *//* Chrome10+,Safari5.1+ */
-    /*background: -o-linear-gradient(top, #ffffff 0%,#dadada 100%); *//* Opera 11.10+ */
-    /*background: -ms-linear-gradient(top, #ffffff 0%,#dadada 100%); *//* IE10+ */
-    /*background: linear-gradient(to bottom, #ffffff 0%,#dadada 100%); *//* W3C */
-    /*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dadada',GradientType=0 ); *//* IE6-9 */
-/*}*/
-
-
-/*.admin-toolbar-btn-group, .admin-toolbar-btn-group ul {*/
-    /*padding: 0;*/
-	/*margin: 0;*/
-	/*list-style: none;*/
-    /*display: inline-block;*/
-/*}*/
-
-/*
- * icons needed:
- *  happy face (icon-emo-happy from Fontelico)
- *  sad face (icon-emo-unhappy from Fontelico)
- *  add (icon-doc-circled from Elusive)
- *  manage (icon-search-circled from Elusive)
- *  edit (icon-pencil-circled from Elusive)
- *  delete (icon-cancel-circled from Elusive)
- *  history (icon-info-circled from Elusive)
- *  toggle up (icon-cog-circled from Elusive)
- *  toggle down (icon-lock-circled from Elusive)
- */
-/*@font-face {*/
-    /*font-family: 'fontello';*/
-    /*src: url("../fonts/fontello.eot?23638388");*/
-    /*src: url("../fonts/fontello.eot?23638388#iefix") format('embedded-opentype'), url("../fonts/fontello.woff?23638388") format('woff'), url("../fonts/fontello.ttf?23638388") format('truetype'), url("../fonts/fontello.svg?23638388#fontello") format('svg');*/
-    /*font-weight: normal;*/
-    /*font-style: normal;*/
-/*}*/
-
-/*.django-adminlinks--add:before,*/
-/*.django-adminlinks--edit:before,*/
-/*.django-adminlinks--delete:before,*/
-/*.django-adminlinks--history:before {*/
-    /*font-family: 'fontello';*/
-    /*font-style: normal;*/
-    /*font-weight: normal;*/
-    /*speak: none;*/
-    /*vertical-align: middle;*/
-    /*display: inline-block;*/
-    /*position: relative;*/
-    /*text-decoration: inherit;*/
-    /*width: 1em;*/
-    /*text-align: center;*/
-    /*margin: 0.3em 0;*/
-    /* For safety - reset parent styles, that can break glyph codes*/
-    /*font-variant: normal;*/
-    /*text-transform: none;*/
-    /* fix buttons height, for twitter bootstrap */
-    /*line-height: 0;*/
-    /*font-size: 1.15em;*/
-    /*text-rendering: geometricPrecision;*/
-/*}*/
-
-/*.django-adminlinks--add:before { content: '\e0c0'; } *//* '' */
-/*.django-adminlinks--edit:before { content: '\e067'; } *//* '' */
-/*.django-adminlinks--history:before { content: '\e03d'; } *//* '' */
-/*.django-adminlinks--delete:before { content: '\e04c'; } *//* '' */
-/*.django-adminlinks--history:before { content: '\e089'; } *//**//* '' */
-
-/*.icon-lock-circled:before { content: '\e07d'; } *//* '' */
-/*.icon-cog-circled:before { content: '\e108'; } *//* '' */
-
-/*.icon-emo-happy:before { content: '\e800'; } *//* '' */
-/*.icon-emo-unhappy:before { content: '\e802'; } *//* '' */
-
 .django-adminlinks--btn {
     padding: 3px 5px;
     color: #666;
@@ -97,6 +18,7 @@
     text-decoration: none;
     cursor: pointer;
     display: inline-block;
+    text-shadow: 0 1px 0 white;
 }
 
 .django-adminlinks--btn:hover,
@@ -143,8 +65,31 @@
 
 .django-adminlinks--toggle {
     position: fixed;
-    top: 0;
-    right: 0;
+    top: 1em;
+    right: 1em;
+    z-index: 999;
+    overflow: hidden;
+    display: block;
+    /* copy bits from django-adminlinks--btn */
+    padding: 3px 5px;
+    color: #666;
+    border: 1px solid;
+    border-color: #DDD #AAA #AAA #DDD;
+    vertical-align: baseline;
+    font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+    font-weight: normal;
+    font-size: 11px;
+    background: white;
+    background: -moz-linear-gradient(top, #ffffff 0%, #dadada 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#dadada)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #ffffff 0%,#dadada 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ffffff 0%,#dadada 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #ffffff 0%,#dadada 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #ffffff 0%,#dadada 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dadada',GradientType=0 ); /* IE6-9 */
+    text-decoration: none;
+    cursor: pointer;
+    text-shadow: 0 1px 0 white;
 }
 
 /* if jQuery found toggle buttons, hide the main buttons */
@@ -165,105 +110,28 @@
 
 }
 
+/* if the popup is open ... */
+.django-fancyiframe-open .django-adminlinks--toggle {
+    /*display: none;*/
+}
+
 /* active admin */
 .django-adminlinks--admin-editing .django-adminlinks--toggle {
 
+}
+
+.django-adminlinks--toggle--enable {
+    display: block;
 }
 
 .django-adminlinks--toggle--disable {
     display: none;
 }
 
-.django-adminlinks--admin-editing .django-adminlinks--toggle .django-adminlinks--toggle--disable {
+.django-adminlinks--admin-editing .django-adminlinks--toggle--disable {
     display: block;
 }
 
-.django-adminlinks--admin-editing .django-adminlinks--toggle .django-adminlinks--toggle--enable {
+.django-adminlinks--admin-editing .django-adminlinks--toggle--enable {
     display: none;
 }
-
-/*.admin-toolbar-dropdown-menu {*/
-    /*position: absolute;*/
-    /*left: -999em;*/
-    /*min-width: 160px;*/
-    /*padding: 0;*/
-    /*margin: 0;*/
-    /*list-style: none;*/
-    /*background-color: white;*/
-    /*border: 1px solid #CCC;*/
-    /*font-family: "Lucida Grande", Verdana, Arial, sans-serif;*/
-    /*font-weight: normal;*/
-    /*font-size: 11px;*/
-    /*text-rendering: optimizelegibility;*/
-    /*color: black;*/
-    /*z-index: 5000;*/
-/*}*/
-/*.admin-toolbar-dropdown-menu a {*/
-    /*display: block;*/
-    /*padding: 3px 5px;*/
-    /*clear: both;*/
-    /*color: #333;*/
-    /*white-space: nowrap;*/
-    /*text-decoration: none;*/
-/*}*/
-/*.admin-toolbar-dropdown-menu b {*/
-    /*display: block;*/
-    /*padding: 3px 5px;*/
-    /*clear: both;*/
-    /*color: #333;*/
-    /*white-space: nowrap;*/
-    /*background: #EDF3FE;*/
-    /*border-bottom: 1px solid #EEE;*/
-/*}*/
-/*.admin-toolbar-dropdown-menu li > a:hover {*/
-    /*color: white;*/
-    /*background: #5B80B2;*/
-    /*background: -moz-linear-gradient(top, #b3c5e5 0%, #708abd 100%); *//* FF3.6+ */
-    /*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#b3c5e5), color-stop(100%,#708abd)); *//* Chrome,Safari4+ */
-    /*background: -webkit-linear-gradient(top, #b3c5e5 0%,#708abd 100%); *//* Chrome10+,Safari5.1+ */
-    /*background: -o-linear-gradient(top, #b3c5e5 0%,#708abd 100%); *//* Opera 11.10+ */
-    /*background: -ms-linear-gradient(top, #b3c5e5 0%,#708abd 100%); *//* IE10+ */
-    /*background: linear-gradient(to bottom, #b3c5e5 0%,#708abd 100%); *//* W3C */
-    /*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3c5e5', endColorstr='#708abd',GradientType=0 ); *//* IE6-9 */
-/*}*/
-
-/*.admin-toolbar-hide-title {*/
-    /*display: none;*/
-/*}*/
-/*.admin-toolbar-btn-group li:hover .admin-toolbar-dropdown-menu {*/
-    /*left: auto;*/
-/*}*/
-
-/*.admin-toolbar-btn-group:hover .admin-toolbar-btn {*/
-/*}*/
-
-/*.admin-toolbar-dropdown-menu .divider {*/
-    /*height: 1px;*/
-    /*margin: 5px 0;*/
-    /*overflow: hidden;*/
-    /*background-color: #EEE;*/
-    /*border-bottom: 1px solid white;*/
-/*}*/
-
-/*.admin-editable-box {*/
-    /*z-index: 65000;*/
-    /*opacity: 0.3;*/
-    /*position: absolute;*/
-    /*display: none;*/
-    /*background-color: #FF0;*/
-    /*border: 1px solid #F80;*/
-    /*cursor: pointer;*/
-/*}*/
-
-/*.admin-editable-box .internal {*/
-    /*background: #000;*/
-    /*color: white;*/
-    /*position: absolute;*/
-    /*top: 0;*/
-    /*right: 0;*/
-    /*width: auto;*/
-/*}*/
-
-/*.admin-editable {*/
-    /*background-color: #FFC;*/
-/*}*/
