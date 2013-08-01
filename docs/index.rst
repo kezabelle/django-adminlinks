@@ -24,9 +24,6 @@ appropriate checks to ensure that the currently signed in user can perform the
 requested action via the admin, and displays a configurable template with a link
 to the right place.
 
-.. figure:: assets/buttons.gif
-    :align: center
-
 Why?
 ----
 
@@ -55,6 +52,44 @@ Here's a brief run-down on what's in the box:
   a specific field on a model, which can be used for some fairly neat in-place
   editing of only distinct parts of some data.
 
+
+Show me a demo!
+---------------
+
+The main draw, at least for me, is the ability to get frontend-editing for
+any model registered with the :class:`~django.contrib.admin.AdminSite`.
+Currently when using the :ref:`CSS <bundled_css>`, :ref:`JS <bundled_js>` and
+:ref:`Modeladmin mixin <mixin_modeladmin>`, you can hope for behaviour shown
+below.
+
+Links
+^^^^^
+
+.. figure:: assets/buttons.gif
+    :align: center
+
+    Here's how the various links may appear if using the
+    :ref:`included CSS <bundled_css>`. The example above is using the
+    ``{% render_admin_buttons %}`` tag. See :ref:`usage` for more examples,
+    and :class:`~adminlinks.templatetags.adminlinks_buttons.Combined` for the
+    auto-generated API documentation for the tag.
+
+Modal editing
+^^^^^^^^^^^^^
+
+.. figure:: assets/modal.gif
+    :align: center
+
+    Using the :ref:`included CSS <bundled_css>` and
+    :ref:`JavaScript <bundled_js>` gets you an iframe-based modal window.
+    In the above GIF, the :ref:`Adminlinks Modeladmin Mixin <mixin_modeladmin>`
+    is being used to expose **per-field** editing of the *title* and
+    **auto-closing on success**.
+
+.. note::
+    The modal window has been sped up here to keep the animated GIF small, and
+    the admin is in popup mode thanks to
+    :func:`~adminlinks.context_processors.fix_admin_popups`.
 
 API information (auto-generated)
 --------------------------------

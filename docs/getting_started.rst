@@ -57,6 +57,8 @@ settings (usually ``settings.py``) and add ``adminlinks`` to your
 
 .. _PyPI: http://pypi.python.org/
 
+.. _usage:
+
 Basic Usage
 -----------
 

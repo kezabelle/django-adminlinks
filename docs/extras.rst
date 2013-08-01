@@ -118,7 +118,19 @@ As you can see, the JavaScript is a little bit more involved. It uses the
 `jQuery`_ which comes with Django, and a script of my own wrangling, to display
 an ``<iframe>`` in a modal box. It hooks up all classes of
 ``django-adminlinks--btn`` to this modal box -- this CSS class is applied as a
-namespace to all the links.
+namespace to all the links
+Here's an example of it being used with the :ref:`default CSS <bundled_css>` to
+do **per-field** editing of the *title*.
+
+.. figure:: assets/modal.gif
+    :align: center
+
+.. note::
+    The modal window has been sped up here to keep the animated GIF small, and
+    the admin is in popup mode thanks to
+    :func:`~adminlinks.context_processors.fix_admin_popups`.
+
+.. _mixin_modeladmin:
 
 Patching the standard ModelAdmin
 --------------------------------
