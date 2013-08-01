@@ -38,7 +38,7 @@ abandonware installables, the only way to install django-adminlinks at this
 time is either via cloning the Git repository directly into your pythonpath, or
 having `pip`_ do it for you::
 
-    pip install git+https://github.com/kezabelle/django-adminlinks.git@master
+    pip install git+https://github.com/kezabelle/django-adminlinks.git@0.8.0
 
 Once the package is installed, you'll need to update your `Django`_ project
 settings (usually ``settings.py``) and add ``adminlinks`` to your
