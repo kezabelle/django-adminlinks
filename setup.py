@@ -1,7 +1,6 @@
 import os
 from distutils.core import setup
 from setuptools import find_packages
-from adminlinks import __version__
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
@@ -25,7 +24,7 @@ def tidy_requirements(requirement_file):
 
 setup(
     name='django-adminlinks',
-    version=__version__,
+    version='0.8.0',
     description='Django template tags for rendering links to the '
                 'administration.',
     author='Keryn Knight',
