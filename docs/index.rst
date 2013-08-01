@@ -111,6 +111,10 @@ add them here.
 License
 -------
 
-``django-adminlinks 0.8.0`` is available under the terms of the Simplified BSD
-License (alternatively known as the FreeBSD License, or the 2-clause License).
-See the ``LICENSE`` file in the source distribution for a complete copy.
+``django-adminlinks 0.8.0`` is available under the terms of the
+Simplified BSD License (alternatively known as the FreeBSD License, or
+the 2-clause License). See the ``LICENSE`` file in the source
+distribution for a complete copy, or in the `this release on GitHub`_.
+
+.. _this release on GitHub: https://github.com/kezabelle/django-adminlinks/releases/tag/0.8.0
+
