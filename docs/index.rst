@@ -24,6 +24,9 @@ appropriate checks to ensure that the currently signed in user can perform the
 requested action via the admin, and displays a configurable template with a link
 to the right place.
 
+.. figure:: assets/buttons.gif
+    :align: center
+
 Why?
 ----
 
@@ -44,8 +47,7 @@ Here's a brief run-down on what's in the box:
     the specific administration view.
 
 * Optional :ref:`CSS <bundled_css>` and :ref:`JavaScript <bundled_js>` to
-  improve the functionality by
-  :ref:`providing "button" like links <preview_buttons>`, and a modal window
+  improve the functionality by providing "button" like links, and a modal window
   for opening links.
 * Pretty reasonable documentation. Or at least that's the aim.
 * An additional view on all instances which subclass our
