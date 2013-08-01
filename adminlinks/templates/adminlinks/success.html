@@ -1,6 +1,9 @@
 <script type="text/javascript">
     (function($, doc, iframe, undefined) {
-        params = {{ json|safe }};
+        // Note: JSON is wrapped into a JavaScript array because
+        // every index is passed as a positional argument to the
+        // callees when using .trigger()
+        params = [{{ json|safe }}];
         parent.window.__data_changed__ = true;
         $(doc).trigger('fancyiframe-close', params);
     })(parent.window.jQuery, parent.document, document);
