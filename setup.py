@@ -31,7 +31,7 @@ setup(
     author_email='github@kerynknight.com',
     license="BSD License",
     keywords="django",
-    long_description=open(os.path.join(HERE, 'README')).read(),
+    long_description=open(os.path.join(HERE, 'README.rst')).read(),
     url='https://github.com/kezabelle/django-adminlinks',
     packages=find_packages(exclude=['docs*']),
     install_requires=tidy_requirements(os.path.join(HERE, 'adminlinks',

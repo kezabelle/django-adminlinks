@@ -1,0 +1,25 @@
+django-adminlinks
+=================
+
+A suite of Django template tags for rendering links to the
+administration.
+
+Dependencies
+============
+
+-  `Django`_ >= `1.4`_
+-  `django-classytags`_ >= `0.3.4.1`_
+
+License
+=======
+
+``django-adminlinks 0.8.0`` is available under the terms of the
+Simplified BSD License (alternatively known as the FreeBSD License, or
+the 2-clause License). See the ``LICENSE`` file in the source
+distribution for a complete copy, or in the `this release on GitHub`_.
+
+.. _Django: https://www.djangoproject.com/
+.. _1.4: http://pypi.python.org/pypi/Django
+.. _django-classytags: https://github.com/ojii/django-classy-tags/
+.. _0.3.4.1: http://pypi.python.org/pypi/django-classy-tags
+.. _this release on GitHub: https://github.com/kezabelle/django-adminlinks/releases/tag/0.8.0
