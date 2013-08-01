@@ -145,6 +145,7 @@ class AdminlinksMixin(AdminUrlWrap):
             'errors': helpers.AdminErrorList(form, inline_formsets=[]),
             'root_path': getattr(self.admin_site, 'root_path', None),
             'app_label': opts.app_label,
+            'is_popup': "_popup" in request.REQUEST,
         }
         context.update(extra_context or {})
         # tidy up after ourselves; by this point we don't need anything much ...
