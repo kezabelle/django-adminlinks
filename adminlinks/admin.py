@@ -238,7 +238,8 @@ class AdminlinksMixin(AdminUrlWrap):
         response = super(AdminlinksMixin, self).delete_view(request, object_id,
                                                             extra_context)
         if '_autoclose' in request.REQUEST and response.status_code in (301, 302):
-            ctx_dict = self.get_response_delete_context(request, object_id)
+            ctx_dict = self.get_response_delete_context(request, object_id,
+                                                        extra_context)
             ctx_json = simplejson.dumps(ctx_dict)
             context = {'data': ctx_dict, 'json': ctx_json}
             response = render_to_response(self.get_success_templates(request),
@@ -300,7 +301,7 @@ class AdminlinksMixin(AdminUrlWrap):
             }
         }
 
-    def get_response_delete_context(self, request, obj_id):
+    def get_response_delete_context(self, request, obj_id, extra_context):
         """
         Provides a context for the template discovered by
         :meth:`~adminlinks.admin.AdminlinksMixin.get_success_templates`. Only
