@@ -199,12 +199,23 @@ class AdminlinksMixin(AdminUrlWrap):
         del app_label, model_name, any_parents
         return templates
 
+    def should_autoclose(self, request):
+        reasons_not_to_close = (
+            '_continue' in request.POST,
+            '_saveasnew' in request.POST,
+            '_addanother' in request.POST)
+        if any(reasons_not_to_close):
+            return False
+        if '_autoclose' in request.REQUEST:
+            return True
+        return False
+
     def response_change(self, request, obj, *args, **kwargs):
         """
         Overrides the Django default, to try and provide a better experience
         for frontend editing when editing an existing object.
         """
-        if '_autoclose' in request.REQUEST:
+        if self.should_autoclose(request):
             ctx_dict = self.get_response_change_context(request, obj)
             ctx_json = simplejson.dumps(ctx_dict)
             context = {'data': ctx_dict, 'json': ctx_json}
@@ -218,7 +229,8 @@ class AdminlinksMixin(AdminUrlWrap):
         Overrides the Django default, to try and provide a better experience
         for frontend editing when adding a new object.
         """
-        if '_autoclose' in request.REQUEST:
+
+        if self.should_autoclose(request):
             ctx_dict = self.get_response_add_context(request, obj)
             ctx_json = simplejson.dumps(ctx_dict)
             context = {'data': ctx_dict, 'json': ctx_json}
@@ -237,7 +249,7 @@ class AdminlinksMixin(AdminUrlWrap):
         """
         response = super(AdminlinksMixin, self).delete_view(request, object_id,
                                                             extra_context)
-        if '_autoclose' in request.REQUEST and response.status_code in (301, 302):
+        if self.should_autoclose(request) and response.status_code in (301, 302):
             ctx_dict = self.get_response_delete_context(request, object_id,
                                                         extra_context)
             ctx_json = simplejson.dumps(ctx_dict)
