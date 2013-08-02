@@ -199,14 +199,20 @@ class AdminlinksMixin(AdminUrlWrap):
         del app_label, model_name, any_parents
         return templates
 
-    def should_autoclose(self, request):
-        reasons_not_to_close = (
+    def wants_to_autoclose(self, request):
+        return '_autoclose' in request.REQUEST
+
+    def wants_to_continue_editing(self, request):
+        return any((
             '_continue' in request.POST,
             '_saveasnew' in request.POST,
-            '_addanother' in request.POST)
-        if any(reasons_not_to_close):
+            '_addanother' in request.POST
+        ))
+
+    def should_autoclose(self, request):
+        if self.wants_to_continue_editing(request):
             return False
-        if '_autoclose' in request.REQUEST:
+        if self.wants_to_autoclose(request):
             return True
         return False
 
