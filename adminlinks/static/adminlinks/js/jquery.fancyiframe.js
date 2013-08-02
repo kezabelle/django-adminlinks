@@ -67,22 +67,9 @@
                 var distance = 0 - iframe.height();
                 // set the height to -???px, which is the real height to slide
                 // down by.
-                iframe.css({'top': distance.toString() + 'px'});
-                // if we have CSS transitions, apply and use those instead of
-                // using jQuery's animation methods.
-                if (window.Modernizer !== void(0) &&
-                    window.Modernizr.csstransitions !== void(0) &&
-                    window.Modernizr.csstransitions !== null &&
-                    window.Modernizr.csstransitions == true) {
-                    iframe.css({
-                        '-webkit-transition': 'All 0.4s linear',
-                        '-moz-transition': 'All 0.4s linear',
-                        '-o-transition': 'All 0.4s linear',
-                        'transition': 'All 0.4s linear',
-                        'top': 0
-                    });
-                } else {
-                    iframe.animate({top: 0}, 400);
+                var old_top = parseInt(iframe.css('top'));
+                if (old_top < 0) {
+                    iframe.css({'top': distance.toString() + 'px'}).animate({top: 0}, 400);
                 }
             });
 
