@@ -339,8 +339,10 @@ class ChangeList(BaseAdminLink, InclusionTag):
         :return: the link values.
         :rtype: dictionary.
         """
-        ctx = _add_link_to_context(admin_site, context['request'],
-                                   obj._meta, 'change', None, query=querystring)
+        ctx = _add_custom_link_to_context(admin_site, context['request'],
+                                          opts=obj._meta, permname='change',
+                                          viewname='changelist', url_params=None,
+                                          query=querystring)
         if ctx['link']:
             logger.debug('link created successfully, swapping out the '
                          '`verbose_name` available to the context')
