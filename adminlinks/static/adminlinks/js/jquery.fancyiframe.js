@@ -57,6 +57,13 @@
             var iframe = $('<iframe src="' + target + '" name="' + name + '" frameborder="0" id="django-fancyiframe">');
             iframe.hide();
             iframe.insertAfter(overlay);
+
+            // we can't use iframe.ready() because
+            //  * We only get one ready() event - when it's first run, no
+            //    subsequent page-loads fire it. Annoying, as it means we cannot
+            //    track the _data_changed event sooner
+            //  * We need to change/fix the height of the iframe each time,
+            //    and the ready() event is *TOO* soon for that.
             iframe.load(function(evt) {
                 overlay.removeClass('django-fancyiframe-overlay--working');
                 // if possible, search the iframe's current querystring for
