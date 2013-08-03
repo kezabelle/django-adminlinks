@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 import logging
 from django.contrib.admin import helpers, AdminSite
+from urlparse import urlsplit, urlunsplit
 from django.contrib.admin.options import csrf_protect_m
 from django.contrib.admin.util import unquote
 from django.contrib.admin.views.main import ChangeList
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.forms.models import fields_for_model
-from django.http import Http404
+from django.http import Http404, QueryDict
 from django.shortcuts import render_to_response
 from django.utils import simplejson
 from django.utils.encoding import force_unicode
@@ -226,6 +227,47 @@ class AdminlinksMixin(AdminUrlWrap):
             return True
         return False
 
+    def maybe_fix_redirection(self, request, response, obj):
+        """
+        This is a middleware-ish thing for marking whether a redirect needs
+        to say data changed ...
+        """
+        # if there's no Location string, it's not even a redirect!
+        if not response.has_header('location'):
+            return response
+
+        response.redirect_parts = list(urlsplit(response['Location']))
+        querystring = QueryDict(response.redirect_parts[3], mutable=True)
+
+        # if we got this far, we know:
+        #   * it's a redirect (it has a Location header)
+        #   * because it's a redirect, something has changed (been added/edited)
+        #   * it may want to autoclose, but can't (because add another/continue
+        #     editing was selected)
+
+        # if the redirect doesn't already know that data has been changed,
+        # fix that here.
+        if not self.data_changed(querystring):
+            # if the redirect:
+            #   * is to a changelist view
+            #   * the changelist view does not subclass AdminlinksChangeListMixin
+            # then this will cause another redirect to e=1 which may lose
+            # any other querystring parts. Need to look into a fix for this.
+            # Possibly we can resolve() the response.redirect_parts[2]
+            # and figure it out using tracks_querystring_key(DATA_CHANGED)?
+            querystring.update({DATA_CHANGED: 1})
+
+        # the view wanted to autoclose, but couldn't because
+        # `wants_to_continue_editing` was True, so keep track of the desire
+        # to autoclose, and maybe next time 'save' is hit it'll still be around
+        # to do so.
+        if self.wants_to_autoclose(request) and '_autoclose' not in querystring:
+            querystring.update(_autoclose=1)
+
+        response.redirect_parts[3] = querystring.urlencode()
+        response['Location'] = urlunsplit(response.redirect_parts)
+        return response
+
     def response_change(self, request, obj, *args, **kwargs):
         """
         Overrides the Django default, to try and provide a better experience
@@ -237,23 +279,24 @@ class AdminlinksMixin(AdminUrlWrap):
             context = {'data': ctx_dict, 'json': ctx_json}
             return render_to_response(self.get_success_templates(request),
                                       context)
-        return super(AdminlinksMixin, self).response_change(request, obj,
-                                                            *args, **kwargs)
+        response = super(AdminlinksMixin, self).response_change(request, obj,
+                                                                *args, **kwargs)
+        return self.maybe_fix_redirection(request, response, obj)
 
     def response_add(self, request, obj, post_url_continue='../%s/'):
         """
         Overrides the Django default, to try and provide a better experience
         for frontend editing when adding a new object.
         """
-
         if self.should_autoclose(request):
             ctx_dict = self.get_response_add_context(request, obj)
             ctx_json = simplejson.dumps(ctx_dict)
             context = {'data': ctx_dict, 'json': ctx_json}
             return render_to_response(self.get_success_templates(request),
                                           context)
-        return super(AdminlinksMixin, self).response_add(request, obj,
-                                                         post_url_continue)
+        response = super(AdminlinksMixin, self).response_add(request, obj,
+                                                             post_url_continue)
+        return self.maybe_fix_redirection(request, response, obj)
 
     def delete_view(self, request, object_id, extra_context=None):
         """

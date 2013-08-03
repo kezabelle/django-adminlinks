@@ -4,6 +4,12 @@ from adminlinks.constants import DATA_CHANGED
 
 
 class AdminlinksChangeListMixin(object):
+    tracks_querystring_keys = (DATA_CHANGED,)
+
+    def tracks_querystring_key(self, key):
+        return key in self.tracks_querystring_keys
+
+
     def get_query_set(self, *args, **kwargs):
         # this should stop the default ChangeList setting e=1 when we try
         # and set _data_changed=1 in the querystring.
