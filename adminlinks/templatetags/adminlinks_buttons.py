@@ -391,7 +391,6 @@ class Combined(BaseAdminLink, InclusionTag):
             return context
 
         modeladmin_links = admins[lookup]
-        print(modeladmin_links)
         links = {
             'add': _admin_link_shortcut(
                 modeladmin_links.get('add', '')
