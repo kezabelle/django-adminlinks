@@ -59,6 +59,14 @@
             iframe.insertAfter(overlay);
             iframe.load(function(evt) {
                 overlay.removeClass('django-fancyiframe-overlay--working');
+                // if possible, search the iframe's current querystring for
+                // a special variable, and broadcast that to the DOM & parent DOM
+                if (iframe.contents()[0].location.search.indexOf('_data_changed') !== -1) {
+                    window.__data_changed__ = true;
+                    if (window.frameElement !== void(0) && window.frameElement !== null) {
+                        parent.window.__data_changed__ = true;
+                    }
+                }
                 // set the height
                 iframe.height(iframe.contents().find("html").height());
                 iframe.show() && close.show();
