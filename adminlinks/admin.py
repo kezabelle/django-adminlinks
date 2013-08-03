@@ -283,7 +283,7 @@ class AdminlinksMixin(AdminUrlWrap):
                                                                 *args, **kwargs)
         return self.maybe_fix_redirection(request, response, obj)
 
-    def response_add(self, request, obj, post_url_continue='../%s/'):
+    def response_add(self, request, obj, *args, **kwargs):
         """
         Overrides the Django default, to try and provide a better experience
         for frontend editing when adding a new object.
@@ -293,9 +293,9 @@ class AdminlinksMixin(AdminUrlWrap):
             ctx_json = simplejson.dumps(ctx_dict)
             context = {'data': ctx_dict, 'json': ctx_json}
             return render_to_response(self.get_success_templates(request),
-                                          context)
+                                      context)
         response = super(AdminlinksMixin, self).response_add(request, obj,
-                                                             post_url_continue)
+                                                             *args, **kwargs)
         return self.maybe_fix_redirection(request, response, obj)
 
     def delete_view(self, request, object_id, extra_context=None):
