@@ -15,6 +15,7 @@ from django.utils.functional import update_wrapper
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from adminlinks.changelist import AdminlinksChangeList
+from adminlinks.constants import DATA_CHANGED
 
 
 logger = logging.getLogger(__name__)
@@ -210,6 +211,13 @@ class AdminlinksMixin(AdminUrlWrap):
             '_saveasnew' in request.POST,
             '_addanother' in request.POST
         ))
+
+    def data_changed(self, querydict):
+        """
+        Can be passed things like request.GET, or just dictionaries, whatever.
+        This is our magic querystring variable.
+        """
+        return DATA_CHANGED in querydict
 
     def should_autoclose(self, request):
         if self.wants_to_continue_editing(request):
