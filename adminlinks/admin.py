@@ -5,6 +5,7 @@ from django.contrib.admin import helpers
 from django.contrib.admin.options import csrf_protect_m
 from django.contrib.admin.util import unquote
 from django.contrib.admin.views.main import ChangeList
+from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.forms.models import fields_for_model
@@ -238,6 +239,17 @@ class AdminlinksMixin(AdminUrlWrap):
 
         response.redirect_parts = list(urlsplit(response['Location']))
         querystring = QueryDict(response.redirect_parts[3], mutable=True)
+
+        # should there be a `next` parameter, we'll treat it as canonical
+        # override for any other action.
+        for querydict in (querystring, request.GET):
+            if REDIRECT_FIELD_NAME in querydict:
+                redirect = unquote(querydict[REDIRECT_FIELD_NAME])
+                # TODO: replace with helpfulfields validator, once it's merged.
+                if redirect.startswith('/') and not redirect.startswith('//'):
+                    response.redirect_parts = list(urlsplit(redirect))
+                    response['Location'] = redirect
+                    return response
 
         # if we got this far, we know:
         #   * it's a redirect (it has a Location header)
