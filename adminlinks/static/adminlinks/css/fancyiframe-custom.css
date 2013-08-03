@@ -19,15 +19,15 @@
     width: 86%;
     min-width: 780px;
     max-width: 80%;
-    min-height: 1%;
+    height: 0;
     max-height: 90%;
     position: fixed;
-    top: -90%;
+    top: 0;
     left: 10%;
     margin: 0;
     padding: 0;
-    border: 1px solid white;
-    border-top: none;
+    /*border: 1px solid white;*/
+    /*border-top: none;*/
     background: white;
     -webkit-box-shadow: 0 0 30px 3px rgba(0, 0, 0, 1);
     -moz-box-shadow: 0 0 30px 3px rgba(0, 0, 0, 1);

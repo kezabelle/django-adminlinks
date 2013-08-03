@@ -75,17 +75,23 @@
                     }
                 }
                 // set the height
-                iframe.height(iframe.contents().find("html").height());
                 iframe.show() && close.show();
-                // retrieve the height; this may be different from the one
-                // we just set because of maximum heights in CSS.
-                var distance = 0 - iframe.height();
-                // set the height to -???px, which is the real height to slide
-                // down by.
-                var old_top = parseInt(iframe.css('top'));
-                if (old_top < 0) {
-                    iframe.css({'top': distance.toString() + 'px'}).animate({top: 0}, 400);
+                var old_height = iframe.height();
+                var new_height = iframe.contents().find("html").height();
+                var speed = 150;
+                if (new_height > old_height) {
+                    speed = 400;
                 }
+                iframe.animate({ height: new_height }, speed);
+//                // retrieve the height; this may be different from the one
+//                // we just set because of maximum heights in CSS.
+//                var distance = 0 - iframe.height();
+//                // set the height to -???px, which is the real height to slide
+//                // down by.
+//                var old_top = parseInt(iframe.css('top'));
+//                if (old_top < 0) {
+//                    iframe.css({'top': distance.toString() + 'px'}).animate({top: 0}, 400);
+//                }
             });
 
             // Note: Once upon a time, I tried using delegate() and bind() on specific
