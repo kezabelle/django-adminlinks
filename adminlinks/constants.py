@@ -12,3 +12,7 @@ MODELADMIN_REVERSE = '%(namespace)s:%(app)s_%(module)s_%(view)s'
 #:
 #: .. seealso:: :func:`~adminlinks.templatetags.utils.get_registered_modeladmins`
 PERMISSION_ATTRIBUTE = 'has_%s_permission'
+
+#: querystring key for tracking changes which might not otherwise be broadcast
+#: by a success template being rendered.
+DATA_CHANGED = '_data_changed'

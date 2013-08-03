@@ -3,6 +3,7 @@ import logging
 from django.contrib.admin import helpers, AdminSite
 from django.contrib.admin.options import csrf_protect_m
 from django.contrib.admin.util import unquote
+from django.contrib.admin.views.main import ChangeList
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.forms.models import fields_for_model
@@ -13,6 +14,7 @@ from django.utils.encoding import force_unicode
 from django.utils.functional import update_wrapper
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
+from adminlinks.changelist import AdminlinksChangeList
 
 
 logger = logging.getLogger(__name__)
@@ -349,3 +351,16 @@ class AdminlinksMixin(AdminUrlWrap):
                 'id': obj_id,
             }
         }
+
+    def get_changelist(self, request, **kwargs):
+        """
+        If the changelist hasn't been customised, lets just replace it with
+        our own, which should allow us to track data changes without erroring.
+        """
+        cl = super(AdminlinksMixin, self).get_changelist(request, **kwargs)
+        if cl == ChangeList:
+            cl = AdminlinksChangeList
+        else:
+            logger.warning('Custom `ChangeList` discovered,'
+                           'AdminlinksChangeListMixin must be applied manually.')
+        return cl
