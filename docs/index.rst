@@ -91,8 +91,8 @@ Modal editing
     the admin is in popup mode thanks to
     :func:`~adminlinks.context_processors.fix_admin_popups`.
 
-API information (auto-generated)
---------------------------------
+Developer documentation (API, etc)
+---------------------------------
 
 .. toctree::
     :maxdepth: 3
@@ -103,6 +103,7 @@ API information (auto-generated)
     api/utils
     api/context
     api/constants
+    release
 
 .. _contributing:
 
