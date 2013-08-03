@@ -254,7 +254,7 @@ class AdminlinksMixin(AdminUrlWrap):
             # then this will cause another redirect to e=1 which may lose
             # any other querystring parts. Need to look into a fix for this.
             # Possibly we can resolve() the response.redirect_parts[2]
-            # and figure it out using tracks_querystring_key(DATA_CHANGED)?
+            # and figure it out using tracks_querystring_keys?
             querystring.update({DATA_CHANGED: 1})
 
         # the view wanted to autoclose, but couldn't because
@@ -409,9 +409,15 @@ class AdminlinksMixin(AdminUrlWrap):
         our own, which should allow us to track data changes without erroring.
         """
         cl = super(AdminlinksMixin, self).get_changelist(request, **kwargs)
-        if cl == ChangeList:
-            cl = AdminlinksChangeList
+        fits_requirements = (
+            hasattr(cl, 'tracks_querystring_keys'),
+            DATA_CHANGED in getattr(cl, 'tracks_querystring_keys', ())
+        )
+        if all(fits_requirements):
+            return cl
         else:
             logger.warning('Custom `ChangeList` discovered,'
-                           'AdminlinksChangeListMixin must be applied manually.')
+                           'AdminlinksChangeListMixin is being mixed in '
+                           'automatically. Hopefully it will work!')
+            cl = type('AutoPatchedChangeList', (AdminlinksChangeList, cl), {})
         return cl
