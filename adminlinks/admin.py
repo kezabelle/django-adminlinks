@@ -240,17 +240,6 @@ class AdminlinksMixin(AdminUrlWrap):
         response.redirect_parts = list(urlsplit(response['Location']))
         querystring = QueryDict(response.redirect_parts[3], mutable=True)
 
-        # should there be a `next` parameter, we'll treat it as canonical
-        # override for any other action.
-        for querydict in (querystring, request.GET):
-            if REDIRECT_FIELD_NAME in querydict:
-                redirect = unquote(querydict[REDIRECT_FIELD_NAME])
-                # TODO: replace with helpfulfields validator, once it's merged.
-                if redirect.startswith('/') and not redirect.startswith('//'):
-                    response.redirect_parts = list(urlsplit(redirect))
-                    response['Location'] = redirect
-                    return response
-
         # if we got this far, we know:
         #   * it's a redirect (it has a Location header)
         #   * because it's a redirect, something has changed (been added/edited)
@@ -275,6 +264,30 @@ class AdminlinksMixin(AdminUrlWrap):
         # to do so.
         if self.wants_to_autoclose(request) and '_autoclose' not in querystring:
             querystring.update(_autoclose=1)
+
+        # should there be a `next` parameter, we'll treat it as canonical
+        # override for any other action.
+        if REDIRECT_FIELD_NAME in request.GET:
+            next_url = request.GET[REDIRECT_FIELD_NAME]
+            if (self.wants_to_continue_editing(request) 
+                    and REDIRECT_FIELD_NAME not in querystring):
+                # save & add another, or save & continue editing was clicked
+                # so we just presist the redirection location ...
+                querystring.update({REDIRECT_FIELD_NAME: next_url})
+            else:
+                # `save` was pressed
+                redir = unquote(next_url)
+                if redir.startswith('/') and not redir.startswith('//'):
+                    # patch the existing redirect with the *FINAL* data.
+                    # also maintaining any querystring changes.
+                    new_parts = list(urlsplit(redir))
+                    # change path
+                    if new_parts[2]:
+                        response.redirect_parts[2] = new_parts[2]
+                        response.canonical = True
+                    # include querystring.
+                    if new_parts[3]:
+                        querystring.update(QueryDict(new_parts[3], mutable=False))
 
         response.redirect_parts[3] = querystring.urlencode()
         response['Location'] = urlunsplit(response.redirect_parts)
