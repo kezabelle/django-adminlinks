@@ -1,7 +1,14 @@
 {% if link %}
+{% load static %}
 {% load i18n %}
 <a href="{{ link }}" class="django-adminlinks--toggle" data-no-turbolink>
-    <span class="django-adminlinks--toggle--enable">{% trans "Enable editing" %}</span>
-    <span class="django-adminlinks--toggle--disable">{% trans "Disable editing" %}</span>
+    <span class="django-adminlinks--toggle--enable">
+        <img src="{% static 'admin/img/icon_changelink.gif' %}" alt="{% trans "Enable editing" %}">
+        {% trans "Editing disabled" %}
+    </span>
+    <span class="django-adminlinks--toggle--disable">
+        <img src="{% static 'admin/img/icon-yes.gif' %}" alt="{% trans "Disable editing" %}">
+        {% trans "Editing enabled" %}
+    </span>
 </a>
 {% endif %}
