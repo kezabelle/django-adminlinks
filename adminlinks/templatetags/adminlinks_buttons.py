@@ -6,6 +6,7 @@ from classytags.core import Options
 from django.template.base import Library
 from classytags.helpers import InclusionTag
 from django import get_version
+from django.template.defaultfilters import yesno
 from adminlinks.templatetags.utils import (context_passes_test,
                                            get_admin_site,
                                            get_registered_modeladmins,
@@ -171,8 +172,13 @@ class EditField(BaseAdminLink, InclusionTag):
                                                query=querystring))
         # successfully loaded link, add the fieldname.
         if 'link' in ctx:
-            ctx.update({'verbose_name':
-                            obj._meta.get_field_by_name(fieldname)[0].verbose_name})
+            field = obj._meta.get_field(fieldname)
+            value = getattr(obj, fieldname, None)
+            if field.get_internal_type() in ('BooleanField', 'NullBooleanField'):
+                icon = 'admin/img/icon-%s.gif' % yesno(value, "yes,no,unknown")
+                ctx.update(maybe_boolean=True, img=icon)
+            ctx.update(verbose_name=field.verbose_name,
+                       existing_value=value)
         return ctx
 register.tag(name='render_edit_field_button', compile_function=EditField)
 
