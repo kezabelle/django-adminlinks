@@ -231,7 +231,7 @@ class AdminlinksMixin(AdminUrlWrap):
     def maybe_fix_redirection(self, request, response, obj):
         """
         This is a middleware-ish thing for marking whether a redirect needs
-        to say data changed ...
+        to say data changed ... it's pretty complex, so has lots of comments.
         """
         # if there's no Location string, it's not even a redirect!
         if not response.has_header('location'):
