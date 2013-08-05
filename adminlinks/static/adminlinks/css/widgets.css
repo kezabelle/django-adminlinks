@@ -7,6 +7,7 @@
     font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
     font-weight: normal;
     font-size: 11px;
+    line-height: 1.1;
     background: white;
     background: -moz-linear-gradient(top, #ffffff 0%, #dadada 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#dadada)); /* Chrome,Safari4+ */
