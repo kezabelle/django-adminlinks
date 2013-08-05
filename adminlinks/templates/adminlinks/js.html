@@ -1,6 +1,6 @@
 {% if should_load_assets %}
     {% load static %}
-    <script type="text/javascript" src="{% static 'admin/js/jquery.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'adminlinks/js/jquery.fancyiframe.js' %}"></script>
-    <script type="text/javascript" src="{% static 'adminlinks/js/adminlinks.js' %}"></script>
+    <script type="text/javascript" src="{% static 'admin/js/jquery.min.js' %}{% if debug %}?cachebusting={% now "u" %}{% endif %}"></script>
+    <script type="text/javascript" src="{% static 'adminlinks/js/jquery.fancyiframe.js' %}{% if debug %}?cachebusting={% now "u" %}{% endif %}"></script>
+    <script type="text/javascript" src="{% static 'adminlinks/js/adminlinks.js' %}{% if debug %}?cachebusting={% now "u" %}{% endif %}"></script>
 {% endif %}
