@@ -2,11 +2,12 @@
 from __future__ import unicode_literals
 from collections import defaultdict
 import logging
+from distutils.version import LooseVersion
 from urlparse import urlsplit, urlunsplit
 from django.core.urlresolvers import reverse, resolve, NoReverseMatch
 from django.utils.functional import memoize
-from adminlinks.constants import MODELADMIN_REVERSE, PERMISSION_ATTRIBUTE
 from django.http import QueryDict
+from adminlinks.constants import MODELADMIN_REVERSE, PERMISSION_ATTRIBUTE
 
 logger = logging.getLogger(__name__)
 _admin_sites_cache = {}
@@ -262,3 +263,14 @@ def convert_context_to_dict(context):
         for key, value in d.items():
             out[key] = value
     return out
+
+
+def _changelist_popup_qs():
+    """
+    If we're not at 1.6, the changelist uses "pop" in the querystring.
+    """
+    is_over_16 = LooseVersion(get_version()) >= LooseVersion('1.6')
+    changelist_popup_qs = 'pop=1'
+    if not is_over_16:
+        changelist_popup_qs = '_popup=1'
+    return changelist_popup_qs, is_over_16

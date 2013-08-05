@@ -5,7 +5,6 @@ from classytags.arguments import Argument, StringArgument
 from classytags.core import Options
 from django.template.base import Library
 from classytags.helpers import InclusionTag
-from distutils.version import LooseVersion
 from django import get_version
 from adminlinks.templatetags.utils import (context_passes_test,
                                            get_admin_site,
@@ -18,11 +17,7 @@ register = Library()
 logger = logging.getLogger(__name__)
 
 
-def _changelist_popup_qs():
-    changelist_popup_qs = 'pop=1'
-    if LooseVersion(get_version()) >= LooseVersion('1.6'):
-        changelist_popup_qs = '_popup=1'
-    return changelist_popup_qs
+
 
 
 class BaseAdminLink(object):
