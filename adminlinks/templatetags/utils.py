@@ -4,6 +4,8 @@ from collections import defaultdict
 import logging
 from distutils.version import LooseVersion
 from urlparse import urlsplit, urlunsplit
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse, resolve, NoReverseMatch
 from django.utils.functional import memoize
 from django.http import QueryDict
@@ -26,12 +28,20 @@ def context_passes_test(context):
     :rtype: :data:`True` or :data:`False`
     """
     if 'request' not in context:
-        logger.debug('request not found in %r' % context)
+        logger.debug('request not found in context')
+        if settings.DEBUG:
+            raise ImproperlyConfigured("To continue using this, you need to "
+                                       "put `django.core.context_processors.request` "
+                                       "in your TEMPLATE_CONTEXT_PROCESSORS")
         return False
     request = context['request']
 
     if not hasattr(request, 'user'):
         logger.debug('%r has no "user"')
+        if settings.DEBUG:
+            raise ImproperlyConfigured("To continue using this, you need to "
+                                       "put `django.contrib.auth.middleware.AuthenticationMiddleware` "
+                                       "in your MIDDLEWARE_CLASSES")
         return False
 
     user = request.user
