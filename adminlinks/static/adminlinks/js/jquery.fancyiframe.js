@@ -43,6 +43,18 @@
 
         doc.bind('fancyiframe-close', hide);
 
+        var resize = function(event, new_height) {
+            console.log('received event');
+            var iframe = $('#django-fancyiframe');
+            var old_height = iframe.height();
+            var speed = 150;
+            if (new_height > old_height) {
+                speed = 400;
+            }
+            iframe.animate({ height: new_height }, speed);
+        };
+        doc.bind('fancyiframe-resize', resize);
+
         var show = function(event) {
             event.preventDefault();
             var $el = $(this);
@@ -54,7 +66,7 @@
             close.attr('title', options.callbacks.closeTitle($el).toString());
             overlay.fadeTo(options.fades.overlayIn, options.fades.opacity);
             overlay.addClass('django-fancyiframe-overlay--working');
-            var iframe = $('<iframe src="' + target + '" name="' + name + '" frameborder="0" id="django-fancyiframe">');
+            var iframe = $('<iframe src="' + target + '" frameborder="0" id="django-fancyiframe">');
             iframe.hide();
             iframe.insertAfter(overlay);
 
@@ -76,22 +88,8 @@
                 }
                 // set the height
                 iframe.show() && close.show();
-                var old_height = iframe.height();
-                var new_height = iframe.contents().find("html").height();
-                var speed = 150;
-                if (new_height > old_height) {
-                    speed = 400;
-                }
-                iframe.animate({ height: new_height }, speed);
-//                // retrieve the height; this may be different from the one
-//                // we just set because of maximum heights in CSS.
-//                var distance = 0 - iframe.height();
-//                // set the height to -???px, which is the real height to slide
-//                // down by.
-//                var old_top = parseInt(iframe.css('top'));
-//                if (old_top < 0) {
-//                    iframe.css({'top': distance.toString() + 'px'}).animate({top: 0}, 400);
-//                }
+                var params = [iframe.contents().find("html").height()];
+                doc.trigger('fancyiframe-resize', params);
             });
 
             // Note: Once upon a time, I tried using delegate() and bind() on specific
