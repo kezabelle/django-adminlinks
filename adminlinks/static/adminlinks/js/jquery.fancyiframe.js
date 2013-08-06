@@ -43,10 +43,13 @@
 
         doc.bind('fancyiframe-close', hide);
 
-        var resize = function(event, new_height) {
-            console.log('received event');
+        var resize = function(event, extra_height) {
             var iframe = $('#django-fancyiframe');
             var old_height = iframe.height();
+            var new_height = iframe.contents().find("html").height();
+            if (extra_height !== void(0) && extra_height !== null) {
+                new_height += parseInt(extra_height);
+            }
             var speed = 150;
             if (new_height > old_height) {
                 speed = 400;
@@ -88,8 +91,7 @@
                 }
                 // set the height
                 iframe.show() && close.show();
-                var params = [iframe.contents().find("html").height()];
-                doc.trigger('fancyiframe-resize', params);
+                doc.trigger('fancyiframe-resize');
             });
 
             // Note: Once upon a time, I tried using delegate() and bind() on specific
