@@ -228,7 +228,7 @@ class AdminlinksMixin(AdminUrlWrap):
             return True
         return False
 
-    def maybe_fix_redirection(self, request, response, obj):
+    def maybe_fix_redirection(self, request, response, obj=None):
         """
         This is a middleware-ish thing for marking whether a redirect needs
         to say data changed ... it's pretty complex, so has lots of comments.
@@ -341,7 +341,7 @@ class AdminlinksMixin(AdminUrlWrap):
             response = render_to_response(self.get_success_templates(request),
                                           context)
             del context, ctx_dict, ctx_json
-        return response
+        return self.maybe_fix_redirection(request, response)
 
     def get_response_add_context(self, request, obj):
         """
