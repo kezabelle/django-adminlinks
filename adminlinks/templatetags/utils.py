@@ -20,6 +20,12 @@ def context_passes_test(context):
     Given a context, determine whether a
     :class:`~django.contrib.auth.models.User` exists, and if they see anything.
 
+    .. versionchanged:: 0.8.1
+        if ``DEBUG`` is :data:`True`, then better error messages are displayed
+        to the user, as a reminder of what settings need to be in place.
+        Previously it was dependent on having a ``LOGGING`` configuration that
+        would show the messages.
+
     :param context: a :class:`~django.template.RequestContext`. Accepts
                     any :class:`~django.template.Context` like object,
                     but it explicitly tests for a `request` key and
@@ -278,6 +284,9 @@ def convert_context_to_dict(context):
 def _changelist_popup_qs():
     """
     If we're not at 1.6, the changelist uses "pop" in the querystring.
+
+    .. versionchanged:: 0.8.1
+        Returns a tuple of the querystring and a boolean of whether or not
     """
     is_over_16 = LooseVersion(get_version()) >= LooseVersion('1.6')
     changelist_popup_qs = 'pop=1'

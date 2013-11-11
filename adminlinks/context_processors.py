@@ -17,6 +17,12 @@ def patch_admin_context(request, valid, invalid):
         hopefully fine, because you should probably handle things
         yourself, you magical person.
 
+    .. versionadded:: 0.8.1
+        Hoisted functionality required for
+        :func:`adminlinks.context_processors.force_admin_popups`
+        and :func:`adminlinks.context_processors.fix_admin_popups` into
+        a separate function, which tests whether to apply the context.
+
     :return: ``valid`` or ``invalid`` parameter.
     :rtype: dictionary.
     """
@@ -60,6 +66,11 @@ def force_admin_popups(request):
     closing a modal window on success by putting ``will_autoclose``
     into the context.
 
+    .. versionadded:: 0.8.1
+        Previously this was known as
+        :func:`adminlinks.context_processors.fix_admin_popups`, even though it
+        didn't really *fix* anything.
+
     .. note::
         If there is no user, or the user is not authenticated, the
         context will never contain any of the documented keys.
@@ -89,6 +100,11 @@ def fix_admin_popups(request):
     and it also detects whether the view is supposed to respond by
     closing a modal window on success by putting ``will_autoclose``
     into the context.
+
+    .. versionchanged:: 0.8.1
+        Previously the function
+        :func:`adminlinks.context_processors.force_admin_popups` used this
+        name.
 
     .. note::
         If there is no user, or the user is not authenticated, the

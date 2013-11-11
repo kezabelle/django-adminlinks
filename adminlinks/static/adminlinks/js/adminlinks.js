@@ -49,8 +49,8 @@
                 },
                 fades: {
                     opacity: 0.93,
-                    overlayIn: 0,
-                    overlayOut: 0
+                    overlayIn: 200,
+                    overlayOut: 300
                 }
             });
         }

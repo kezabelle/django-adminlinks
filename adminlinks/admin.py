@@ -205,9 +205,20 @@ class AdminlinksMixin(AdminUrlWrap):
         return templates
 
     def wants_to_autoclose(self, request):
+        """
+        .. versionadded:: 0.8.1
+
+        :return: Whether or not ``_autoclose`` was in the request
+        """
         return '_autoclose' in request.REQUEST
 
     def wants_to_continue_editing(self, request):
+        """
+        .. versionadded:: 0.8.1
+
+        :return: Whether **Save** was pressed, or whether **Save and add
+                 another/continue editing** was.
+        """
         return any((
             '_continue' in request.POST,
             '_saveasnew' in request.POST,
@@ -218,10 +229,20 @@ class AdminlinksMixin(AdminUrlWrap):
         """
         Can be passed things like request.GET, or just dictionaries, whatever.
         This is our magic querystring variable.
+
+        .. versionadded:: 0.8.1
         """
         return DATA_CHANGED in querydict
 
     def should_autoclose(self, request):
+        """
+
+        .. versionadded:: 0.8.1
+
+        :return: Whether or not ``_autoclose`` was in the request and whether
+                 **Save** was pressed, or whether **Save and add
+                 another/continue editing** was.
+        """
         if self.wants_to_continue_editing(request):
             return False
         if self.wants_to_autoclose(request):
@@ -232,6 +253,8 @@ class AdminlinksMixin(AdminUrlWrap):
         """
         This is a middleware-ish thing for marking whether a redirect needs
         to say data changed ... it's pretty complex, so has lots of comments.
+
+        .. versionadded:: 0.8.1
         """
         # if there's no Location string, it's not even a redirect!
         if not response.has_header('location'):
@@ -269,7 +292,7 @@ class AdminlinksMixin(AdminUrlWrap):
         # override for any other action.
         if REDIRECT_FIELD_NAME in request.GET:
             next_url = request.GET[REDIRECT_FIELD_NAME]
-            if (self.wants_to_continue_editing(request) 
+            if (self.wants_to_continue_editing(request)
                     and REDIRECT_FIELD_NAME not in querystring):
                 # save & add another, or save & continue editing was clicked
                 # so we just presist the redirection location ...
@@ -411,6 +434,9 @@ class AdminlinksMixin(AdminUrlWrap):
             At the point this is called, the original object no longer exists,
             so we are stuck trusting the `obj_id` given as an argument.
 
+        .. versionchanged::
+            Introduced ``extra_context`` parameter.
+
         :return: Data which may be given to a template.
                  Must be JSON serializable, so that a template may pass it
                  back to the browser's JavaScript engine.
@@ -432,6 +458,9 @@ class AdminlinksMixin(AdminUrlWrap):
         """
         If the changelist hasn't been customised, lets just replace it with
         our own, which should allow us to track data changes without erroring.
+
+        .. versionadded:: 0.8.1
+
         """
         cl = super(AdminlinksMixin, self).get_changelist(request, **kwargs)
         fits_requirements = (

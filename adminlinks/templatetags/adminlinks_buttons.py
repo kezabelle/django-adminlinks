@@ -18,9 +18,6 @@ register = Library()
 logger = logging.getLogger(__name__)
 
 
-
-
-
 class BaseAdminLink(object):
     """
     Class for mixing into other classes to provide
@@ -138,6 +135,13 @@ class EditField(BaseAdminLink, InclusionTag):
               :class:`~django.contrib.admin.ModelAdmin` includes
               :class:`~adminlinks.admin.AdminlinksMixin` or otherwise creates a
               named url ending in `change_field`.
+
+    .. versionchanged:: 0.8.1
+        The default template, ``adminlinks/edit_field_link.html`` now expects
+        to be able to use ``{% load static %}`` if the field being edited is
+        either a :class:`~django.db.models.BooleanField` or a
+        :class:`~django.db.models.NullBooleanField`, so that it can render
+        an icon.
     """
     template = 'adminlinks/edit_field_link.html'
 
