@@ -24,7 +24,7 @@ def tidy_requirements(requirement_file):
 
 setup(
     name='django-adminlinks',
-    version='0.8.0',
+    version='0.8.1',
     description='Django template tags for rendering links to the '
                 'administration.',
     author='Keryn Knight',
