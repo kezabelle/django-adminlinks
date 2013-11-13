@@ -1,0 +1,23 @@
+
+Future
+======
+
+?
+
+0.8.1 / 2013-11-13 (40 commits)
+===============================
+
+* Provide better state recognition to detect whether the iframe
+  should autoclose, across requests.
+* A bunch of changes to the CSS/JS handling.
+
+0.8.0 / 2013-08-01 (128 commits)
+================================
+
+An almost complete rebuild since the incomplete version 0.1.0.
+See [the GitHub commit history](https://github.com/kezabelle/django-adminlinks/commits/576956e6db3fe16bcc6d7029a7ac2b0f2aa2d545) for a complete
+list of changes, the [source at this point in time](https://github.com/kezabelle/django-adminlinks/tree/576956e6db3fe16bcc6d7029a7ac2b0f2aa2d545),
+and [the GitHub diff between now and the previously published push](https://github.com/kezabelle/django-adminlinks/compare/80f7b234f879ec2a2fb350443e4b591807386b0d...576956e6db3fe16bcc6d7029a7ac2b0f2aa2d545),
+because I'm seriously not going to enumerate everything that's changed. I can't
+even remember that far back!
+
