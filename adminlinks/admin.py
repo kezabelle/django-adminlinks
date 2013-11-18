@@ -13,7 +13,10 @@ from django.http import Http404, QueryDict
 from django.shortcuts import render_to_response
 from django.utils import simplejson
 from django.utils.encoding import force_unicode
-from django.utils.functional import update_wrapper
+try:
+    from django.utils.functional import update_wrapper
+except ImportError as e:
+    from functools import update_wrapper
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from adminlinks.changelist import AdminlinksChangeList
