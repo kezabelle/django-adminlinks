@@ -11,12 +11,16 @@ from django.db import transaction
 from django.forms.models import fields_for_model
 from django.http import Http404, QueryDict
 from django.shortcuts import render_to_response
-from django.utils import simplejson
 from django.utils.encoding import force_unicode
 try:
-    from django.utils.functional import update_wrapper
-except ImportError as e:
+    # >=1.6
+    import json
     from functools import update_wrapper
+except ImportError as e:
+    # <=1.5
+    from django.utils import simplejson as json
+    from django.utils.functional import update_wrapper
+
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from adminlinks.changelist import AdminlinksChangeList
@@ -326,7 +330,7 @@ class AdminlinksMixin(AdminUrlWrap):
         """
         if self.should_autoclose(request):
             ctx_dict = self.get_response_change_context(request, obj)
-            ctx_json = simplejson.dumps(ctx_dict)
+            ctx_json = json.dumps(ctx_dict)
             context = {'data': ctx_dict, 'json': ctx_json}
             return render_to_response(self.get_success_templates(request),
                                       context)
@@ -341,7 +345,7 @@ class AdminlinksMixin(AdminUrlWrap):
         """
         if self.should_autoclose(request):
             ctx_dict = self.get_response_add_context(request, obj)
-            ctx_json = simplejson.dumps(ctx_dict)
+            ctx_json = json.dumps(ctx_dict)
             context = {'data': ctx_dict, 'json': ctx_json}
             return render_to_response(self.get_success_templates(request),
                                       context)
@@ -362,7 +366,7 @@ class AdminlinksMixin(AdminUrlWrap):
         if self.should_autoclose(request) and response.status_code in (301, 302):
             ctx_dict = self.get_response_delete_context(request, object_id,
                                                         extra_context)
-            ctx_json = simplejson.dumps(ctx_dict)
+            ctx_json = json.dumps(ctx_dict)
             context = {'data': ctx_dict, 'json': ctx_json}
             response = render_to_response(self.get_success_templates(request),
                                           context)
