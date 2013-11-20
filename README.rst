@@ -16,7 +16,7 @@ Installing
 
 `pip`_ can do it for you::
 
-    pip install git+https://github.com/kezabelle/django-adminlinks.git@0.8.1
+    pip install git+https://github.com/kezabelle/django-adminlinks.git@0.8.2
 
 Check the `getting started`_ docs for further information.
 
@@ -25,13 +25,13 @@ Info
 
 `Documentation`_ is available. If it's not good enough, open a `ticket`_.
 
-The source is on `GitHub`_, version `0.8.1 is here`_.
+The source is on `GitHub`_, version `0.8.2 is here`_.
 
 
 License
 =======
 
-``django-adminlinks 0.8.1`` is available under the terms of the
+``django-adminlinks 0.8.2`` is available under the terms of the
 Simplified BSD License (alternatively known as the FreeBSD License, or
 the 2-clause License). See the ``LICENSE`` file in the source
 distribution for a complete copy, or in the `this release on GitHub`_.
@@ -46,5 +46,5 @@ distribution for a complete copy, or in the `this release on GitHub`_.
 .. _Documentation: https://django-adminlinks.readthedocs.org/en/latest/
 .. _ticket: https://github.com/kezabelle/django-adminlinks/issues/
 .. _GitHub: https://github.com/kezabelle/django-adminlinks
-.. _0.8.1 is here: https://github.com/kezabelle/django-adminlinks/tree/0.8.1
-.. _this release on GitHub: https://github.com/kezabelle/django-adminlinks/releases/tag/0.8.1
+.. _0.8.2 is here: https://github.com/kezabelle/django-adminlinks/tree/0.8.2
+.. _this release on GitHub: https://github.com/kezabelle/django-adminlinks/releases/tag/0.8.2
