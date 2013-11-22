@@ -50,9 +50,9 @@
             if (extra_height !== void(0) && extra_height !== null) {
                 new_height += parseInt(extra_height);
             }
-            var speed = 150;
+            var speed = 0;
             if (new_height > old_height) {
-                speed = 400;
+                speed = 0;
             }
             iframe.animate({ height: new_height }, speed);
         };
