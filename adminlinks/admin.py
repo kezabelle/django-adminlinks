@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
+try:
+    from django.utils.six.moves import urllib_parse
+    urlsplit = urllib_parse.urlsplit
+    urlunsplit = urllib_parse.urlunsplit
+except (ImportError, AttributeError) as e:  # Python 2, < Django 1.5
 from urlparse import urlsplit, urlunsplit
 from django.contrib.admin import helpers
 from django.contrib.admin.options import csrf_protect_m

@@ -3,6 +3,11 @@ from __future__ import unicode_literals
 from collections import defaultdict
 import logging
 from distutils.version import LooseVersion
+try:
+    from django.utils.six.moves import urllib_parse
+    urlsplit = urllib_parse.urlsplit
+    urlunsplit = urllib_parse.urlunsplit
+except (ImportError, AttributeError) as e:  # Python 2, < Django 1.5
 from urlparse import urlsplit, urlunsplit
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
