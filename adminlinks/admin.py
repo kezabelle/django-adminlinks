@@ -5,7 +5,7 @@ try:
     urlsplit = urllib_parse.urlsplit
     urlunsplit = urllib_parse.urlunsplit
 except (ImportError, AttributeError) as e:  # Python 2, < Django 1.5
-from urlparse import urlsplit, urlunsplit
+    from urlparse import urlsplit, urlunsplit
 from django.contrib.admin import helpers
 from django.contrib.admin.options import csrf_protect_m
 from django.contrib.admin.util import unquote
