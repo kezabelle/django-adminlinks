@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from collections import defaultdict
 import logging
 from distutils.version import LooseVersion
-from django.contrib.admin import AdminSite
+from django.contrib.admin import AdminSite, site as PossibleAdminSite
 
 try:
     from django.utils.six.moves import urllib_parse
@@ -90,7 +90,11 @@ def _get_admin_site(admin_site):
     # pop a dictionary onto this function and use it for keeping track
     # of discovered admin sites as they're found.
     logger.debug('admin site not previously discovered, so do the lookup')
+    if PossibleAdminSite.app_name == admin_site:
+        logger.info('Default site found')
+        return PossibleAdminSite
     try:
+        logger.debug('Custom admin site, not monkeypatched into contrib.admin')
         for_resolving = reverse('%s:index' % admin_site)
         wrapped_view = resolve(for_resolving)
         # unwrap the view, because all AdminSite urls get wrapped with a
@@ -100,6 +104,7 @@ def _get_admin_site(admin_site):
                          if isinstance(x.cell_contents, AdminSite))
         return adminsite
     except (NoReverseMatch, StopIteration) as e:
+        logger.exception("Failed to find adminsite.")
         return None
 get_admin_site = memoize(_get_admin_site, _admin_sites_cache, num_args=1)
 get_admin_site.__doc__ = """
