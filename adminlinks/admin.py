@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
-from urlparse import urlsplit, urlunsplit
+try:
+    from django.utils.six.moves import urllib_parse
+    urlsplit = urllib_parse.urlsplit
+    urlunsplit = urllib_parse.urlunsplit
+except (ImportError, AttributeError) as e:  # Python 2, < Django 1.5
+    from urlparse import urlsplit, urlunsplit
 from django.contrib.admin import helpers
 from django.contrib.admin.options import csrf_protect_m
 from django.contrib.admin.util import unquote
@@ -10,7 +15,10 @@ from django.db import transaction
 from django.forms.models import fields_for_model
 from django.http import Http404, QueryDict
 from django.shortcuts import render_to_response
-from django.utils.encoding import force_unicode
+try:
+    from django.utils.encoding import force_text
+except ImportError:  # < Django 1.5
+    from django.utils.encoding import force_unicode as force_text
 try:
     # >=1.6
     import json
@@ -105,11 +113,11 @@ class AdminlinksMixin(AdminUrlWrap):
             raise PermissionDenied
 
         if obj is None:
-            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
+            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_text(opts.verbose_name), 'key': escape(object_id)})
 
         all_fields = fields_for_model(obj)
         if fieldname not in all_fields:
-            raise Http404(_('%(field)s does not exist on this object') % {'field': force_unicode(fieldname)})
+            raise Http404(_('%(field)s does not exist on this object') % {'field': force_text(fieldname)})
 
         del all_fields[fieldname]
         fields_to_exclude = [k for k, v in all_fields.items()]

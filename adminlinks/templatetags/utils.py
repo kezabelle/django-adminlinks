@@ -3,7 +3,14 @@ from __future__ import unicode_literals
 from collections import defaultdict
 import logging
 from distutils.version import LooseVersion
-from urlparse import urlsplit, urlunsplit
+from django.contrib.admin import AdminSite
+
+try:
+    from django.utils.six.moves import urllib_parse
+    urlsplit = urllib_parse.urlsplit
+    urlunsplit = urllib_parse.urlunsplit
+except (ImportError, AttributeError) as e:  # Python 2, < Django 1.5
+    from urlparse import urlsplit, urlunsplit
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse, resolve, NoReverseMatch
@@ -89,8 +96,10 @@ def _get_admin_site(admin_site):
         # unwrap the view, because all AdminSite urls get wrapped with a
         # decorator which goes through
         # :meth:`~django.contrib.admin.AdminSite.admin_view`
-        return wrapped_view.func.func_closure[0].cell_contents
-    except NoReverseMatch:
+        adminsite = next(x.cell_contents for x in wrapped_view.func.__closure__
+                         if isinstance(x.cell_contents, AdminSite))
+        return adminsite
+    except (NoReverseMatch, StopIteration) as e:
         return None
 get_admin_site = memoize(_get_admin_site, _admin_sites_cache, num_args=1)
 get_admin_site.__doc__ = """
