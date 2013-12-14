@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from itertools import chain
 import logging
 try:
     from django.utils.six.moves import urllib_parse
@@ -115,18 +116,28 @@ class AdminlinksMixin(AdminUrlWrap):
         if obj is None:
             raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_text(opts.verbose_name), 'key': escape(object_id)})
 
-        all_fields = fields_for_model(obj)
+        all_fields = set(chain(fields_for_model(obj), self.form.base_fields))
+
         if fieldname not in all_fields:
             raise Http404(_('%(field)s does not exist on this object') % {'field': force_text(fieldname)})
 
-        del all_fields[fieldname]
-        fields_to_exclude = [k for k, v in all_fields.items()]
+        # if there are important fields, we'll assume they're denoted by a
+        # leading underscore, like in treebeard
+
+        fields_to_include = [x for x in all_fields
+                             if x == fieldname or x.startswith('_')]
+        fields_to_exclude = [x for x in all_fields
+                             if x != fieldname and not x.startswith('_')]
+        unique_together = frozenset(obj._meta.unique_together)
+        if len(unique_together) > 0 and fieldname in unique_together:
+            fields_to_include.extend(unique_together)
+            fields_to_exclude = [x for x in fields_to_exclude
+                                 if x not in unique_together]
+
+        logger.debug("Excluding fields: {0!r}".format(fields_to_exclude))
+        logger.debug("Including fields: {0!r}".format(fields_to_include))
         ModelForm = self.get_form(request, obj, exclude=fields_to_exclude,
-                                  fields=[fieldname])
-        # delete anything set on the self.form class explicitly.
-        for field_to_exclude in fields_to_exclude:
-            if field_to_exclude in ModelForm.base_fields:
-                del ModelForm.base_fields[field_to_exclude]
+                                  fields=fields_to_include)
 
         if request.method == 'POST':
             form = ModelForm(request.POST, request.FILES, instance=obj)
@@ -134,6 +145,8 @@ class AdminlinksMixin(AdminUrlWrap):
                 form_validated = True
                 new_object = self.save_form(request, form, change=True)
             else:
+                logger.debug('{cls!r} instance was invalid: {errors!r}'.format(
+                    errors=form.errors, cls=form))
                 form_validated = False
                 new_object = obj
 
@@ -149,7 +162,18 @@ class AdminlinksMixin(AdminUrlWrap):
         else:
             form = ModelForm(instance=obj)
 
-        the_fieldset = [(None, {'fields': [fieldname]})]
+        the_fieldset = [
+            (None, {
+                'fields': [fieldname]}),
+        ]
+        remaining_fields = fields_to_include[:]
+        remaining_fields.remove(fieldname)
+        if remaining_fields:
+            the_fieldset.append(
+                (_("Other"), {
+                    'fields': remaining_fields,
+                    'classes': ['collapse']})
+            )
         adminForm = helpers.AdminForm(form, the_fieldset, prepopulated_fields={},
                                       readonly_fields=None, model_admin=self)
         media = self.media + adminForm.media
