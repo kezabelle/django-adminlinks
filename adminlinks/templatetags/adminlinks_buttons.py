@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import logging
-from classytags.arguments import Argument, StringArgument
+from classytags.arguments import Argument, StringArgument, ChoiceArgument
 from classytags.core import Options
 from django.template.base import Library
 from classytags.helpers import InclusionTag
-from django import get_version
 from django.template.defaultfilters import yesno
 from adminlinks.templatetags.utils import (context_passes_test,
                                            get_admin_site,
                                            get_registered_modeladmins,
                                            _admin_link_shortcut,
                                            _add_link_to_context,
-                                           _add_custom_link_to_context,
-                                           convert_context_to_dict)
+                                           _add_custom_link_to_context)
 register = Library()
 logger = logging.getLogger(__name__)
 
@@ -419,7 +417,17 @@ register.tag(name='render_admin_buttons', compile_function=Combined)
 
 
 class AdminRoot(InclusionTag):
-    options = Options(*BaseAdminLink.base_options[1:])  # admin_site, querystring
+    options = Options(BaseAdminLink.base_options[1],  # admin_site
+                      BaseAdminLink.base_options[2],  # querystring
+                      'for',
+                      ChoiceArgument('who', required=False, resolve=False,
+                                     default='staff', choices=['staff',
+                                                               'superusers',
+                                                               'anyone',
+                                                               'all',
+                                                               'no-one',
+                                                               'noone',
+                                                               'none']))
     template = 'adminlinks/admin_root_link.html'
 
     def get_context(self, context, *args, **kwargs):
@@ -427,8 +435,20 @@ class AdminRoot(InclusionTag):
         Entry point for all subsequent tags. Tests the context and bails
         early if possible.
         """
-        if not context_passes_test(context):
-            logger.debug('Invalid context')
+        who_can_see = kwargs.get('who')
+        if who_can_see in ('no-one', 'noone', 'none'):
+            logger.debug("No-one should see; didn't check context")
+            return {}
+        if (who_can_see not in ('anyone', 'all')
+                and not context_passes_test(context)):
+            logger.debug('Invalid context; button visibility was restricted')
+            return {}
+        if who_can_see == 'staff' and not context['request'].user.is_staff:
+            logger.debug('Valid context, but user is not marked as staff')
+            return {}
+        if (who_can_see == 'superusers'
+                and not context['request'].user.is_superuser):
+            logger.debug('Valid context, but user is not a superuser')
             return {}
         return self.get_link_context(context, *args, **kwargs)
 
