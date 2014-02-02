@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from itertools import chain
 import logging
+from django.utils.html import escape
+
 try:
     from django.utils.six.moves import urllib_parse
     urlsplit = urllib_parse.urlsplit
@@ -32,7 +34,7 @@ except ImportError as e:
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from adminlinks.changelist import AdminlinksChangeList
-from adminlinks.constants import DATA_CHANGED
+from adminlinks.constants import DATA_CHANGED, AUTOCLOSING
 
 
 logger = logging.getLogger(__name__)
@@ -248,7 +250,7 @@ class AdminlinksMixin(AdminUrlWrap):
 
         :return: Whether or not ``_autoclose`` was in the request
         """
-        return '_autoclose' in request.REQUEST
+        return AUTOCLOSING in request.GET or AUTOCLOSING in request.POST
 
     def wants_to_continue_editing(self, request):
         """
@@ -323,8 +325,8 @@ class AdminlinksMixin(AdminUrlWrap):
         # `wants_to_continue_editing` was True, so keep track of the desire
         # to autoclose, and maybe next time 'save' is hit it'll still be around
         # to do so.
-        if self.wants_to_autoclose(request) and '_autoclose' not in querystring:
-            querystring.update(_autoclose=1)
+        if self.wants_to_autoclose(request) and AUTOCLOSING not in querystring:
+            querystring.update({AUTOCLOSING: 1})
 
         # should there be a `next` parameter, we'll treat it as canonical
         # override for any other action.

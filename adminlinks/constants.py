@@ -16,3 +16,6 @@ PERMISSION_ATTRIBUTE = 'has_%s_permission'
 #: querystring key for tracking changes which might not otherwise be broadcast
 #: by a success template being rendered.
 DATA_CHANGED = '_data_changed'
+
+#: querystring key for figuring out if we want to close a popup.
+AUTOCLOSING = '_autoclose'
