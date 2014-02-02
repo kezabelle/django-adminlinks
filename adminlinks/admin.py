@@ -11,10 +11,17 @@ except (ImportError, AttributeError) as e:  # Python 2, < Django 1.5
     from urlparse import urlsplit, urlunsplit
 from django.contrib.admin import helpers
 from django.contrib.admin.options import csrf_protect_m
-from django.contrib.admin.util import unquote
+try:
+    from django.contrib.admin.utils import unquote
+except ImportError:  # < 1.7 ... pragma: no cover
+    from django.contrib.admin.util import unquote
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
+try:
+    from django.db.transaction import atomic
+except ImportError:
+    from django.db.transaction import commit_on_success as atomic
 from django.forms.models import fields_for_model
 from django.http import Http404, QueryDict
 from django.shortcuts import render_to_response
@@ -101,7 +108,7 @@ class AdminlinksMixin(AdminUrlWrap):
     """
 
     @csrf_protect_m
-    @transaction.commit_on_success
+    @atomic
     def change_field_view(self, request, object_id, fieldname, extra_context=None):
         """
         Allows a user to view a form with only one field (named in the URL args)

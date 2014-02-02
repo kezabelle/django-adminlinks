@@ -14,7 +14,7 @@ class AdminlinksChangeListMixin(object):
     """
     tracks_querystring_keys = (DATA_CHANGED,)
 
-    def get_query_set(self, *args, **kwargs):
+    def get_queryset(self, *args, **kwargs):
         # this should stop the default ChangeList setting e=1 when we try
         # and set _data_changed=1 in the querystring.
         for x in self.tracks_querystring_keys:
@@ -22,6 +22,8 @@ class AdminlinksChangeListMixin(object):
                 del self.params[x]
         return super(AdminlinksChangeListMixin, self).get_query_set(*args,
                                                                     **kwargs)
+
+    get_query_set = get_queryset
 
 
 class AdminlinksChangeList(AdminlinksChangeListMixin, ChangeList):
