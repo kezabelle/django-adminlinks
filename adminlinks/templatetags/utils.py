@@ -134,15 +134,17 @@ def get_registered_modeladmins(request, admin_site):
     apps = defaultdict(dict)
 
     for model, model_admin in admin_site._registry.items():
-        dict_key = (model._meta.app_label.lower(), model._meta.module_name.lower())
+        app_key = model._meta.app_label
+        model_key = getattr(model._meta, 'model_name', model._meta.module_name)
+        dict_key = (app_key.lower(), model_key.lower())
 
-        if request.user.has_module_perms(model._meta.app_label):
+        if request.user.has_module_perms(app_key):
             # TODO: if a model has parents, use get_parent_list on the Options
             # instance to test all base permissions.
             urlparts = {
                 'namespace': admin_site.name,
-                'app': model._meta.app_label,
-                'module': model._meta.module_name,
+                'app': app_key,
+                'module': model_key,
             }
 
             apps[dict_key].update(name=model._meta.verbose_name)

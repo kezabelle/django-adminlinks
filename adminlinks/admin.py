@@ -210,14 +210,17 @@ class AdminlinksMixin(AdminUrlWrap):
     def get_urls(self):
         urls = super(AdminlinksMixin, self).get_urls()
         from django.conf.urls import url
-        info = self.model._meta.app_label, self.model._meta.module_name
+        opts = self.model._meta
+        app_label = opts.app_label
+        # avoid deprecation warning
+        model_name = getattr(opts, 'model_name', opts.module_name)
         # add change_field view into our URLConf
-        urls.insert(0, url(
+        new_url = url(
             regex=r'^(?P<object_id>.+)/change_field/(?P<fieldname>[\w_]+)/$',
             view=self._get_wrap()(self.change_field_view),
-            name='%s_%s_change_field' % info)
-        )
-        del info
+            name='{app}_{model}_change_field'.format(app=app_label,
+                                                     model=model_name))
+        urls.insert(0, new_url)
         return urls
 
     def get_success_templates(self, request):
