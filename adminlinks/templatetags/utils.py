@@ -220,7 +220,12 @@ def _add_link_to_context(admin_site, request, opts, permname, url_params,
     site = get_admin_site(admin_site)
     if site is not None:
         admins = get_registered_modeladmins(request, site)
-        lookup = (opts.app_label.lower(), opts.module_name.lower())
+        app_lookup = opts.app_label
+        if hasattr(opts, 'model_name'):
+            model_lookup = opts.model_name
+        else:
+            model_lookup = opts.module_name
+        lookup = (app_lookup.lower(), model_lookup.lower())
 
         if lookup in admins.keys() and permname in admins[lookup]:
             link = _admin_link_shortcut(admins[lookup][permname], url_params, query)
@@ -258,7 +263,12 @@ def _add_custom_link_to_context(admin_site, request, opts, permname, viewname,
     site = get_admin_site(admin_site)
     if site is not None:
         admins = get_registered_modeladmins(request, site)
-        lookup = (opts.app_label.lower(), opts.module_name.lower())
+        app_lookup = opts.app_label
+        if hasattr(opts, 'model_name'):
+            model_lookup = opts.model_name
+        else:
+            model_lookup = opts.module_name
+        lookup = (app_lookup.lower(), model_lookup.lower())
 
         if lookup in admins and permname in admins[lookup]:
             return {

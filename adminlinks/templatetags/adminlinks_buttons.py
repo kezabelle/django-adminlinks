@@ -387,7 +387,12 @@ class Combined(BaseAdminLink, InclusionTag):
             return context
 
         admins = get_registered_modeladmins(context['request'], site)
-        lookup = (opts.app_label.lower(), opts.module_name.lower())
+        app_key = opts.app_label
+        if hasattr(opts, 'model_name'):
+            model_key = opts.model_name
+        else:
+            model_key = opts.module_name
+        lookup = (app_key.lower(), model_key.lower())
 
         if not lookup in admins:
             logger.debug('%s:%s not in admin' % lookup)
