@@ -135,7 +135,10 @@ def get_registered_modeladmins(request, admin_site):
 
     for model, model_admin in admin_site._registry.items():
         app_key = model._meta.app_label
-        model_key = getattr(model._meta, 'model_name', model._meta.module_name)
+        if hasattr(model._meta, 'model_name'):
+            model_key = model._meta.model_name
+        else:
+            model_key = model._meta.module_name
         dict_key = (app_key.lower(), model_key.lower())
 
         if request.user.has_module_perms(app_key):

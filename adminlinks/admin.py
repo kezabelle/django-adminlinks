@@ -213,7 +213,10 @@ class AdminlinksMixin(AdminUrlWrap):
         opts = self.model._meta
         app_label = opts.app_label
         # avoid deprecation warning
-        model_name = getattr(opts, 'model_name', opts.module_name)
+        if hasattr(opts, 'model_name'):
+            model_name = opts.model_name
+        else:
+            model_name = opts.module_name
         # add change_field view into our URLConf
         new_url = url(
             regex=r'^(?P<object_id>.+)/change_field/(?P<fieldname>[\w_]+)/$',
