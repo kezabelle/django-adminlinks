@@ -16,15 +16,26 @@
 }
 
 #django-fancyiframe {
-    width: 780px;
-    max-width: 100%;
-    height: 0;
-    max-height: 90%;
+    margin: auto;
     position: fixed;
-    top: 2em;
-    left: 50%;
-    margin: auto auto auto -390px;
-    padding: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    min-width: 780px;
+    height: auto;
+    min-height: 200px;
+    max-height: 85%;
+    max-width: 85%;
+    /*width: 780px;*/
+    /*max-width: 100%;*/
+    /*height: 0;*/
+    /*max-height: 90%;*/
+    /*position: fixed;*/
+    /*top: 2em;*/
+    /*left: 50%;*/
+    /*margin: auto auto auto -390px;*/
+    /*padding: 0;*/
     /*border: 1px solid white;*/
     /*border-top: none;*/
     background: white;
@@ -43,33 +54,37 @@
 #django-fancyiframe-close {
     position: fixed;
     top: 0;
-    left: 50%;
-    width: 770px;
-    padding: 0 10px 0 0;
-    max-width: 100%;
-    margin: 0 0 0 -390px;
-    border-bottom: 1px solid #ddd;
-    background-color: #f9f9f9;
+    right: 0;
+    padding: 0;
+    margin: 0;
     cursor: pointer;
     z-index: 9999;
     font-weight: bold;
     font-size: 2em;
-    line-height: 1em;
+    line-height: 0.9;
+    width: 1em;
     height: 1em;
     overflow: hidden;
     font-family: sans-serif;
-    text-align: right;
-    color: #555;
-    /*-webkit-box-shadow: 0 0 30px 3px rgba(0, 0, 0, 1);*/
-    /*-moz-box-shadow: 0 0 30px 3px rgba(0, 0, 0, 1);*/
-    /*box-shadow: 0 0 30px 3px rgba(0, 0, 0, 1);*/
+    text-align: center;
+    color: white;
+    transition: 0.75s;
+    -moz-transition: 0.75s;
+    -ms-transition: 0.75s;
+    -webkit-transition: 0.75s;
+    -o-transition: 0.75s;
     /*-webkit-border-bottom-left-radius: 3px;*/
     /*-moz-border-radius-bottomleft: 3px;*/
     /*border-bottom-left-radius: 3px;*/
 }
 
 #django-fancyiframe-close:hover {
-    color: #F00;
+    color: #7CA0C7;
+    -webkit-transform: rotateZ(90deg);
+    -moz-transform: rotateZ(90deg);
+    -o-transform: rotateZ(90deg);
+    -ms-transform: rotateZ(90deg);
+    transform: rotateZ(90deg);
 }
 
 .django-fancyiframe-open {
