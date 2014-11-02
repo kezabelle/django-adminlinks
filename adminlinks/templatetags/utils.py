@@ -162,8 +162,10 @@ def get_registered_modeladmins(request, admin_site):
                 perm = getattr(model_admin, PERMISSION_ATTRIBUTE % val)
                 urlparts.update(view=val)
                 if perm(request):
+                    urlname = MODELADMIN_REVERSE % urlparts
                     apps[dict_key].update({
-                        val: MODELADMIN_REVERSE % urlparts,
+                        val: urlname,
+                        '%s_link' % val: _admin_link_shortcut(urlname)
                     })
     app_dict = dict(apps)
     return app_dict

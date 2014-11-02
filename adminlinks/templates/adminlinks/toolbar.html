@@ -18,9 +18,9 @@
                 </li>
 
                 {% for model in models %}
-                    {% if model.add %}
+                    {% if model.add_link %}
                     <li class="admin-toolbar-{{ app_label|slugify }}-{{ model.name|slugify }}">
-                        <a href="{% url model.add %}" class="admin-add">{{ model.name }}</a>
+                        <a href="{{ model.add_link }}" class="admin-add">{{ model.name }}</a>
                     </li>
                     {% endif %}
                 {% endfor %}
