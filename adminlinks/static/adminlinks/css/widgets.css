@@ -1,5 +1,5 @@
-.django-adminlinks--btn,
-.django-adminlinks--toggle {
+a.django-adminlinks--btn,
+a.django-adminlinks--toggle {
     padding: 3px 5px;
     color: #666;
     border: 1px solid;
