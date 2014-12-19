@@ -90,7 +90,7 @@ def _get_admin_site(admin_site):
     # pop a dictionary onto this function and use it for keeping track
     # of discovered admin sites as they're found.
     logger.debug('admin site not previously discovered, so do the lookup')
-    if PossibleAdminSite.app_name == admin_site:
+    if PossibleAdminSite.name == admin_site:
         logger.info('Default site found')
         return PossibleAdminSite
     try:
