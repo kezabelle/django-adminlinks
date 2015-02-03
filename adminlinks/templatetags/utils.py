@@ -14,7 +14,7 @@ except (ImportError, AttributeError) as e:  # Python 2, < Django 1.5
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse, resolve, NoReverseMatch
-from django.utils.functional import memoize
+# from django.utils.functional import memoize
 from django.http import QueryDict
 from adminlinks.constants import MODELADMIN_REVERSE, PERMISSION_ATTRIBUTE
 
@@ -68,7 +68,7 @@ def context_passes_test(context):
     return all(valid_admin_conditions)
 
 
-def _get_admin_site(admin_site):
+def get_admin_site(admin_site):
     """
     Given the name of an :class:`~django.contrib.admin.AdminSite` instance,
     try to resolve that into an actual object
@@ -106,12 +106,12 @@ def _get_admin_site(admin_site):
     except (NoReverseMatch, StopIteration) as e:
         logger.exception("Failed to find adminsite.")
         return None
-get_admin_site = memoize(_get_admin_site, _admin_sites_cache, num_args=1)
-get_admin_site.__doc__ = """
-The public API implementation of
-:func:`~adminlinks.templatetags.utils._get_admin_site`, wrapped to use
-memoization.
-"""
+# get_admin_site = memoize(_get_admin_site, _admin_sites_cache, num_args=1)
+# get_admin_site.__doc__ = """
+# The public API implementation of
+# :func:`~adminlinks.templatetags.utils._get_admin_site`, wrapped to use
+# memoization.
+# """
 
 
 def get_registered_modeladmins(request, admin_site):
