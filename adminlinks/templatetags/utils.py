@@ -304,14 +304,6 @@ def _resort_modeladmins(modeladmins):
     return resultset
 
 
-def convert_context_to_dict(context):
-    out = {}
-    for d in context.dicts:
-        for key, value in d.items():
-            out[key] = value
-    return out
-
-
 def _changelist_popup_qs():
     """
     If we're not at 1.6, the changelist uses "pop" in the querystring.
