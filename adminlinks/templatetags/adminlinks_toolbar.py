@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from classytags.arguments import StringArgument
+from classytags.arguments import ChoiceArgument
 from classytags.core import Options
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -13,14 +14,24 @@ from classytags.helpers import InclusionTag
 register = Library()
 
 
+def _map_location_to_classname(location):
+    locations = {
+        'topleft': 'tl',
+        'topright': 'tr',
+    }
+    return locations[location]
+
+
 class AdminlinksToolbar(InclusionTag):
     template = 'adminlinks/toolbar.html'
 
     options = Options(
         StringArgument('admin_site', required=False, default='admin'),
+        ChoiceArgument('location', required=False,
+                       choices=['topleft',], default='topleft'),
     )
 
-    def get_context(self, context, admin_site):
+    def get_context(self, context, admin_site, location):
         if 'request' not in context:
             if settings.DEBUG:
                 raise ImproperlyConfigured(
@@ -37,7 +48,9 @@ class AdminlinksToolbar(InclusionTag):
             admin_index = reverse('{}:index'.format(admin_site))
         except NoReverseMatch:
             admin_index = None
-        context['adminlinks'] = {'apps': apps, 'admin_index': admin_index}
+        context['adminlinks'] = {'apps': apps,
+                                 'index': admin_index,
+                                 'namespace': admin_site,
+                                 'position': _map_location_to_classname(location)}  # noqa
         return context
 register.tag(name='adminlinks_toolbar', compile_function=AdminlinksToolbar)
-register.tag(name='render_adminlinks_toolbar', compile_function=AdminlinksToolbar)

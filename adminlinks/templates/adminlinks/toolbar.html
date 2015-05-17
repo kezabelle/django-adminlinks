@@ -1,26 +1,30 @@
+{% spaceless %}
 {% load i18n %}
 {% load url from future %}
-<div class="dropdown">
-    <a role="button" data-toggle="dropdown" class="btn btn-primary" href="{{ adminlinks.admin_index|default:'#' }}">
-        Dropdown <span class="caret"></span>
+<div class="adminlinks-wrapper adminlinks-wrapper__{{ adminlinks.namespace }} {{ adminlinks.position }}">
+<div class="adminlinks-dropdown adminlinks-dropdown__{{ adminlinks.namespace }}">
+    <a role="button" data-toggle="dropdown" class="adminlinks-enabler adminlinks-enabler__{{ adminlinks.namespace }}" href="{{ adminlinks.index|default:'#' }}">
+        Admin <span class="caret"></span>
     </a>
-    <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+    <ul class="adminlinks-dropdown-menu adminlinks-dropdown-menu__{{ adminlinks.namespace }}" role="menu">
         {% for app in adminlinks.apps %}
-            <li class="divider"></li>
+            {% if not forloop.first %}<li class="adminlinks-divider adminlinks-divider__{{ adminlinks.namespace }}"></li>{% endif %}
 {#        <li class="admin-toolbar-{{ app_label|slugify }}">#}
 {#            <a href="{{ app.app_url }}">{{ app.name }}</a>#}
 {#            <ul class="dropdown-menu">#}
                 {% for model in app.models %}
-                <li>{{ model.name }}
-                    <ul class="dropdown-menu">
+                <li class="adminlinks-dropdown-submenu adminlinks-dropdown-submenu__{{ adminlinks.namespace }}"><span class="adminlinks-dropdown-menu-title adminlinks-dropdown-menu-title__{{ adminlinks.namespace }}">{{ model.name }}</span>
+                    <ul class="adminlinks-dropdown-menu adminlinks-dropdown-menu__{{ adminlinks.namespace }}">
                         {% if model.add_url %}
                         <li>
-                        <a href="{{ model.add_url }}" data-adminlink-url="{{ model.add_url }}">{% trans "Add" %}</a>
+                        <a href="{{ model.add_url }}" data-adminlink-url="{{ model.add_url }}" class="adminlinks-dropdown-menu-link adminlinks-dropdown-menu-link__{{ adminlinks.namespace }}">
+                            <span class="adminlinks-dropdown-menu-link-icon-add adminlinks-dropdown-menu-link-icon-add__{{ adminlinks.namespace }}">&nbsp;</span> {% trans "Add new" %}</a>
                         </li>
                         {% endif %}
                         {% if model.admin_url %}
                         <li>
-                        <a href="{{ model.admin_url }}" data-adminlink-url="{{ model.admin_url }}">{% trans "Change" %}</a>
+                        <a href="{{ model.admin_url }}" data-adminlink-url="{{ model.admin_url }}" class="adminlinks-dropdown-menu-link adminlinks-dropdown-menu-link__{{ adminlinks.namespace }}">
+                            <span class="adminlinks-dropdown-menu-link-icon-changelist adminlinks-dropdown-menu-link-icon-changelist__{{ adminlinks.namespace }}">&nbsp;</span> {% trans "Browse" %}</a>
                         </li>
                         {% endif %}
                     </ul>
@@ -31,4 +35,5 @@
         {% endfor %}
     </ul>
 </div>
-
+</div>
+{% endspaceless %}

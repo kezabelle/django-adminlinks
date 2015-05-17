@@ -25,6 +25,7 @@ def index(request):
         'index.html',
     ], context={
         'made_users': made_users,
+        'users': usermodel.objects.all(),
         'made_superusers': made_superusers,
     })
 
