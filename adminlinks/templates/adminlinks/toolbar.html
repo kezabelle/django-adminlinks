@@ -1,10 +1,11 @@
 {% spaceless %}
 {% load i18n %}
 {% load url from future %}
-<div class="adminlinks-wrapper adminlinks-wrapper__{{ adminlinks.namespace }} {{ adminlinks.position }}">
+<div class="adminlinks-wrapper adminlinks-wrapper__{{ adminlinks.namespace }} {{ adminlinks.position }}" id="adminlinks-for-{{ adminlinks.namespace }}">
 <div class="adminlinks-dropdown adminlinks-dropdown__{{ adminlinks.namespace }}">
-    <a role="button" data-toggle="dropdown" class="adminlinks-enabler adminlinks-enabler__{{ adminlinks.namespace }}" href="{{ adminlinks.index|default:'#' }}">
-        Admin <span class="caret"></span>
+    <a role="button" data-toggle="dropdown" class="adminlinks-enabler adminlinks-enabler__{{ adminlinks.namespace }}" href="{{ adminlinks.index|default:'#' }}" data-adminlinks-url="{{ adminlinks.index }}" title="{% trans 'Site administration' %}">
+    <span class="adminlinks-enabler-icon">&starf;</span>
+    <span class="adminlinks-enabler-text">{% trans 'admin' %}</span>
     </a>
     <ul class="adminlinks-dropdown-menu adminlinks-dropdown-menu__{{ adminlinks.namespace }}" role="menu">
         {% for app in adminlinks.apps %}
@@ -33,6 +34,22 @@
 {#            </ul>#}
 {#        </li>#}
         {% endfor %}
+        {% if adminlinks.change_password or adminlinks.logout %}
+        <li class="adminlinks-divider adminlinks-divider__{{ adminlinks.namespace }}"></li>
+        <li class="adminlinks-dropdown-submenu adminlinks-dropdown-submenu__{{ adminlinks.namespace }}"><span class="adminlinks-dropdown-menu-title adminlinks-dropdown-menu-title__{{ adminlinks.namespace }}">Options</span>
+        <ul class="adminlinks-dropdown-menu adminlinks-dropdown-menu__{{ adminlinks.namespace }}">
+            {% if adminlinks.change_password and user.has_usable_password %}
+            <a href="{{ adminlinks.change_password }}" data-adminlink-url="{{ adminlinks.change_password }}" class="adminlinks-dropdown-menu-link adminlinks-dropdown-menu-link__{{ adminlinks.namespace }}">
+                {% trans 'Change password' %}
+            </a>
+            {% endif %}
+            {% if adminlinks.logout %}
+            <a href="{{ adminlinks.logout }}" data-adminlink-url="{{ adminlinks.logout }}" class="adminlinks-dropdown-menu-link adminlinks-dropdown-menu-link__{{ adminlinks.namespace }}">
+                {% trans 'Log out' %}</a>
+            {% endif %}
+        </ul>
+        </li>
+        {% endif %}
     </ul>
 </div>
 </div>

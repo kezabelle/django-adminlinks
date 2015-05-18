@@ -1,21 +1,11 @@
 .adminlinks-wrapper {
     position: fixed;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 14px;
-    padding: 10px;
-    line-height: 1.42857143;
-}
-
-.adminlinks-wrapper.tl {
     top: 0;
     left: 0;
-    padding-right: 0;
-}
-
-.adminlinks-wrapper.tr {
-    top: 0;
-    right: 0;
-    padding-left: 0;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    padding: 10px 0 10px 10px;
+    line-height: 1.42857143;
 }
 
 
@@ -33,8 +23,7 @@
     display: inline-block;
     padding: 3px 6px;
     margin-bottom: 0;
-    font-size: 14px;
-    font-weight: 400;
+    font-weight: 700;
     line-height: 1.42857143;
     text-align: center;
     white-space: nowrap;
@@ -58,6 +47,13 @@
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.175);
 }
 
+.adminlinks-enabler {
+    font-size: 0;
+}
+
+.adminlinks-enabler-icon {
+    font-size: 14px;
+}
 
 .adminlinks-divider {
     height: 1px;
@@ -188,7 +184,6 @@
 .adminlinks-wrapper:hover .adminlinks-enabler__admin {
     background-color: #5B80B2;
     border-color: #5B80B2;
-    color: #FFF;
 }
 
 

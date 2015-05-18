@@ -1,4 +1,48 @@
 # -*- coding: utf-8 -*-
+import json
+from adminlinks.utils import get_adminsite, _get_template_context
+from adminlinks.utils import get_modeladmins_from_adminsite
+from django.http import Http404
+from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.views.decorators.cache import never_cache
+
+
+def _acceptable_jquerys():
+    yield 'window.$'
+    yield 'django.jQuery'
+
+
+@never_cache
+def toolbar(request, admin_site):
+    acceptable_jquerys = tuple(_acceptable_jquerys())
+    jquery = request.GET.get('jquery', acceptable_jquerys[0])
+    if jquery not in acceptable_jquerys:
+        raise Http404("Invalid jQuery variable name")
+    possible_templates = ['adminlinks/toolbar/anonymous.js']
+    if request.user.is_authenticated():
+        possible_templates.insert(0, 'adminlinks/toolbar/authenticated.js')
+        if request.user.is_staff:
+            possible_templates.insert(0, 'adminlinks/toolbar/staff.js')
+        if request.user.is_superuser:
+            possible_templates.insert(0, 'adminlinks/toolbar/superuser.js')
+        if request.user.pk:
+            possible_templates.insert(0, 'adminlinks/toolbar/user_{}.js'.format(str(request.user.pk)))  # noqa
+
+    site = get_adminsite(admin_site)
+    if site is None:
+        raise Http404("Invalid admin site name.")
+
+    html_context = _get_template_context(request=request, admin_site=admin_site)
+    html = render_to_string("adminlinks/toolbar.html", context={
+        'adminlinks': html_context,
+    })
+    return render(request, template_name=possible_templates, context={
+        'js_namespace': jquery,
+        'admin_site': admin_site,
+        'site': site,
+        'json': json.dumps(html)[1:-1],
+    }, content_type='application/javascript')
 
 
 class ModelContext(object):

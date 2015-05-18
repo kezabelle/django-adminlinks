@@ -2,6 +2,8 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import logging
+from django.contrib.auth.models import AnonymousUser
+
 try:
     from django.apps import apps
 except ImportError:  # < Django 1.7
@@ -121,3 +123,28 @@ def get_modeladmins_from_adminsite(request, adminsite=None):
     for app in app_list:
         app['models'].sort(key=lambda x: x['name'])
     return app_list
+
+
+def _get_template_context(request, admin_site):
+    try:
+        admin_index = reverse('{}:index'.format(admin_site))
+    except NoReverseMatch:
+        admin_index = None
+    try:
+        admin_change_password = reverse('{}:password_change'.format(admin_site))
+    except NoReverseMatch:
+        admin_change_password = None
+    try:
+        admin_logout = reverse('{}:logout'.format(admin_site))
+    except NoReverseMatch:
+        admin_logout = None
+    site = get_adminsite(admin_site)
+    apps = None
+    if site is not None:
+        apps = get_modeladmins_from_adminsite(request=request, adminsite=site)
+    return {'apps': apps,
+            'user': getattr(request, 'user', AnonymousUser()),
+            'index': admin_index,
+            'change_password': admin_change_password,
+            'logout': admin_logout,
+            'namespace': admin_site}

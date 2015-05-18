@@ -12,11 +12,20 @@
             background-color: #EEE;
         }
     </style>
+
+    {% if 'nojs' in request.GET %}
     <link rel="stylesheet" type="text/css" href="{% static 'adminlinks/css/toolbar.css' %}">
+    {% endif %}
+    {% if 'nojs' not in request.GET %}
+    <script src="{% static 'admin/js/jQuery.js' %}"></script>
+    <script src="{% url 'adminlinks_toolbar' 'admin' %}"></script>
+    {% endif %}
 </head>
 <body>
 <div>
     <ul>
+        <li><a href="?nojs=1">toolbar without using JavaScript</a></li>
+        <li><a href="?">toolbar with JavaScript</a></li>
     {% for user in users %}
         <li><b>{{ user }}</b>
             {% lorem 2 p %}
@@ -26,6 +35,8 @@
 
     &hellip;</div>
 {% load adminlinks_toolbar %}
+{% if 'nojs' in request.GET %}
 {% adminlinks_toolbar 'admin' %}
+{% endif %}
 </body>
 </html>

@@ -1,3 +1,4 @@
+from adminlinks.urls import adminlinks_toolbar_url
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import get_user_model
@@ -31,6 +32,7 @@ def index(request):
 
 
 urlpatterns = [
+    adminlinks_toolbar_url,
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', index),
 ]
