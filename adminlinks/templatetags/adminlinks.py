@@ -42,8 +42,8 @@ register.tag(name='adminlinks_toolbar', compile_function=AdminlinksToolbar)
 
 
 def adminlinks_html(model, admin_site='admin'):
-    template = "data-adminlinks='%(json)s'"
-    bad_data = template % {'json': "{}"}
+    template = "data-adminlinks-%(name)s='%(json)s'"
+    bad_data = template % {'json': "{}", 'name': admin_site}
     site = get_adminsite(name=admin_site)
     if site is None:
         return bad_data
@@ -69,5 +69,6 @@ def adminlinks_html(model, admin_site='admin'):
         data = get_modeladmin_links(**call_kwargs)
     return mark_safe(template % {'json': json.dumps(data, allow_nan=False,
                                                     separators=(',', ':'),
-                                                    cls=DjangoJSONEncoder)})
+                                                    cls=DjangoJSONEncoder),
+                                 'name': admin_site})
 register.filter(name='adminlinks', filter_func=adminlinks_html)

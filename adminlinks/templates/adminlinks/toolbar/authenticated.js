@@ -34,9 +34,29 @@
             }
         };
 
+        var build_fragment = function() {
+            var json_data = $(this).data('adminlinks-{{ admin_site }}');
+            $log.call($console, json_data);
+        };
+
+        var load_fragments = function($, $log, $console) {
+            var found = $('[data-adminlinks-{{ admin_site }}]');
+            if (found.length === 0) {
+                $log.call($console, "no `data-adminlinks` for `{{ admin_site }}` on the page");
+                return false;
+            } else {
+                $log.call($console, "found " + found.length.toString() + " `data-adminlinks` for `{{ admin_site }}` on the page");
+                found.each(build_fragment);
+                return true;
+            }
+        };
+
         var on_ready = function() {
             var admin_site = "{{ admin_site }}";
-            return load_html.call(this, $, $log, $console) && load_css.call(this, $, $log, $console);
+            return load_html.call(this, $, $log, $console) &&
+                   load_css.call(this, $, $log, $console) &&
+                   load_fragments.call(this, $, $log, $console);
+
         };
         return $($document).ready(on_ready);
     };
