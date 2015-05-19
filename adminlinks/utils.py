@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from collections import OrderedDict
 import logging
 from django.contrib.auth.models import AnonymousUser
-
+from django.db.models import Model
+from django.utils.encoding import force_text
+from django.utils.translation import ugettext as _
 try:
     from django.apps import apps
 except ImportError:  # < Django 1.7
@@ -148,3 +151,57 @@ def _get_template_context(request, admin_site):
             'change_password': admin_change_password,
             'logout': admin_logout,
             'namespace': admin_site}
+
+
+
+
+def get_modeladmin_links(model, model_class, modeladmin, admin):
+    """
+    So yeah, we don't have a `request` because:
+    a) this is called by a template filter, so there's no context to play off.
+    b) it's intended that the resulting JSON blob can be left on the site if
+       the page is compiled to a static file, and use the dynamic JS to
+       continue editing the backend; for something akin to django-medusa.
+
+    """
+    links = OrderedDict()
+    namespace = admin.name
+    url_root = '{}:{}_{}'.format(namespace, model._meta.app_label,
+                                 model._meta.model_name)
+    # got to ask isinstance because ModelClass.pk yields <property object ...>
+    if hasattr(model, 'pk') and isinstance(model, Model):
+        # ... this is verbose but the least magic/complex thing ...
+        try:
+            links['change'] = {
+                'url': reverse('{}_change'.format(url_root), args=(model.pk,)),
+                'title': _('Change %s') % force_text(model._meta.verbose_name),
+            }
+        except NoReverseMatch:
+            logger.error("Couldn't resolve the change form for %(cls)r" % {
+                'cls': model_class}, exc_info=1)
+        try:
+            links['history'] = {
+                'url': reverse('{}_history'.format(url_root), args=(model.pk,)),
+                'title': _('History'),
+            }
+        except NoReverseMatch:
+            logger.error("Couldn't resolve the history page for %(cls)r" % {
+                'cls': model_class}, exc_info=1)
+        try:
+            links['delete'] = {
+                'url': reverse('{}_delete'.format(url_root), args=(model.pk,)),
+                'title': _('Delete'),
+            }
+        except NoReverseMatch:
+            logger.error("Couldn't resolve the delete confirm form for %(cls)r" % {  # noqa
+                'cls': model_class}, exc_info=1)
+    try:
+        links['add'] = {
+            'url': reverse('{}_add'.format(url_root)),
+            'title': _('Add %s') % force_text(model._meta.verbose_name),
+        }
+    except NoReverseMatch:
+            logger.error("Couldn't even resolve the add form for %(cls)r, "
+                         "for shame!" % {
+                'cls': model_class}, exc_info=1)
+    return links

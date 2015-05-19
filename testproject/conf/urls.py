@@ -7,6 +7,7 @@ from django.shortcuts import render
 
 def index(request):
     usermodel = get_user_model()
+    usermodel.do_not_call_in_templates = True
     made_users = False
     made_superusers = False
     if not usermodel.objects.exists():
@@ -26,6 +27,7 @@ def index(request):
         'index.html',
     ], context={
         'made_users': made_users,
+        'usermodel': usermodel,
         'users': usermodel.objects.all(),
         'made_superusers': made_superusers,
     })
