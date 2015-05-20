@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 import json
+from adminlinks.forms import JavascriptOptions
 from adminlinks.utils import get_adminsite, _get_template_context
-from adminlinks.utils import get_modeladmins_from_adminsite
 from django.http import Http404
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.decorators.cache import never_cache
 
-
-def _acceptable_jquerys():
-    yield 'window.$'
-    yield 'django.jQuery'
-
-
 @never_cache
 def toolbar(request, admin_site):
-    acceptable_jquerys = tuple(_acceptable_jquerys())
-    jquery = request.GET.get('jquery', acceptable_jquerys[0])
-    if jquery not in acceptable_jquerys:
-        raise Http404("Invalid jQuery variable name")
+    site = get_adminsite(admin_site)
+    if site is None:
+        raise Http404("Invalid admin site name: %(site)s" % {'site': admin_site})
+
+    options = JavascriptOptions(data=request.GET or {}, files=None, initial={})
+    if not options.is_valid():
+        raise Http404("%(form)s got invalid arguments: %(errors)r" % {
+            'form': options.__class__, 'errors': options.errors})
+
+
     possible_templates = ['adminlinks/toolbar/anonymous.js']
     if request.user.is_authenticated():
         possible_templates.insert(0, 'adminlinks/toolbar/authenticated.js')
@@ -29,20 +29,20 @@ def toolbar(request, admin_site):
         if request.user.pk:
             possible_templates.insert(0, 'adminlinks/toolbar/user_{}.js'.format(str(request.user.pk)))  # noqa
 
-    site = get_adminsite(admin_site)
-    if site is None:
-        raise Http404("Invalid admin site name.")
 
     html_context = _get_template_context(request=request, admin_site=admin_site)
     html = render_to_string("adminlinks/toolbar.html", context={
         'adminlinks': html_context,
     })
-    return render(request, template_name=possible_templates, context={
-        'js_namespace': jquery,
+    context = {
         'admin_site': admin_site,
         'site': site,
         'json': json.dumps(html)[1:-1],
-    }, content_type='application/javascript')
+        'possible_templates': possible_templates,
+    }
+    context.update(**options.cleaned_data)
+    return render(request, template_name=possible_templates, context=context,
+                  content_type='application/javascript')
 
 
 class ModelContext(object):

@@ -1,5 +1,5 @@
 (function($window, $document, $) {
-
+    // $ is {{ js_namespace }}
     var noop = function() {};
     var $console = $window.console || {};
     var $log = $console.log || noop;
@@ -10,6 +10,8 @@
         /* {% load static %} */
 
         var load_css = function($, $log, $console) {
+            // include_css is {{ include_css }}
+            /*{% if include_css %}*/
             var link_tag = $("link[href='{% static 'adminlinks/css/toolbar.css' %}']");
             if (link_tag.length > 0) {
                 $log.call($console, "adminlinks CSS for `{{ admin_site }}` already on the page");
@@ -19,9 +21,14 @@
                 $("head").append('<link href="{% static 'adminlinks/css/toolbar.css' %}" rel="stylesheet">');
                 return true;
             }
+            /* {% else %}*/
+            return true;
+            /*{% endif %}*/
         };
 
         var load_html = function($, $log, $console) {
+            // include_html is {{ include_html }}
+            /*{% if include_html %}*/
             var adminlinks_id = "#adminlinks-for-{{ admin_site }}";
             var found_already = $(adminlinks_id);
             if (found_already.length > 0) {
@@ -32,6 +39,9 @@
                 $("body").append("{{ json|safe }}");
                 return true;
             }
+            /* {% else %}*/
+            return true;
+            /*{% endif %}*/
         };
 
         var build_fragment = function() {

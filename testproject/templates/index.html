@@ -18,7 +18,7 @@
     {% endif %}
     {% if 'nojs' not in request.GET %}
     <script src="{% static 'admin/js/jQuery.js' %}"></script>
-    <script src="{% url 'adminlinks_toolbar' 'admin' %}"></script>
+    <script src="{% url 'adminlinks_toolbar' 'admin' %}?include_css={{ request.GET.include_css|default:'1' }}&include_html={{ request.GET.include_html|default:'1' }}&js_namespace=dollar"></script>
     {% endif %}
 </head>
 <body>
