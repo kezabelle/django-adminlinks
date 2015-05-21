@@ -30,14 +30,27 @@ def toolbar(request, admin_site):
             possible_templates.insert(0, 'adminlinks/toolbar/user_{}.js'.format(str(request.user.pk)))  # noqa
 
 
-    html_context = _get_template_context(request=request, admin_site=admin_site)
-    html = render_to_string("adminlinks/toolbar.html", context={
-        'adminlinks': html_context,
-    })
+    if options.cleaned_data.get('include_html'):
+        toolbar_html_context = _get_template_context(request=request,
+                                                     admin_site=admin_site)
+        toolbar_html = render_to_string("adminlinks/toolbar.html", context={
+            'adminlinks': toolbar_html_context,
+        })
+    else:
+        toolbar_html = ''
+
+    fragment_html_context = {
+         'url': '{{ url }}',
+         'title': '{{ title }}',
+         'namespace': '{{ namespace }}',
+     }
+    fragment_html = ''.join(render_to_string(
+        'adminlinks/toolbar_fragment.html', context=fragment_html_context).splitlines())  # noqa
     context = {
         'admin_site': admin_site,
         'site': site,
-        'json': json.dumps(html)[1:-1],
+        'toolbar_html': json.dumps(toolbar_html)[1:-1],
+        'fragment_html': json.dumps(fragment_html)[1:-1],
         'possible_templates': possible_templates,
     }
     context.update(**options.cleaned_data)

@@ -18,13 +18,13 @@
                     <ul class="adminlinks-dropdown-menu adminlinks-dropdown-menu__{{ adminlinks.namespace }}">
                         {% if model.add_url %}
                         <li>
-                        <a href="{{ model.add_url }}" data-adminlink-url="{{ model.add_url }}" class="adminlinks-dropdown-menu-link adminlinks-dropdown-menu-link__{{ adminlinks.namespace }}">
+                        <a href="{{ model.add_url }}" data-adminlinks-url="{{ model.add_url }}" class="adminlinks-dropdown-menu-link adminlinks-dropdown-menu-link__{{ adminlinks.namespace }}">
                             <span class="adminlinks-dropdown-menu-link-icon-add adminlinks-dropdown-menu-link-icon-add__{{ adminlinks.namespace }}">&nbsp;</span> {% trans "Add new" %}</a>
                         </li>
                         {% endif %}
                         {% if model.admin_url %}
                         <li>
-                        <a href="{{ model.admin_url }}" data-adminlink-url="{{ model.admin_url }}" class="adminlinks-dropdown-menu-link adminlinks-dropdown-menu-link__{{ adminlinks.namespace }}">
+                        <a href="{{ model.admin_url }}" data-adminlinks-url="{{ model.admin_url }}" class="adminlinks-dropdown-menu-link adminlinks-dropdown-menu-link__{{ adminlinks.namespace }}">
                             <span class="adminlinks-dropdown-menu-link-icon-changelist adminlinks-dropdown-menu-link-icon-changelist__{{ adminlinks.namespace }}">&nbsp;</span> {% trans "Browse" %}</a>
                         </li>
                         {% endif %}
@@ -39,12 +39,12 @@
         <li class="adminlinks-dropdown-submenu adminlinks-dropdown-submenu__{{ adminlinks.namespace }}"><span class="adminlinks-dropdown-menu-title adminlinks-dropdown-menu-title__{{ adminlinks.namespace }}">Options</span>
         <ul class="adminlinks-dropdown-menu adminlinks-dropdown-menu__{{ adminlinks.namespace }}">
             {% if adminlinks.change_password and user.has_usable_password %}
-            <a href="{{ adminlinks.change_password }}" data-adminlink-url="{{ adminlinks.change_password }}" class="adminlinks-dropdown-menu-link adminlinks-dropdown-menu-link__{{ adminlinks.namespace }}">
+            <a href="{{ adminlinks.change_password }}" data-adminlinks-url="{{ adminlinks.change_password }}" class="adminlinks-dropdown-menu-link adminlinks-dropdown-menu-link__{{ adminlinks.namespace }}">
                 {% trans 'Change password' %}
             </a>
             {% endif %}
             {% if adminlinks.logout %}
-            <a href="{{ adminlinks.logout }}" data-adminlink-url="{{ adminlinks.logout }}" class="adminlinks-dropdown-menu-link adminlinks-dropdown-menu-link__{{ adminlinks.namespace }}">
+            <a href="{{ adminlinks.logout }}" data-adminlinks-url="{{ adminlinks.logout }}" class="adminlinks-dropdown-menu-link adminlinks-dropdown-menu-link__{{ adminlinks.namespace }}">
                 {% trans 'Log out' %}</a>
             {% endif %}
         </ul>

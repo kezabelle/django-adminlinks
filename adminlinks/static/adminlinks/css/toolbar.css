@@ -8,6 +8,12 @@
     line-height: 1.42857143;
 }
 
+.adminlinks-fragment-wrapper {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+}
+
 
 .adminlinks-dropdown {
     position: relative;
@@ -17,14 +23,14 @@
     /*background-color: red;*/
 /*}*/
 
-.adminlinks-enabler {
+.adminlinks-enabler,
+.adminlinks-fragment-icon {
     color: #333;
     background-color: #FFF;
     display: inline-block;
-    padding: 3px 6px;
+    padding: 1px 5px;
     margin-bottom: 0;
     font-weight: 700;
-    line-height: 1.42857143;
     text-align: center;
     white-space: nowrap;
     vertical-align: middle;
@@ -38,11 +44,13 @@
     background-image: none;
     border: 1px solid #CCC;
     border-radius: 4px;
+    text-align: center;
     text-decoration: none;
-    -webkit-transition:all 0.3s ease 0s;
-    -moz-transition:all 0.3s ease 0s;
-    -o-transition:all 0.3s ease 0s;
-    transition: all 0.3s ease 0s;
+    text-transform: lowercase;
+    /*-webkit-transition:all 0.3s ease 0s;*/
+    /*-moz-transition:all 0.3s ease 0s;*/
+    /*-o-transition:all 0.3s ease 0s;*/
+    /*transition: all 0.3s ease 0s;*/
     -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.175);
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.175);
 }
@@ -62,7 +70,8 @@
     background-color: #E5E5E5;
 }
 
-.adminlinks-dropdown-menu {
+.adminlinks-dropdown-menu,
+.adminlinks-fragment-menu {
     position: absolute;
     top: 100%;
     left: 0;
@@ -71,7 +80,7 @@
     float: left;
     min-width: 100px;
     padding: 5px 0;
-    margin: 2px 0 0;
+    margin: -1px 0 0 0;
     font-size: 14px;
     text-align: left;
     list-style: none;
@@ -80,24 +89,43 @@
     background-clip: padding-box;
     border: 1px solid #CCC;
     border: 1px solid rgba(0, 0, 0, 0.15);
-    border-radius: 4px;
+    -webkit-border-radius: 0 4px 4px 4px;
+    -moz-border-radius: 0 4px 4px 4px;
+    border-radius: 0 4px 4px 4px;
     -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
 
+.adminlinks-wrapper:hover .adminlinks-enabler,
+.adminlinks-fragment-wrapper:hover .adminlinks-fragment-icon {
+    -webkit-border-bottom-left-radius: 0;
+    -moz-border-radius-bottomleft: 0;
+    border-bottom-left-radius: 0;
+    -webkit-border-bottom-right-radius: 0;
+    -moz-border-radius-bottomright: 0;
+    border-bottom-right-radius: 0;
+}
+
+.adminlinks-fragment-wrapper {
+    position: relative;
+    display: inline-block;
+}
 .adminlinks-dropdown-submenu {
     position: relative;
 }
 
 /* when hovering over the root element, show the first level nav */
 .adminlinks-wrapper:hover > .adminlinks-dropdown > .adminlinks-dropdown-menu,
-.adminlinks-wrapper:focus > .adminlinks-dropdown > .adminlinks-dropdown-menu {
+.adminlinks-wrapper:focus > .adminlinks-dropdown > .adminlinks-dropdown-menu,
+.adminlinks-fragment-wrapper:hover > .adminlinks-fragment-menu {
     display: block;
 }
 
 /* when hovering over one of the firt-level nodes, show the second level */
 .adminlinks-dropdown-submenu:hover .adminlinks-dropdown-menu,
-.adminlinks-dropdown-submenu:focus .adminlinks-dropdown-menu {
+.adminlinks-dropdown-submenu:focus .adminlinks-dropdown-menu,
+.adminlinks-fragment-link:hover,
+.adminlinks-fragment-link:focus {
     display: block;
 }
 
@@ -107,9 +135,9 @@
     left: 100%;
     margin-top: -6px;
     margin-left: -1px;
-    -webkit-border-radius: 0 6px 6px 6px;
-    -moz-border-radius: 0 6px 6px;
-    border-radius: 0 6px 6px 6px;
+    -webkit-border-radius: 0 4px 4px 4px;
+    -moz-border-radius: 0 4px 4px 4px;
+    border-radius: 0 4px 4px 4px;
 }
 .adminlinks-dropdown-menu-title {
     -webkit-user-select: none;
@@ -120,7 +148,8 @@
 }
 
 .adminlinks-dropdown-menu-title,
-.adminlinks-dropdown-menu-link {
+.adminlinks-dropdown-menu-link,
+.adminlinks-fragment-link {
     display: block;
     padding: 3px 20px 3px 10px;
     clear: both;
@@ -138,7 +167,9 @@
 .adminlinks-dropdown-menu-title:hover,
 .adminlinks-dropdown-menu-title:focus,
 .adminlinks-dropdown-menu-link:hover,
-.adminlinks-dropdown-menu-link:focus {
+.adminlinks-dropdown-menu-link:focus,
+.adminlinks-fragment-link:hover,
+.adminlinks-fragment-link:focus {
     color: #262626;
     text-decoration: none;
     background-color: #f5f5f5;
@@ -175,25 +206,30 @@
 
 
 /* normal adminsite stuff */
-.adminlinks-enabler__admin {
+.adminlinks-enabler__admin,
+.adminlinks-fragment-icon {
     background: #417690;
     color: #FFC;
     border-color: #417690;
 }
 
-.adminlinks-wrapper:hover .adminlinks-enabler__admin {
+.adminlinks-wrapper:hover .adminlinks-enabler__admin,
+.adminlinks-fragment-wrapper:hover .adminlinks-fragment-icon__admin {
     background-color: #5B80B2;
     border-color: #5B80B2;
 }
 
 
 .adminlinks-dropdown-menu-title,
-.adminlinks-dropdown-menu-link {
+.adminlinks-dropdown-menu-link,
+.adminlinks-fragment-link {
     color: #5B80B2;
 }
 
 .adminlinks-dropdown-menu-title:hover,
 .adminlinks-dropdown-menu-title:focus,
+.adminlinks-fragment-link:hover,
+.aadminlinks-fragment-link:focus,
 .adminlinks-dropdown-menu-link:hover,
 .adminlinks-dropdown-menu-link:focus {
     background-color: #5B80B2;

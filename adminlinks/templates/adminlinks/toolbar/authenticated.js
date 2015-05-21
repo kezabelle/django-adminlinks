@@ -1,4 +1,5 @@
 (function($window, $document, $) {
+    // {% load i18n %}
     // $ is {{ js_namespace }}
     var noop = function() {};
     var $console = $window.console || {};
@@ -36,7 +37,7 @@
                 return false;
             } else {
                 $log.call($console, "adminlinks for `{{ admin_site }}` have been embedded");
-                $("body").append("{{ json|safe }}");
+                $("body").append("{{ toolbar_html|safe }}");
                 return true;
             }
             /* {% else %}*/
@@ -52,14 +53,17 @@
             if (json_data.length === 0) {
                 return false;
             }
+            var fragment_html = "{{ fragment_html|safe }}";
             for(var linkable in json_data) {
                 if (json_data.hasOwnProperty(linkable)) {
                     link_data = json_data[linkable];
-                    output += '<a href="' + link_data.url + '" data-adminlinks-url="' + link_data.url + '" class="">' + link_data.title + '</a>';
+                    output += fragment_html.replace(/{% verbatim %}{{ url }}{% endverbatim %}/g, link_data.url)
+                                           .replace(/{% verbatim %}{{ title }}{% endverbatim %}/g, link_data.title)
+                                           .replace(/{% verbatim %}{{ namespace }}{% endverbatim %}/g, '{{ admin_site }}');
                 }
             }
             if (output.length >= 0) {
-                output = '<span class="">' + output + '</span>';
+                output = '<aside class="adminlinks-fragment-wrapper adminlinks-fragment-wrapper__{{ admin_site }}"><span class="adminlinks-fragment-icon adminlinks-fragment-icon__{{ admin_site }}">&hellip;</span><ol class="adminlinks-fragment-menu">' + output + '</ol></aside>';
                 $this.append(output);
                 return true;
             } else {
