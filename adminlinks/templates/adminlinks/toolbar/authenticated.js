@@ -64,7 +64,7 @@
             }
             if (output.length >= 0) {
                 output = '<aside class="adminlinks-fragment-wrapper adminlinks-fragment-wrapper__{{ admin_site }}"><span class="adminlinks-fragment-icon adminlinks-fragment-icon__{{ admin_site }}">&hellip;</span><ol class="adminlinks-fragment-menu">' + output + '</ol></aside>';
-                $this.append(output);
+                $this.after(output);
                 return true;
             } else {
                 return false;

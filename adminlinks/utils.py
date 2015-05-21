@@ -182,7 +182,7 @@ def get_modeladmin_links(model, model_class, modeladmin, admin):
         try:
             links['history'] = {
                 'url': reverse('{}_history'.format(url_root), args=(model.pk,)),
-                'title': _('History'),
+                'title': _('View history'),
             }
         except NoReverseMatch:
             logger.error("Couldn't resolve the history page for %(cls)r" % {
@@ -190,7 +190,7 @@ def get_modeladmin_links(model, model_class, modeladmin, admin):
         try:
             links['delete'] = {
                 'url': reverse('{}_delete'.format(url_root), args=(model.pk,)),
-                'title': _('Delete'),
+                'title': _('Delete %s') % force_text(model._meta.verbose_name),
             }
         except NoReverseMatch:
             logger.error("Couldn't resolve the delete confirm form for %(cls)r" % {  # noqa

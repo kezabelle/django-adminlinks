@@ -24,12 +24,12 @@
 <body>
 <div>
 {% load adminlinks %}
-    <ul>
+    <ul style="position: relative">
+        <li style="position: absolute;"><b {{ usermodel|adminlinks }}>model class</b></li>
         <li><a href="?nojs=1">toolbar without using JavaScript</a></li>
         <li><a href="?">toolbar with JavaScript</a></li>
-        <li><b {{ usermodel|adminlinks }}>model class</b></li>
     {% for user in users %}
-        <li><b {{ user|adminlinks:'admin' }}>model instance '{{ user }}'</b>
+        <li style="float: left; width: 50%; background-color: {% cycle '#FFC' '#FCF' %};"><b {{ user|adminlinks:'admin' }}>model instance '{{ user }}'</b>
             {% lorem 2 p %}
         </li>
     {% endfor %}
