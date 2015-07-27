@@ -63,7 +63,7 @@
                 }
             }
             if (output.length >= 0) {
-                output = '<aside class="adminlinks-fragment-wrapper adminlinks-fragment-wrapper__{{ admin_site }}"><span class="adminlinks-fragment-icon adminlinks-fragment-icon__{{ admin_site }}">&hellip;</span><ol class="adminlinks-fragment-menu">' + output + '</ol></aside>';
+                output = '<aside class="adminlinks-fragment-wrapper adminlinks-fragment-wrapper__{{ admin_site }}"><span class="adminlinks-fragment-icon adminlinks-fragment-icon__{{ admin_site }}">&nbsp;</span><ol class="adminlinks-fragment-menu">' + output + '</ol></aside>';
                 $this.after(output);
                 return true;
             } else {
@@ -89,9 +89,10 @@
 
         var on_ready = function() {
             var admin_site = "{{ admin_site }}";
-            return load_html.call(this, $, $log, $console) &&
-                   load_css.call(this, $, $log, $console) &&
-                   load_fragments.call(this, $, $log, $console);
+            var loaded_html = load_html.call(this, $, $log, $console);
+            var loaded_css = load_css.call(this, $, $log, $console);
+            var loaded_fragments = load_fragments.call(this, $, $log, $console);
+            return  loaded_html && loaded_css && loaded_fragments;
 
         };
         return $($document).ready(on_ready);

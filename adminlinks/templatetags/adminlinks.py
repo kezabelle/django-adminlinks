@@ -3,42 +3,15 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 import json
 import logging
-from classytags.arguments import StringArgument
-from classytags.core import Options
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 from django.core.serializers.json import DjangoJSONEncoder
 from django.template.base import Library
-from adminlinks.utils import _get_template_context
 from adminlinks.utils import get_modeladmin_links
 from adminlinks.utils import get_adminsite
-from classytags.helpers import InclusionTag
 from django.utils.safestring import mark_safe
 
 register = Library()
 logger = logging.getLogger(__name__)
-
-
-class AdminlinksToolbar(InclusionTag):
-    template = 'adminlinks/toolbar.html'
-
-    options = Options(
-        StringArgument('admin_site', required=False, default='admin'),
-    )
-
-    def get_context(self, context, admin_site):
-        if 'request' not in context:
-            if settings.DEBUG:
-                raise ImproperlyConfigured(
-                    "To continue using this, you need to put "
-                    "`django.core.context_processors.request` in your "
-                    "TEMPLATE_CONTEXT_PROCESSORS, or pass `request` from your "
-                    "view context to the template.")
-        request = context['request']
-        context['adminlinks'] = _get_template_context(request=request,
-                                                      admin_site=admin_site)
-        return context
-register.tag(name='adminlinks_toolbar', compile_function=AdminlinksToolbar)
 
 
 def adminlinks_html(model, admin_site='admin'):

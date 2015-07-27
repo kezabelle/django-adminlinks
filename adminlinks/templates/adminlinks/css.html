@@ -1,5 +1,0 @@
-{% if should_load_assets %}
-    {% load static %}
-    <link rel="stylesheet" media="screen" href="{% static 'adminlinks/css/widgets.css' %}{% if debug %}?cachebusting={% now "u" %}{% endif %}" type="text/css">
-    <link rel="stylesheet" media="screen" href="{% static 'adminlinks/css/fancyiframe-custom.css' %}{% if debug %}?cachebusting={% now "u" %}{% endif %}" type="text/css">
-{% endif %}

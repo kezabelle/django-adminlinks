@@ -12,22 +12,22 @@
             background-color: #EEE;
         }
     </style>
-
-    {% if 'nojs' in request.GET %}
+    <link rel="stylesheet" type="text/css" href="{% static 'adminlinks/css/modal.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'adminlinks/css/toolbar.css' %}">
-    {% endif %}
-    {% if 'nojs' not in request.GET %}
     <script src="{% static 'admin/js/jQuery.js' %}"></script>
     <script src="{% url 'adminlinks_toolbar' 'admin' %}?include_css={{ request.GET.include_css|default:'1' }}&include_html={{ request.GET.include_html|default:'1' }}&js_namespace=dollar"></script>
-    {% endif %}
+    <script src="{% static 'adminlinks/js/jquery.adminlinks.js' %}"></script>
+    <script>
+        (function ($) {
+            $.adminlinks();
+        })(jQuery);
+    </script>
 </head>
 <body>
 <div>
 {% load adminlinks %}
     <ul style="position: relative">
         <li style="position: absolute;"><b {{ usermodel|adminlinks }}>model class</b></li>
-        <li><a href="?nojs=1">toolbar without using JavaScript</a></li>
-        <li><a href="?">toolbar with JavaScript</a></li>
     {% for user in users %}
         <li style="float: left; width: 50%; background-color: {% cycle '#FFC' '#FCF' %};"><b {{ user|adminlinks:'admin' }}>model instance '{{ user }}'</b>
             {% lorem 2 p %}
@@ -36,9 +36,5 @@
     </ul>
 
     &hellip;</div>
-
-{% if 'nojs' in request.GET %}
-{% adminlinks_toolbar 'admin' %}
-{% endif %}
 </body>
 </html>

@@ -1,7 +1,9 @@
+from adminlinks.admin import AdminlinksMixin
 from adminlinks.urls import adminlinks_toolbar_url
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin
 from django.shortcuts import render
 
 
@@ -32,6 +34,11 @@ def index(request):
         'made_superusers': made_superusers,
     })
 
+
+admin.site.unregister(get_user_model())
+class CustomUserAdmin(AdminlinksMixin, UserAdmin):
+    pass
+admin.site.register(get_user_model(), CustomUserAdmin)
 
 urlpatterns = [
     adminlinks_toolbar_url,

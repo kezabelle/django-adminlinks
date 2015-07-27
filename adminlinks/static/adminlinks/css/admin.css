@@ -1,0 +1,42 @@
+#header {
+    display: none;
+}
+
+div.breadcrumbs {
+    font-size: 14px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    padding-left: 15px;
+}
+
+#content {
+    margin-top: 2rem;
+}
+
+
+body.delete-confirmation form > div,
+.submit-row {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 5px 15px;
+    margin-bottom: 0;
+    border-top: 1px solid #CCC;
+    border-left: 0;
+    border-bottom: 0;
+    border-right: 0;
+    text-align: right;
+    background: white;
+    z-index: 9999;
+}
+
+body.delete-confirmation form input[type="submit"] {
+    border: 2px solid #5B80B2;
+    background: #7CA0C7 url('../../admin/img/default-bg.gif') bottom repeat-x;
+    font-weight: bold;
+    color: #FFF;
+}

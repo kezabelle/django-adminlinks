@@ -1,6 +1,0 @@
-{% if link %}
-{% load i18n %}
-<a href="{{ link }}" class="django-adminlinks--btn django-adminlinks--history" data-no-turbolink>
-    {% blocktrans with verbose_name as name %}History for this <span class="django-adminlinks--btn--important">{{ name }}</span>{% endblocktrans %}
-</a>
-{% endif %}

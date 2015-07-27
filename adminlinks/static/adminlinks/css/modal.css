@@ -1,0 +1,125 @@
+#adminlinks-overlay {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9997;
+    background-color: #303030;
+    overflow-y: hidden;
+    opacity: 0;
+    -webkit-transition: all 0.4s ease-in-out;
+    -moz-transition: all 0.4s ease-in-out;
+    -o-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+
+    -o-user-select: none;
+    user-select: none;
+    /*-webkit-filter: blur(10px);*/
+    /*filter: blur(10px);*/
+}
+
+body.adminlinks-iframe-loading #adminlinks-overlay,
+body.adminlinks-iframe-open #adminlinks-overlay {
+    opacity: 0.7;
+}
+
+/*body.adminlinks-iframe-loading #adminlinks-overlay {*/
+    /*background-image: url(data:image/gif;base64,R0lGODlhFAAUAPUJAFRSVMzOzHx+fPz6/OTi5DAwMFRWVFxeXMzKzDQyNPz+/IyKjNze3FxaXKSipDw+PPTy9LS2tGRiZLy+vDw6PKyurJyanKSmpJSSlISChLy6vISGhIyOjJyenERCRPT29KyqrLSytMTGxERGRMTCxNTW1HR2dOTm5NTS1Ozq7GxqbHx6fNza3GRmZExKTOzu7AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQECQD/ACwAAAAAFAAUAAAGSMCCUJgwWECAoXIpNAQUUAZzuhlAoazpcnGFElra4cEKRRwSYSLq6kCnhZKryP0uOK6G+nCC1Q9bL19+Q3SDhoeIiYqLjI2OQQAh+QQFCQAAACwAAAAADwALAAAGOMCCUJg4dBAMlshiGAoPKIV0KrUMFwOqFiJ0ZacAkugkBXW/IkOCeDishS1Q5u2s2+/4vH7PzwcBACH5BAUJAAsALAIAAAARAAgAAAY4wIJQ6NEQCIjOITFsCjuKqBRhcA4z0uxAYC0kOJMJIavgdoWJA0L6AZyHCZA09IYHoqD60IPBUIIAIfkEBQkAAAAsBwAAAA0ADQAABjvAgnBILA5Hk0nDOOwoFIMNs2B5PjPMB8I6MDATFysi8d0+l8yD1TJNnJ6kacFckoue9SnnCZInTBwUQQAh+QQFCQACACwMAAEACAARAAAGO8CCcEgsGo8FSjExUVQSQ4liehgaporOMEGYioikKQss3p68wwPWIkwEsAYhBxsYgqYfQPrzWRUpD0NBACH5BAUJAAAALAoABAAKABAAAAY7wIJwSCwaj8ikcpg4qgipA2BKZSgUkWLjquhQpwjugXn5NhOHAHfQKDy514zQupYLT1yEgdgAWQxNREEAIfkEBQkAAAAsBAAJABAACwAABjrAgnBILBqPyKRyyVwmNiAJMXFoJISJhkihGHiGFS6BRGJwuYMRdnBuowFEh/scaBgbFgSDgegcrkRBACH5BAUJAAAALAEADAARAAgAAAY4wAcG8ygYj8hjRaFAJJLQgoapuDyjR8OAijBcsRkqkzGZLL7IzVbMFGAbAbbCgi0kDo4AgaApIoMAIfkEBQkAAAAsAAAHAA0ADQAABj5ACseUKBiPx4pCsUA6GUuSEwlVSKdGxJJQxHaWCgO2cACLus4ECtxBIw8AMOmBXYAVmPEirrCMySQaHn9/QQAh+QQFCQAVACwAAAIACAARAAAGQMCC8EERGgUDiMFoGCgUDmEi8FQshIcqIiF0VBtGxJPAFRKeE2PhrEgbqQqG2vsEGCXVgzERUUTKRkVqg4SFhEEAOw==);*/
+    /*background-position: center center;*/
+    /*background-repeat: no-repeat;*/
+/*}*/
+
+#adminlinks-iframe {
+    margin: auto;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    /*bottom: 0;*/
+    right: 0;
+    /*min-width: 780px;*/
+    height: 0;
+    /*border: 10px solid #FFF;*/
+    /*width: auto;*/
+    /*min-height: 125px;*/
+    max-height: 85%;
+    width: 85%;
+    overflow: hidden;
+    overflow-y: scroll;
+    /*-webkit-transition: all 0.4s ease-in-out;*/
+    /*-moz-transition: all 0.4s ease-in-out;*/
+    /*-o-transition: all 0.4s ease-in-out;*/
+    /*transition: all 0.4s ease-in-out;*/
+    /*width: 780px;*/
+    /*max-width: 100%;*/
+    /*height: 0;*/
+    /*max-height: 90%;*/
+    /*position: fixed;*/
+    /*top: 2em;*/
+    /*left: 50%;*/
+    /*margin: auto auto auto -390px;*/
+    /*padding: 0;*/
+    /*border: 1px solid white;*/
+    /*border-top: none;*/
+    background: white;
+    z-index: 9999;
+    /*-webkit-border-bottom-right-radius: 0.5rem;*/
+    /*-webkit-border-bottom-left-radius: 0.5rem;*/
+    /*-moz-border-radius-bottomright: 0.5rem;*/
+    /*-moz-border-radius-bottomleft: 0.5rem;*/
+    /*border-bottom-right-radius: 0.5rem;*/
+    /*border-bottom-left-radius: 0.5rem;*/
+}
+
+
+body.adminlinks-iframe-open #adminlinks-iframe {
+    -webkit-box-shadow: 0 0 30px 3px rgba(0, 0, 0, 0.45);
+    -moz-box-shadow: 0 0 30px 3px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 0 30px 3px rgba(0, 0, 0, 0.45);
+}
+
+
+
+#adminlinks-close {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    z-index: 9999;
+    font-weight: bold;
+    font-size: 2em;
+    line-height: 0.9;
+    width: 1em;
+    height: 1em;
+    overflow: hidden;
+    font-family: sans-serif;
+    text-align: center;
+    color: white;
+    transition: 0.75s;
+    -moz-transition: 0.75s;
+    -ms-transition: 0.75s;
+    -webkit-transition: 0.75s;
+    -o-transition: 0.75s;
+    /*-webkit-border-bottom-left-radius: 3px;*/
+    /*-moz-border-radius-bottomleft: 3px;*/
+    /*border-bottom-left-radius: 3px;*/
+}
+
+#adminlinks-close:hover {
+    color: #7CA0C7;
+    -webkit-transform: rotateZ(90deg);
+    -moz-transform: rotateZ(90deg);
+    -o-transform: rotateZ(90deg);
+    -ms-transform: rotateZ(90deg);
+    transform: rotateZ(90deg);
+}
+
+.adminlinks-open {
+}
+

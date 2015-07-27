@@ -31,7 +31,6 @@
     padding: 1px 5px;
     margin-bottom: 0;
     font-weight: 700;
-    text-align: center;
     white-space: nowrap;
     vertical-align: middle;
     -ms-touch-action: manipulation;
@@ -56,11 +55,8 @@
 }
 
 .adminlinks-enabler {
-    font-size: 0;
-}
-
-.adminlinks-enabler-text {
     font-size: 14px;
+    position: relative;
 }
 
 .adminlinks-divider {
@@ -144,7 +140,6 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    cursor: default;
 }
 
 .adminlinks-dropdown-menu-title,
@@ -204,13 +199,38 @@
     user-select: none;
 }
 
+/*body.adminlinks-iframe-loading,*/
+/*body.adminlinks-iframe-open {*/
+    /*overflow: hidden;*/
+/*}*/
+
+body.adminlinks-iframe-loading .adminlinks-wrapper,
+body.adminlinks-iframe-loading .adminlinks-fragment-wrapper,
+body.adminlinks-iframe-open .adminlinks-wrapper,
+body.adminlinks-iframe-open .adminlinks-fragment-wrapper
+{
+    left: -1000rem;
+}
 
 /* normal adminsite stuff */
-.adminlinks-enabler__admin,
-.adminlinks-fragment-icon {
+.adminlinks-enabler__admin {
     background: #417690;
     color: #FFC;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
     border-color: #417690;
+}
+
+.adminlinks-fragment-icon__admin {
+    background: #FFF url('../../admin/img/icon_changelink.gif') 50% 50% no-repeat;
+    padding-left: 0.4rem;
+    line-height: 1;
+    padding-right: 0.4rem;
+    border-color: #CCC;
+    /*width: 1rem;*/
+    /*padding: 0;*/
+    /*height: 1rem;*/
+    border-color: rgba(0, 0, 0, 0.15);
 }
 
 .adminlinks-wrapper:hover .adminlinks-enabler__admin,

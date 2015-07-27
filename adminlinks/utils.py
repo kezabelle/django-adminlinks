@@ -168,40 +168,35 @@ def get_modeladmin_links(model, model_class, modeladmin, admin):
     namespace = admin.name
     url_root = '{}:{}_{}'.format(namespace, model._meta.app_label,
                                  model._meta.model_name)
+
+    def get_url(root, name, args):
+        url_lookup = '{}_{}'.format(url_root, name)
+        try:
+            url = reverse(url_lookup, args=args)
+        except NoReverseMatch:
+            logger.error("Couldn't resolve url {}".format(url_lookup),
+                         exc_info=1)
+            return None
+        else:
+            return '{}?'.format(url)
+
     # got to ask isinstance because ModelClass.pk yields <property object ...>
     if hasattr(model, 'pk') and isinstance(model, Model):
         # ... this is verbose but the least magic/complex thing ...
-        try:
-            links['change'] = {
-                'url': reverse('{}_change'.format(url_root), args=(model.pk,)),
-                'title': _('Change %s') % force_text(model._meta.verbose_name),
-            }
-        except NoReverseMatch:
-            logger.error("Couldn't resolve the change form for %(cls)r" % {
-                'cls': model_class}, exc_info=1)
-        try:
-            links['history'] = {
-                'url': reverse('{}_history'.format(url_root), args=(model.pk,)),
-                'title': _('View history'),
-            }
-        except NoReverseMatch:
-            logger.error("Couldn't resolve the history page for %(cls)r" % {
-                'cls': model_class}, exc_info=1)
-        try:
-            links['delete'] = {
-                'url': reverse('{}_delete'.format(url_root), args=(model.pk,)),
-                'title': _('Delete %s') % force_text(model._meta.verbose_name),
-            }
-        except NoReverseMatch:
-            logger.error("Couldn't resolve the delete confirm form for %(cls)r" % {  # noqa
-                'cls': model_class}, exc_info=1)
-    try:
-        links['add'] = {
-            'url': reverse('{}_add'.format(url_root)),
-            'title': _('Add %s') % force_text(model._meta.verbose_name),
+        links['change'] = {
+            'url': get_url(root=url_root, name='change', args=(model.pk,)),
+            'title': _('Change %s') % force_text(model._meta.verbose_name),
         }
-    except NoReverseMatch:
-            logger.error("Couldn't even resolve the add form for %(cls)r, "
-                         "for shame!" % {
-                'cls': model_class}, exc_info=1)
+        links['history'] = {
+            'url': get_url(root=url_root, name='history', args=(model.pk,)),
+            'title': _('View history'),
+        }
+        links['delete'] = {
+            'url': get_url(root=url_root, name='delete', args=(model.pk,)),
+            'title': _('Delete %s') % force_text(model._meta.verbose_name),
+        }
+    links['add'] = {
+        'url': get_url(root=url_root, name='add', args=None),
+        'title': _('Add %s') % force_text(model._meta.verbose_name),
+    }
     return links

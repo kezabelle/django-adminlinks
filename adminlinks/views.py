@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
+import hashlib
 import json
 from adminlinks.forms import JavascriptOptions
 from adminlinks.utils import get_adminsite, _get_template_context
+from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.views.decorators.cache import never_cache
+from django.utils.cache import patch_response_headers
+from django.utils.cache import patch_cache_control
+from django.utils.encoding import force_text
+from django.views.decorators.http import require_http_methods
 
-@never_cache
+
+@require_http_methods(['GET', 'HEAD'])
 def toolbar(request, admin_site):
     site = get_adminsite(admin_site)
     if site is None:
@@ -18,6 +24,9 @@ def toolbar(request, admin_site):
         raise Http404("%(form)s got invalid arguments: %(errors)r" % {
             'form': options.__class__, 'errors': options.errors})
 
+    if not hasattr(request, 'user'):
+        raise Http404("Cannot get the user from the request. Missing the "
+                      "middleware?")
 
     possible_templates = ['adminlinks/toolbar/anonymous.js']
     if request.user.is_authenticated():
@@ -35,6 +44,7 @@ def toolbar(request, admin_site):
                                                      admin_site=admin_site)
         toolbar_html = render_to_string("adminlinks/toolbar.html", context={
             'adminlinks': toolbar_html_context,
+            'user': request.user,
         })
     else:
         toolbar_html = ''
@@ -54,40 +64,15 @@ def toolbar(request, admin_site):
         'possible_templates': possible_templates,
     }
     context.update(**options.cleaned_data)
-    return render(request, template_name=possible_templates, context=context,
-                  content_type='application/javascript')
-
-
-class ModelContext(object):
-    """
-    When working with things like :class:`~django.views.generic.list.ListView`,
-    :class:`~django.views.generic.detail.DetailView` or anything else that acts
-    on a single ``model`` type, it may be useful to be able to access that
-    model in the template, specifically so that the
-    :class:`~adminlinks.templatetags.adminlinks_buttons.Add` template tag
-    may be used even when there is no actual instance of ``model`` available,
-    given the class::
-
-        class MyView(ModelContext, DetailView):
-            model = MyModel
-
-    it would now be possible to render the add button, even if there is no
-    ``object`` in the context::
-
-        {% load adminlinks_buttons %}
-        <!-- model is not an instance, but a class -->
-        {% render_add_button model %}
-
-    In the slightly contrived example above, if the object didn't exist,
-    :class:`~django.views.generic.detail.DetailView` would throw a
-    :exc:`~django.http.Http404` anyway, but for demonstration purposes it should
-    illustrate the purpose of ``ModelContext``
-    """
-
-    def get_context_data(self, **kwargs):
-        """
-        Puts the ``model`` into the template context.
-        """
-        if hasattr(self, 'model') and 'model' not in kwargs:
-            kwargs['model'] = self.model
-        return super(ModelContext, self).get_context_data(**kwargs)
+    response = render(request, template_name=possible_templates, context=context,
+                      content_type='application/javascript')
+    hashable = '%(pk)s-%(data)s' % {
+        'pk': force_text(request.user.pk),
+        'data': response.content,
+    }
+    response['ETag'] = '"%s"' % hashlib.md5(hashable).hexdigest()
+    patch_response_headers(response=response,
+                           cache_timeout=settings.CACHE_MIDDLEWARE_SECONDS)
+    patch_cache_control(response=response, must_revalidate=True,
+                        max_age=settings.CACHE_MIDDLEWARE_SECONDS)
+    return response
