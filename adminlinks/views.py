@@ -5,8 +5,8 @@ from adminlinks.forms import JavascriptOptions
 from adminlinks.utils import get_adminsite, _get_template_context
 from django.conf import settings
 from django.http import Http404
-from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
 from django.utils.cache import patch_cache_control
 from django.utils.encoding import force_text
@@ -78,11 +78,11 @@ def toolbar(request, admin_site):
     }
     context.update(**options.cleaned_data)
 
-    response = render(request, template_name=possible_templates, context=context,
-                      content_type='application/javascript')
+    response = TemplateResponse(request, template=possible_templates,
+                                context=context, content_type='application/javascript')
     hashable = '%(pk)s-%(data)s' % {
         'pk': force_text(request.user.pk),
-        'data': response.content,
+        'data': response.rendered_content,
     }
     response['ETag'] = '"%s"' % hashlib.md5(hashable).hexdigest()
     patch_response_headers(response=response,
