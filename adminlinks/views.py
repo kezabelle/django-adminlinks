@@ -13,31 +13,37 @@ from django.utils.encoding import force_text
 from django.views.decorators.http import require_http_methods
 
 
+def bool_to_int(x):
+    return 1 if x is True else 0
+
+
+def templates(user):
+    possible_templates = ['adminlinks/toolbar/frontend.js']
+    if user.is_staff:
+        possible_templates.insert(0, 'adminlinks/toolbar/staff.js')
+    if user.is_superuser:
+        possible_templates.insert(0, 'adminlinks/toolbar/superuser.js')
+    if user.pk:
+        possible_templates.insert(0, 'adminlinks/toolbar/user_{}.js'.format(str(user.pk)))  # noqa
+    return possible_templates
+
+
 @require_http_methods(['GET', 'HEAD'])
 def toolbar(request, admin_site):
     site = get_adminsite(admin_site)
     if site is None:
         raise Http404("Invalid admin site name: %(site)s" % {'site': admin_site})
 
+    if not hasattr(request, 'user'):
+        raise Http404("Cannot get the user from the request. Missing the "
+                      "middleware?")
+
     options = JavascriptOptions(data=request.GET or {}, files=None, initial={})
     if not options.is_valid():
         raise Http404("%(form)s got invalid arguments: %(errors)r" % {
             'form': options.__class__, 'errors': options.errors})
 
-    if not hasattr(request, 'user'):
-        raise Http404("Cannot get the user from the request. Missing the "
-                      "middleware?")
-
-    possible_templates = ['adminlinks/toolbar/anonymous.js']
-    if request.user.is_authenticated():
-        possible_templates.insert(0, 'adminlinks/toolbar/authenticated.js')
-        if request.user.is_staff:
-            possible_templates.insert(0, 'adminlinks/toolbar/staff.js')
-        if request.user.is_superuser:
-            possible_templates.insert(0, 'adminlinks/toolbar/superuser.js')
-        if request.user.pk:
-            possible_templates.insert(0, 'adminlinks/toolbar/user_{}.js'.format(str(request.user.pk)))  # noqa
-
+    possible_templates = templates(user=request.user)
 
     if options.cleaned_data.get('include_html'):
         toolbar_html_context = _get_template_context(request=request,
@@ -56,14 +62,22 @@ def toolbar(request, admin_site):
      }
     fragment_html = ''.join(render_to_string(
         'adminlinks/toolbar_fragment.html', context=fragment_html_context).splitlines())  # noqa
+
+    cleaned_data_ints = {k: bool_to_int(v)
+                         for k, v in options.cleaned_data.items()}
+
     context = {
         'admin_site': admin_site,
         'site': site,
         'toolbar_html': json.dumps(toolbar_html)[1:-1],
         'fragment_html': json.dumps(fragment_html)[1:-1],
         'possible_templates': possible_templates,
+        'configuration': dict({
+            'is_authenticated': bool_to_int(request.user.is_authenticated()),
+        }, **cleaned_data_ints),
     }
     context.update(**options.cleaned_data)
+
     response = render(request, template_name=possible_templates, context=context,
                       content_type='application/javascript')
     hashable = '%(pk)s-%(data)s' % {

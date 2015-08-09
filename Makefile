@@ -8,9 +8,13 @@ help:
 	@echo "test - run tests quickly with the default Python"
 	@echo "release - package and upload a release"
 	@echo "dist - package"
-	@echo "dist - check build and metadata"
+	@echo "check - check build and metadata"
+	@echo "run - runserver"
 
 clean: clean-build clean-pyc clean-test
+
+run: clean-pyc
+	python testproject/manage.py runserver
 
 clean-build:
 	rm -fr build/

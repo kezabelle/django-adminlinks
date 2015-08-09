@@ -20,7 +20,7 @@ class JavascriptOptions(Form):
 
     def clean_js_namespace(self):
         choices = {
-            'dollar': 'window.$',
+            'dollar': '$',
             'django': 'django.jQuery',
         }
         initial = self.fields['js_namespace'].initial

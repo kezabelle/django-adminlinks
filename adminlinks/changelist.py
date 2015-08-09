@@ -5,12 +5,9 @@ from adminlinks.constants import DATA_CHANGED
 
 class AdminlinksChangeListMixin(object):
     """
-    May be mixed in with any
-    :class:`~django.contrib.admin.views.main.ChangeList` implementation to
+    May be mixed in with any ChangeList implementation to
     remove *bad* querystring keys before they get to cause an
     ``IncorrectLookupParameters`` error.
-
-    .. versionadded:: 0.8.1
     """
     tracks_querystring_keys = (DATA_CHANGED,)
 
@@ -34,9 +31,6 @@ class AdminlinksChangeListMixin(object):
 class AdminlinksChangeList(AdminlinksChangeListMixin, ChangeList):
     """
     Default usable implementation which allows us to not error on discovering
-    *invalid* (eg: :attr:`~adminlinks.constnats.DATA_CHANGED`) fields in the
-    querystring on the ChangeList.
-
-    .. versionadded:: 0.8.1
+    *invalid* (eg: DATA_CHANGED) fields in the querystring on the ChangeList.
     """
     pass

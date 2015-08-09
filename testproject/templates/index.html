@@ -14,7 +14,7 @@
     </style>
     <link rel="stylesheet" type="text/css" href="{% static 'adminlinks/css/modal.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'adminlinks/css/toolbar.css' %}">
-    <script src="{% static 'admin/js/jQuery.js' %}"></script>
+    <script src="{% static 'admin/js/jQuery.min.js' %}"></script>
     <script src="{% url 'adminlinks_toolbar' 'admin' %}?include_css={{ request.GET.include_css|default:'1' }}&include_html={{ request.GET.include_html|default:'1' }}&js_namespace=dollar"></script>
     <script src="{% static 'adminlinks/js/jquery.adminlinks.js' %}"></script>
     <script>

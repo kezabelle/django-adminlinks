@@ -8,13 +8,7 @@
 
     var on_popup_close = function(event, action, data) {
         if (window.__data_changed__ === true) {
-            if (window.Turbolinks !== void(0) &&
-                window.Turbolinks.visit !== void(0) &&
-                window.Turbolinks.visit !== null) {
-                window.Turbolinks.visit(window.location.href);
-            } else {
-                window.location.reload();
-            }
+            window.location.reload();
         }
     };
 
